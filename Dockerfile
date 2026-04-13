@@ -4,4 +4,4 @@ COPY server/package*.json ./
 RUN npm install --production
 COPY server/ ./
 EXPOSE 5000
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
