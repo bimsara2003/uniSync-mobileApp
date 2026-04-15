@@ -33,12 +33,12 @@ const userSchema = new mongoose.Schema(
     },
     profilePictureUrl: {
       type: String,
-      default: "",
+      default: null,
     },
     role: {
       type: [String],
-      enum: ["student", "staff", "admin", "rep"],
-      default: ["student"],
+      enum: ["STUDENT", "STAFF", "ADMIN", "REP"],
+      default: ["STUDENT"],
     },
   },
   { timestamps: true },
