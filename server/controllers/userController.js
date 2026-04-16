@@ -9,13 +9,9 @@ const generateAccessToken = (id) => {
 };
 
 const generateRefreshToken = (id) => {
-  return jwt.sign(
-    { id },
-    process.env.JWT_REFRESH_SECRET,
-    {
-      expiresIn: "30d", // Refresh token lives for 30 days
-    }
-  );
+  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: "30d", // Refresh token lives for 30 days
+  });
 };
 
 exports.registerUser = async (req, res) => {
@@ -23,7 +19,9 @@ exports.registerUser = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(409).json({ message: "Registration failed. Please check your details" });
+      return res
+        .status(409)
+        .json({ message: "Registration failed. Please check your details" });
     }
     const savedUser = await User.create({
       firstName,
@@ -177,7 +175,7 @@ exports.refreshUserToken = async (req, res) => {
     // Verify the provided refresh token
     const decoded = jwt.verify(
       refreshToken,
-      process.env.JWT_REFRESH_SECRET || "fallback_refresh_secret"
+      process.env.JWT_REFRESH_SECRET || "fallback_refresh_secret",
     );
 
     // Ensure the token exists in the DB for that user
@@ -207,7 +205,7 @@ exports.logoutUser = async (req, res) => {
       // Decode without fully verifying expiration to easily drop it if possible,
       // but it's safer to find the user that holds this token and unset it.
       const user = await User.findOne({ refreshToken });
-      
+
       if (user) {
         user.refreshToken = null;
         await user.save();
