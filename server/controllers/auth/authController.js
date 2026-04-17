@@ -45,6 +45,9 @@ exports.authUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select("+password");
+    if (user && user.isActive === false) {
+      return res.status(403).json({ message: "User account is deactivated" });
+    }
     if (user && (await bcrypt.compare(password, user.password))) {
       const accessToken = generateAccessToken(user._id);
       const refreshToken = generateRefreshToken(user._id);
@@ -78,6 +81,10 @@ exports.refreshUserToken = async (req, res) => {
 
     if (!user || !user.refreshToken) {
       return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    if (user.isActive === false) {
+      return res.status(403).json({ message: "User account is deactivated" });
     }
 
     // Compare provided raw token with the hashed token in DB
