@@ -75,9 +75,17 @@ exports.refreshUserToken = async (req, res) => {
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     const user = await User.findById(decoded.id);
-    if (!user || user.refreshToken !== refreshToken) {
+
+    if (!user || !user.refreshToken) {
       return res.status(403).json({ message: "Invalid refresh token" });
     }
+
+    // Compare provided raw token with the hashed token in DB
+    const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!isMatch) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
     const newAccessToken = generateAccessToken(user._id);
     res.json({ accessToken: newAccessToken });
   } catch (error) {
@@ -90,10 +98,18 @@ exports.logoutUser = async (req, res) => {
   const { refreshToken } = req.body;
   if (refreshToken) {
     try {
-      const user = await User.findOne({ refreshToken });
-      if (user) {
-        user.refreshToken = null;
-        await user.save();
+      // Ignore expiration so users can logout even if token expired
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, {
+        ignoreExpiration: true,
+      });
+      const user = await User.findById(decoded.id);
+
+      if (user && user.refreshToken) {
+        const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+        if (isMatch) {
+          user.refreshToken = null;
+          await user.save();
+        }
       }
     } catch (error) {
       console.error("Error during logout:", error);

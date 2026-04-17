@@ -4,7 +4,7 @@ exports.getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (user) {
-      res.json({
+      res.status(200).json({
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,

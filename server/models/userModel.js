@@ -54,11 +54,16 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) {
-    return;
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+
+  // Also hash refresh token if it's being added or updated
+  if (this.isModified("refreshToken") && this.refreshToken) {
+    const salt = await bcrypt.genSalt(10);
+    this.refreshToken = await bcrypt.hash(this.refreshToken, salt);
+  }
 });
 
 // Generate and hash password token
