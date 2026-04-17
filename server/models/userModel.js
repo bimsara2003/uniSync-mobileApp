@@ -42,6 +42,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
     role: {
       type: [String],
       enum: ["STUDENT", "STAFF", "ADMIN", "REP"],
@@ -58,5 +60,24 @@ userSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+// Generate and hash password token
+userSchema.methods.getResetPasswordToken = function () {
+  // Generate token - Since it's for mobile, a 6 digit code is highly user friendly
+  // Let's use a 6-digit OTP for ease of testing in Postman / typing on mobile
+  const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // We hash it to store securely in database
+  const crypto = require("crypto");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set expire to 10 minutes
+  this.resetPasswordExpire = Date.now() + 1000 * 60 * 10;
+
+  return resetToken; // Return the raw token to send via email
+};
 
 module.exports = mongoose.model("User", userSchema);

@@ -1,23 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userController");
+const authController = require("../controllers/auth/authController");
+const profileController = require("../controllers/auth/profileController");
+const passwordController = require("../controllers/auth/passwordController");
 const { protect } = require("../middleware/authMiddleware");
 const { upload } = require("../middleware/uploadMiddleware");
 
-// Public routes
-router.post("/register", userController.registerUser);
-router.post("/login", userController.authUser);
-router.post("/refresh", userController.refreshUserToken);
-router.post("/logout", userController.logoutUser);
+// Auth routes (public)
+router.post("/register", authController.registerUser);
+router.post("/login", authController.authUser);
+router.post("/refresh", authController.refreshUserToken);
+router.post("/logout", authController.logoutUser);
 
-// Protected routes
-router.get("/profile", protect, userController.getUserProfile);
-router.put("/profile", protect, userController.updateUserProfile);
-router.post(
-  "/profile/photo",
-  protect,
-  upload.single("photo"),
-  userController.uploadProfilePhoto,
-);
+// Password routes (public)
+router.post("/forgotpassword", passwordController.forgotPassword);
+router.put("/resetpassword", passwordController.resetPassword);
+
+// Profile routes (protected)
+router.get("/profile", protect, profileController.getUserProfile);
+router.put("/profile", protect, profileController.updateUserProfile);
+router.post("/profile/photo", protect, upload.single("photo"), profileController.uploadProfilePhoto);
+
+// Password routes (protected)
+router.put("/change-password", protect, passwordController.changePassword);
 
 module.exports = router;
