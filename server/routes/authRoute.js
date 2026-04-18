@@ -20,7 +20,13 @@ router.put("/resetpassword", passwordController.resetPassword);
 router.get("/profile", protect, profileController.getUserProfile);
 router.put("/profile", protect, profileController.updateUserProfile);
 router.delete("/profile", protect, profileController.deleteUserProfile);
-router.post("/profile/photo", protect, upload.single("photo"), profileController.uploadProfilePhoto);
+router.post(
+  "/profile/photo",
+  protect,
+  upload.single("photo"),
+  profileController.uploadProfilePhoto
+);
+router.delete("/profile/photo", protect, profileController.deleteProfilePhoto);
 
 // Password routes (protected)
 router.put("/change-password", protect, passwordController.changePassword);
