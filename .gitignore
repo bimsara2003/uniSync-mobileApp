@@ -142,4 +142,4 @@ vite.config.ts.timestamp-*
 docker-compose.yml
 
 #markdown
-UniSync_SRS_v1.0.md
+plan-uniSyncBackend.prompt.md
