@@ -24,8 +24,7 @@ const protect = async (req, res, next) => {
       }
 
       return next();
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
       return res.status(401).json({ message: "Not authorized, token failed" });
     }
@@ -44,4 +43,15 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+const staff = (req, res, next) => {
+  if (
+    req.user &&
+    (req.user.role.includes("STAFF") || req.user.role.includes("ADMIN"))
+  ) {
+    next();
+  } else {
+    res.status(403).json({ message: "Not authorized as staff" });
+  }
+};
+
+module.exports = { protect, admin, staff };
