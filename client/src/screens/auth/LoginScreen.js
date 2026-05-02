@@ -111,8 +111,17 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         <TouchableOpacity
+          onPress={() => navigation.navigate("ForgotPassword")}
+          style={{ marginTop: 16, alignItems: "center" }}
+        >
+          <Text style={{ color: "#0ea5e9", fontSize: 13, fontWeight: "500" }}>
+            Forgot password?
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={() => navigation.navigate("Register")}
-          style={{ marginTop: 20, alignItems: "center" }}
+          style={{ marginTop: 12, alignItems: "center" }}
         >
           <Text style={{ color: "#64748b", fontSize: 13 }}>
             No account?{" "}

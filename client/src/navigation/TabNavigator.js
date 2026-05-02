@@ -2,15 +2,25 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text } from "react-native";
 import { useAuth } from "../context/AuthContext";
+
+// Announcements
 import AnnouncementsScreen      from "../screens/announcements/AnnouncementsScreen";
 import AnnouncementDetailScreen from "../screens/announcements/AnnouncementDetailScreen";
 import CreateAnnouncementScreen from "../screens/announcements/CreateAnnouncementScreen";
 import EditAnnouncementScreen   from "../screens/announcements/EditAnnouncementScreen";
 
+// Resources
+import ResourcesScreen          from "../screens/resources/ResourcesScreen";
+import ResourceDetailScreen     from "../screens/resources/ResourceDetailScreen";
+import PendingResourcesScreen   from "../screens/resources/PendingResourcesScreen";
+
+// Profile
+import ProfileScreen from "../screens/profile/ProfileScreen";
+
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Stack inside the Announcements tab so Detail screen stays in tab layout
+// ─── Announcements Stack ─────────────────────────────────
 function AnnouncementsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -22,9 +32,28 @@ function AnnouncementsStack() {
   );
 }
 
-export default function TabNavigator() {
-  const { isStaffOrAdmin } = useAuth();
+// ─── Resources Stack ─────────────────────────────────────
+function ResourcesStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ResourcesList"      component={ResourcesScreen} />
+      <Stack.Screen name="ResourceDetail"     component={ResourceDetailScreen} />
+      <Stack.Screen name="PendingResources"   component={PendingResourcesScreen} />
+    </Stack.Navigator>
+  );
+}
 
+// ─── Profile Stack ───────────────────────────────────────
+function ProfileStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ProfileMain" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// ─── Tab Navigator ───────────────────────────────────────
+export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -46,7 +75,29 @@ export default function TabNavigator() {
       <Tab.Screen
         name="Announcements"
         component={AnnouncementsStack}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📢</Text> }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>📢</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Resources"
+        component={ResourcesStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>📚</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>👤</Text>
+          ),
+        }}
       />
     </Tab.Navigator>
   );
