@@ -13,8 +13,10 @@ const resourceRoutes = require("./routes/resourceRoute");
 const announcementRoutes = require("./routes/announcementRoute"); // ← add
 const PORT = process.env.PORT;
 
+const path = require("path");
 const app = express();
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 connectDB();
 

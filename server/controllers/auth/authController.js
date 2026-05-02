@@ -8,18 +8,32 @@ const {
 
 exports.registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role, adminSecret } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res
         .status(409)
         .json({ message: "Registration failed. Please check your details" });
     }
+
+    // Default role is STUDENT
+    let userRole = ["STUDENT"];
+
+    // If adminSecret matches, allow setting the role to ADMIN
+    if (adminSecret && adminSecret === process.env.ADMIN_REGISTRATION_SECRET) {
+      if (role && ["ADMIN", "STAFF", "REP"].includes(role)) {
+        userRole = [role];
+      } else {
+        userRole = ["ADMIN"];
+      }
+    }
+
     const savedUser = await User.create({
       firstName,
       lastName,
       email,
       password,
+      role: userRole,
     });
     if (savedUser) {
       const accessToken = generateAccessToken(savedUser._id);
@@ -31,6 +45,7 @@ exports.registerUser = async (req, res) => {
         firstName: savedUser.firstName,
         lastName: savedUser.lastName,
         email: savedUser.email,
+        role: savedUser.role,
         accessToken,
         refreshToken,
       });
@@ -58,6 +73,7 @@ exports.authUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        role: user.role,
         accessToken,
         refreshToken,
       });

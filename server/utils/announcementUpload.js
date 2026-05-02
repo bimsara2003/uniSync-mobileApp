@@ -1,19 +1,33 @@
-const { createS3Uploader } = require("./s3Upload");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
-// Cover image uploader (single image field)
-const uploadCoverImage = createS3Uploader({
-  keyPrefix: "announcements/covers",
-  allowedTypes: /jpeg|jpg|png|webp/,
-  maxSizeMB: 10,
-  fieldName: "coverImage",
+// Ensure directories exist
+const uploadDir = path.join(__dirname, "../uploads");
+const coverDir = path.join(uploadDir, "announcements/covers");
+const attachDir = path.join(uploadDir, "announcements/attachments");
+
+[coverDir, attachDir].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
 });
 
-// Attachments uploader (single call per file; the route uses .array())
-const uploadAttachments = createS3Uploader({
-  keyPrefix: "announcements/attachments",
-  allowedTypes: /pdf|doc|docx|ppt|pptx|xlsx|zip|jpeg|jpg|png/,
-  maxSizeMB: 20,
-  fieldName: "attachments",
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        if (file.fieldname === "coverImage") {
+            cb(null, coverDir);
+        } else {
+            cb(null, attachDir);
+        }
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
+    }
 });
+
+const uploadCoverImage = multer({ storage });
+const uploadAttachments = multer({ storage });
 
 module.exports = { uploadCoverImage, uploadAttachments };

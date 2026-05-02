@@ -11,15 +11,16 @@ exports.createAnnouncement = async (req, res) => {
     let coverImageUrl = null;
     let coverImageKey = null;
     if (req.files?.coverImage?.[0]) {
-      coverImageUrl = req.files.coverImage[0].location;
-      coverImageKey = req.files.coverImage[0].key;
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      coverImageUrl = `${baseUrl}/uploads/announcements/covers/${req.files.coverImage[0].filename}`;
+      coverImageKey = req.files.coverImage[0].filename;
     }
 
     // Attachments — req.files.attachments is an array
     const attachments = (req.files?.attachments || []).map((f) => ({
       fileName: f.originalname,
-      fileUrl: f.location,
-      s3Key: f.key,
+      fileUrl: `${req.protocol}://${req.get("host")}/uploads/announcements/attachments/${f.filename}`,
+      s3Key: f.filename,
       fileType: f.mimetype,
       fileSize: f.size,
     }));
@@ -39,6 +40,7 @@ exports.createAnnouncement = async (req, res) => {
       targetDepartment: targetDepartment || null,
     });
 
+    console.log("Announcement created with Image:", coverImageUrl);
     res.status(201).json(announcement);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -103,17 +105,19 @@ exports.updateAnnouncement = async (req, res) => {
 
     // Replace cover image if a new one is uploaded
     if (req.files?.coverImage?.[0]) {
-      if (ann.coverImageKey) await deleteFromS3(ann.coverImageKey).catch(() => {});
-      ann.coverImageUrl = req.files.coverImage[0].location;
-      ann.coverImageKey = req.files.coverImage[0].key;
+      // Local delete logic (optional for dev)
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      ann.coverImageUrl = `${baseUrl}/uploads/announcements/covers/${req.files.coverImage[0].filename}`;
+      ann.coverImageKey = req.files.coverImage[0].filename;
     }
 
     // Append new attachments (do not replace existing ones)
     if (req.files?.attachments?.length) {
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
       const newAttachments = req.files.attachments.map((f) => ({
         fileName: f.originalname,
-        fileUrl: f.location,
-        s3Key: f.key,
+        fileUrl: `${baseUrl}/uploads/announcements/attachments/${f.filename}`,
+        s3Key: f.filename,
         fileType: f.mimetype,
         fileSize: f.size,
       }));
