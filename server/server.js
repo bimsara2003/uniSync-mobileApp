@@ -27,6 +27,7 @@ app.use("/api/faculties", facultyRouter);
 app.use("/api/departments", departmentRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/resources", resourceRoutes);
+app.use("/api/portfolio", require("./routes/portfolioRoute"));
 
 app.use(notFound);
 app.use(errorHandler);
