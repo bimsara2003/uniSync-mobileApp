@@ -1,106 +1,181 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
-    View, Text, TextInput, TouchableOpacity,
-    KeyboardAvoidingView, Platform, Alert,
-    ActivityIndicator, ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+  ScrollView,
 } from "react-native";
-import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
 
-const Field = ({ label, k, placeholder, secure, keyboard, form, set }) => (
-    <View style={{ marginBottom: 16 }}>
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>{label}</Text>
-        <TextInput
-            value={form[k]}
-            onChangeText={set(k)}
-            placeholder={placeholder}
-            secureTextEntry={secure}
-            keyboardType={keyboard || "default"}
-            autoCapitalize={k === "email" ? "none" : "words"}
-            style={{
-                borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
-                paddingHorizontal: 14, paddingVertical: 12,
-                fontSize: 14, color: "#0f172a", backgroundColor: "#f8fafc",
-            }}
-        />
-    </View>
-);
-
 export default function RegisterScreen({ navigation }) {
-    const { login } = useAuth();
-    const [form, setForm] = useState({
-        firstName: "", lastName: "", email: "", password: "", adminSecret: "",
-    });
-    const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-    const set = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
+  const set = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
-    const handleRegister = async () => {
-        if (!form.firstName || !form.lastName || !form.email || !form.password) {
-            Alert.alert("Error", "Please fill in all fields");
-            return;
-        }
-        setLoading(true);
-        try {
-            // Try to register first
-            await api.post("/auth/register", {
-                firstName: form.firstName,
-                lastName: form.lastName,
-                email: form.email.trim().toLowerCase(),
-                password: form.password,
-                adminSecret: form.adminSecret,
-                role: form.adminSecret ? "ADMIN" : "STUDENT",
-            });
-            // Then login
-            await login(form.email.trim().toLowerCase(), form.password);
-        } catch (err) {
-            Alert.alert("Registration failed", err.response?.data?.message || "Something went wrong");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleRegister = async () => {
+    const { firstName, lastName, email, password, confirmPassword } = form;
+    if (!firstName || !lastName || !email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+    if (!email.endsWith("@my.campus.lk")) {
+      Alert.alert("Error", "Email must end with @my.campus.lk");
+      return;
+    }
+    setLoading(true);
+    try {
+      await register(firstName.trim(), lastName.trim(), email.trim(), password);
+    } catch (err) {
+      Alert.alert(
+        "Registration Failed",
+        err.response?.data?.message || "Something went wrong",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1, backgroundColor: "#f8fafc" }}
-        >
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 40 }}>
-                <View style={{ marginBottom: 32, alignItems: "center" }}>
-                    <Text style={{ fontSize: 32, fontWeight: "700", color: "#0ea5e9" }}>UniSync</Text>
-                    <Text style={{ fontSize: 14, color: "#64748b", marginTop: 4 }}>Create your account</Text>
-                </View>
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.card}>
+          <Text style={styles.logo}>UniSync</Text>
+          <Text style={styles.tagline}>Create your account</Text>
 
-                <View style={{
-                    backgroundColor: "#fff", borderRadius: 16, padding: 24,
-                    shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 12, elevation: 3,
-                }}>
-                    <Text style={{ fontSize: 20, fontWeight: "600", color: "#0f172a", marginBottom: 20 }}>Register</Text>
-                    <Field label="First name" k="firstName" placeholder="Kasun" form={form} set={set} />
-                    <Field label="Last name" k="lastName" placeholder="Perera" form={form} set={set} />
-                    <Field label="Email" k="email" placeholder="you@my.campus.lk" keyboard="email-address" form={form} set={set} />
-                    <Field label="Password" k="password" placeholder="Min 8 characters" secure form={form} set={set} />
-                    <Field label="Admin Secret (Optional)" k="adminSecret" placeholder="Enter secret for admin access" secure form={form} set={set} />
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            placeholderTextColor="#9CA3AF"
+            value={form.firstName}
+            onChangeText={set("firstName")}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            placeholderTextColor="#9CA3AF"
+            value={form.lastName}
+            onChangeText={set("lastName")}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email (e.g. you@my.campus.lk)"
+            placeholderTextColor="#9CA3AF"
+            value={form.email}
+            onChangeText={set("email")}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password (min 8 chars)"
+            placeholderTextColor="#9CA3AF"
+            value={form.password}
+            onChangeText={set("password")}
+            secureTextEntry
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor="#9CA3AF"
+            value={form.confirmPassword}
+            onChangeText={set("confirmPassword")}
+            secureTextEntry
+          />
 
-                    <TouchableOpacity
-                        onPress={handleRegister}
-                        disabled={loading}
-                        style={{ backgroundColor: "#0ea5e9", borderRadius: 10, paddingVertical: 14, alignItems: "center", marginTop: 8 }}
-                    >
-                        {loading
-                            ? <ActivityIndicator color="#fff" />
-                            : <Text style={{ color: "#fff", fontWeight: "600", fontSize: 15 }}>Create account</Text>
-                        }
-                    </TouchableOpacity>
-                </View>
+          <TouchableOpacity
+            style={[styles.btn, loading && styles.btnDisabled]}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.btnText}>Create Account</Text>
+            )}
+          </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={{ marginTop: 20, alignItems: "center" }}>
-                    <Text style={{ color: "#64748b", fontSize: 13 }}>
-                        Already have an account?{" "}
-                        <Text style={{ color: "#0ea5e9", fontWeight: "600" }}>Sign in</Text>
-                    </Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.switchText}>
+              Already have an account?{" "}
+              <Text style={styles.switchLink}>Sign In</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#F5F7FA" },
+  scroll: { flexGrow: 1, justifyContent: "center", padding: 24 },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 28,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  logo: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: "#1A3C6E",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  tagline: {
+    fontSize: 14,
+    color: "#6B7280",
+    textAlign: "center",
+    marginBottom: 28,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#111827",
+    marginBottom: 14,
+    backgroundColor: "#F9FAFB",
+  },
+  btn: {
+    backgroundColor: "#1A3C6E",
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginBottom: 18,
+    marginTop: 4,
+  },
+  btnDisabled: { opacity: 0.6 },
+  btnText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  switchText: { textAlign: "center", color: "#6B7280", fontSize: 13 },
+  switchLink: { color: "#1A3C6E", fontWeight: "600" },
+});
