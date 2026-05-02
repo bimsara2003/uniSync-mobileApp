@@ -10,6 +10,7 @@ const {
   moduleRouter,
 } = require("./routes/hierarchyRoute");
 const resourceRoutes = require("./routes/resourceRoute");
+const announcementRoutes = require("./routes/announcementRoute"); // ← add
 const PORT = process.env.PORT;
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/faculties", facultyRouter);
 app.use("/api/departments", departmentRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/resources", resourceRoutes);
+app.use("/api/announcements", announcementRoutes); // ← add
 
 app.use(notFound);
 app.use(errorHandler);
