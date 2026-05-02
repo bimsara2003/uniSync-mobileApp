@@ -4,6 +4,8 @@ const { connectDB } = require("./config/database");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoute");
 const adminRoutes = require("./routes/adminRoute");
+const eventRoutes = require("./routes/eventRoute");
+
 const {
   facultyRouter,
   departmentRouter,
@@ -27,6 +29,7 @@ app.use("/api/faculties", facultyRouter);
 app.use("/api/departments", departmentRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/resources", resourceRoutes);
+app.use("/api/events", eventRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
