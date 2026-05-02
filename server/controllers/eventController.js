@@ -43,7 +43,7 @@ exports.createEvent=async(req,res)=>{
     }
 };
 
-exports.getEvents=async(req,res)=>{
+exports.getAllEvents=async(req,res)=>{
     try {
         const {status,category}=req.query;
 
@@ -68,7 +68,7 @@ exports.getEvents=async(req,res)=>{
 exports.getEventById=async(req,res)=>{
     try {
         const event=await Event.findById(req.params.id).populate(
-            "ceratedBy",
+            "createdBy",
             "firstName lastName email role"
         );
         if(!event){
