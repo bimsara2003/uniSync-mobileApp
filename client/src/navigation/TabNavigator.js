@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import AnnouncementsScreen      from "../screens/announcements/AnnouncementsScreen";
 import AnnouncementDetailScreen from "../screens/announcements/AnnouncementDetailScreen";
 import CreateAnnouncementScreen from "../screens/announcements/CreateAnnouncementScreen";
+import EditAnnouncementScreen   from "../screens/announcements/EditAnnouncementScreen";
 
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -16,6 +17,7 @@ function AnnouncementsStack() {
       <Stack.Screen name="AnnouncementsList"   component={AnnouncementsScreen} />
       <Stack.Screen name="AnnouncementDetail"  component={AnnouncementDetailScreen} />
       <Stack.Screen name="CreateAnnouncement"  component={CreateAnnouncementScreen} />
+      <Stack.Screen name="EditAnnouncement"    component={EditAnnouncementScreen} />
     </Stack.Navigator>
   );
 }

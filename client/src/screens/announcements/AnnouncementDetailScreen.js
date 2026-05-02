@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, Image, Linking,
+  ActivityIndicator, Alert, Image, Linking, Platform,
 } from "react-native";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
+import * as IntentLauncher from "expo-intent-launcher";
 import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
 
@@ -68,6 +71,7 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
   const { isStaffOrAdmin } = useAuth();
   const [ann,     setAnn]     = useState(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(null);
 
   useEffect(() => {
     api.get(`/announcements/${id}`)
@@ -89,6 +93,37 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
     ]);
   };
 
+  const handleDownload = async (att) => {
+    try {
+      setDownloading(att._id);
+      // Ensure the file extension is preserved in the local path
+      const fileUri = `${FileSystem.cacheDirectory}${att.fileName}`;
+      const downloadRes = await FileSystem.downloadAsync(att.fileUrl, fileUri);
+      
+      if (downloadRes.status !== 200) {
+        throw new Error("Download failed");
+      }
+
+      if (Platform.OS === "android") {
+        // On Android, use IntentLauncher to open directly with a PDF/Doc app
+        const cUri = await FileSystem.getContentUriAsync(downloadRes.uri);
+        IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+          data: cUri,
+          flags: 1,
+          type: att.fileType || "application/pdf",
+        });
+      } else {
+        // On iOS, Sharing.shareAsync triggers the built-in "Quick Look" viewer
+        await Sharing.shareAsync(downloadRes.uri, { UTI: att.fileType });
+      }
+    } catch (err) {
+      Alert.alert("Error", "Could not open the file. Make sure you have a PDF viewer installed.");
+      console.error(err);
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -104,8 +139,6 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-
-      {/* Back bar */}
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
         paddingBottom: 14, flexDirection: "row", alignItems: "center",
@@ -118,15 +151,18 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
           {ann.title}
         </Text>
         {isStaffOrAdmin && (
-          <TouchableOpacity onPress={handleDelete}>
-            <Text style={{ fontSize: 13, color: "#ef4444" }}>Delete</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <TouchableOpacity onPress={() => navigation.navigate("EditAnnouncement", { id })}>
+              <Text style={{ fontSize: 13, color: "#0ea5e9", fontWeight: "600" }}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDelete}>
+              <Text style={{ fontSize: 13, color: "#ef4444" }}>Delete</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-
-        {/* Cover image */}
         {ann.coverImageUrl && (
           <Image
             source={{ uri: ann.coverImageUrl }}
@@ -135,10 +171,8 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
           />
         )}
 
-        {/* Countdown */}
         {ann.eventDate && <LiveCountdown eventDate={ann.eventDate} />}
 
-        {/* Meta */}
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16, gap: 10 }}>
           <View style={{
             width: 40, height: 40, borderRadius: 20,
@@ -161,7 +195,6 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
           </View>
         </View>
 
-        {/* Event venue */}
         {ann.eventVenue && (
           <View style={{
             flexDirection: "row", alignItems: "center", gap: 8,
@@ -173,17 +206,14 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
           </View>
         )}
 
-        {/* Title */}
         <Text style={{ fontSize: 22, fontWeight: "700", color: "#0f172a", marginBottom: 14, lineHeight: 30 }}>
           {ann.title}
         </Text>
 
-        {/* Body */}
         <Text style={{ fontSize: 15, color: "#334155", lineHeight: 26 }}>
           {ann.body}
         </Text>
 
-        {/* Attachments */}
         {ann.attachments?.length > 0 && (
           <View style={{ marginTop: 24 }}>
             <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 10 }}>
@@ -192,7 +222,8 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
             {ann.attachments.map((att) => (
               <TouchableOpacity
                 key={att._id}
-                onPress={() => Linking.openURL(att.fileUrl)}
+                onPress={() => handleDownload(att)}
+                disabled={downloading === att._id}
                 style={{
                   flexDirection: "row", alignItems: "center", gap: 12,
                   backgroundColor: "#fff", borderRadius: 12, padding: 14,
@@ -205,10 +236,14 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
                     {att.fileName}
                   </Text>
                   <Text style={{ fontSize: 11, color: "#94a3b8" }}>
-                    {(att.fileSize / 1024).toFixed(0)} KB · Tap to open
+                    {downloading === att._id ? "Downloading..." : `${(att.fileSize / 1024).toFixed(0)} KB · Tap to view`}
                   </Text>
                 </View>
-                <Text style={{ color: "#0ea5e9", fontSize: 18 }}>↗</Text>
+                {downloading === att._id ? (
+                  <ActivityIndicator size="small" color="#0ea5e9" />
+                ) : (
+                  <Text style={{ color: "#0ea5e9", fontSize: 18 }}>↗</Text>
+                )}
               </TouchableOpacity>
             ))}
           </View>
