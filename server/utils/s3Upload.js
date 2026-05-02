@@ -42,13 +42,18 @@ const createS3Uploader = ({
     }),
     fileFilter: (req, file, cb) => {
       const extMatch = allowedTypes.test(
-        path.extname(file.originalname).toLowerCase()
+        path.extname(file.originalname).toLowerCase(),
       );
       const mimeMatch = allowedTypes.test(file.mimetype);
       if (extMatch && mimeMatch) {
         cb(null, true);
       } else {
-        cb(new Error(`File type not allowed. Accepted: ${allowedTypes.source}`));
+        const err = new multer.MulterError(
+          "LIMIT_UNEXPECTED_FILE",
+          file.fieldname,
+        );
+        err.message = `File type not allowed. Accepted types: ${allowedTypes.source}`;
+        cb(err);
       }
     },
     limits: { fileSize: maxSizeMB * 1024 * 1024 },
