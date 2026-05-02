@@ -143,3 +143,7 @@ docker-compose.yml
 
 #markdown
 plan-uniSyncBackend.prompt.md
+
+server/uploads/
+node_modules/
+.env
