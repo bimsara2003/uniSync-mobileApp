@@ -7,7 +7,7 @@ const notFound = (req, res, next) => {
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
 
-  // Multer and fileFilter errors should be client-friendly 400 responses.
+  // Multer errors (including file-type and size violations) → 400
   if (err.name === "MulterError") {
     return res.status(400).json({
       message: err.message,
