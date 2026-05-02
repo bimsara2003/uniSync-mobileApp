@@ -1,4 +1,5 @@
 const User = require("../../models/userModel");
+const { deleteFromS3 } = require("../../utils/s3Delete");
 
 exports.getUserProfile = async (req, res) => {
   try {
@@ -55,7 +56,18 @@ exports.uploadProfilePhoto = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.profilePictureUrl = req.file.location; // S3 URL from multer-s3
+
+    // Delete old photo from S3 before saving the new one
+    if (user.profilePictureUrl) {
+      try {
+        const oldKey = new URL(user.profilePictureUrl).pathname.slice(1);
+        await deleteFromS3(oldKey);
+      } catch (_) {
+        // Old file missing from S3 — not blocking, continue
+      }
+    }
+
+    user.profilePictureUrl = req.file.location;
     await user.save();
     res.json({
       message: "Profile photo uploaded successfully",
@@ -63,6 +75,30 @@ exports.uploadProfilePhoto = async (req, res) => {
     });
   } catch (error) {
     console.error("Error uploading profile photo:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.deleteProfilePhoto = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.profilePictureUrl) {
+      return res.status(400).json({ message: "No profile photo to delete" });
+    }
+
+    const key = new URL(user.profilePictureUrl).pathname.slice(1);
+    await deleteFromS3(key);
+
+    user.profilePictureUrl = null;
+    await user.save();
+
+    res.status(200).json({ message: "Profile photo deleted" });
+  } catch (error) {
+    console.error("Error deleting profile photo:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
