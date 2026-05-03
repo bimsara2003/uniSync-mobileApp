@@ -14,6 +14,11 @@ import ResourcesScreen          from "../screens/resources/ResourcesScreen";
 import ResourceDetailScreen     from "../screens/resources/ResourceDetailScreen";
 import PendingResourcesScreen   from "../screens/resources/PendingResourcesScreen";
 
+// Lost & Found
+import LostFoundScreen          from "../screens/lostfound/LostFoundScreen";
+import LostFoundDetailScreen    from "../screens/lostfound/LostFoundDetailScreen";
+import CreateLostFoundScreen    from "../screens/lostfound/CreateLostFoundScreen";
+
 // Profile
 import ProfileScreen from "../screens/profile/ProfileScreen";
 
@@ -39,6 +44,17 @@ function ResourcesStack() {
       <Stack.Screen name="ResourcesList"      component={ResourcesScreen} />
       <Stack.Screen name="ResourceDetail"     component={ResourceDetailScreen} />
       <Stack.Screen name="PendingResources"   component={PendingResourcesScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// ─── Lost & Found Stack ───────────────────────────────────
+function LostFoundStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="LostFoundList"   component={LostFoundScreen} />
+      <Stack.Screen name="LostFoundDetail" component={LostFoundDetailScreen} />
+      <Stack.Screen name="CreateLostFound" component={CreateLostFoundScreen} />
     </Stack.Navigator>
   );
 }
@@ -87,6 +103,18 @@ export default function TabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 20, color }}>📚</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="LostFound"
+        component={LostFoundStack}
+        options={{
+          tabBarLabel: ({ color }) => (
+            <Text style={{ fontSize: 10, color }}>Lost & Found</Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>🔍</Text>
           ),
         }}
       />
