@@ -26,7 +26,7 @@ const eventSchema = new mongoose.Schema(
             required: [true, "Event date is required"],
         },
         startTime:{
-            ttpe:String,
+            type:String,
             required:[true, "Event start time is required"],
         },
         endTime:{

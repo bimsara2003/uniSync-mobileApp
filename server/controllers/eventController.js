@@ -15,7 +15,7 @@ exports.createEvent=async(req,res)=>{
             registrationDeadline
         } = req.body;
 
-        const newEvent = await Event.create({
+        const event = await Event.create({
             title,
             description,
             category,
@@ -100,7 +100,7 @@ exports.updateEvent=async(req,res)=>{
 
         if(["CANCELLED","COMPLETED"].includes(event.status)){
             return res.status(400).json({
-                message:'Cannot update a ${event.status.toLowerCase()} event',
+                message: `Cannot update a ${event.status.toLowerCase()} event`,
             });
         }
 

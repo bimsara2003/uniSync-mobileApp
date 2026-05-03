@@ -1,4 +1,4 @@
-const express = require ("express");
+const express = require("express");
 const router = express.Router();
 const {
     createEvent,
@@ -8,28 +8,22 @@ const {
     deleteEvent,
     updateEventStatus,
 } = require("../controllers/eventController");
-const {protect,rep} = require("../middleware/authMiddleware");
-const {upload} = require("../middleware/uploadMiddleware");
+const { protect, rep } = require("../middleware/authMiddleware");
+const { getUpload } = require("../middleware/uploadMiddleware"); // ← changed
 const Event = require("../models/eventModel");
 
-
-router.get("/",protect,getAllEvents);
-router.get("/:id",protect,getEventById);
-
-router.post("/",protect,rep,createEvent);
-
-router.put("/",protect,rep,updateEvent);
-
-router.delete("/:id",protect,rep,deleteEvent);
-
-router.patch("/:id/status",protect,rep,updateEventStatus);
-
+router.get("/", protect, getAllEvents);
+router.get("/:id", protect, getEventById);
+router.post("/", protect, rep, createEvent);
+router.put("/:id", protect, rep, updateEvent);
+router.delete("/:id", protect, rep, deleteEvent);
+router.patch("/:id/status", protect, rep, updateEventStatus);
 
 router.post(
     "/:id/banner",
     protect,
     rep,
-    upload.single("photo"),
+    (req, res, next) => getUpload().single("photo")(req, res, next), // ← changed
     async (req, res) => {
         try {
             const event = await Event.findById(req.params.id);
@@ -41,18 +35,18 @@ router.post(
             const isCreator = event.createdBy.toString() === req.user._id.toString();
             const isAdmin = req.user.role.includes("ADMIN");
 
-            if(!isCreator && !isAdmin){
+            if (!isCreator && !isAdmin) {
                 return res.status(403).json({
-                    message:"Not authorized to update this event banner",
+                    message: "Not authorized to update this event banner",
                 });
             }
 
-            event.bannerImageUrl=req.file.location;
+            event.bannerImageUrl = req.file.location;
             await event.save();
 
             res.status(200).json({
-                message:"Banner uploaded successfully",
-                bannerImageUrl:event.bannerImageUrl,
+                message: "Banner uploaded successfully",
+                bannerImageUrl: event.bannerImageUrl,
             });
         } catch (error) {
             console.error("Error uploading banner:", error);
@@ -61,5 +55,4 @@ router.post(
     }
 );
 
-module.exports=router;
-
+module.exports = router;
