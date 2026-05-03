@@ -24,7 +24,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 connectDB();
 
 app.get("/", (req, res) => {
-  res.send("UniSync App is working 🚀");
+  res.send("UniSync App is working");
 });
 
 app.use("/api/auth", authRoutes);
