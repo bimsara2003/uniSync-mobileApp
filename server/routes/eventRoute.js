@@ -9,7 +9,7 @@ const {
     updateEventStatus,
 } = require("../controllers/eventController");
 const { protect, rep } = require("../middleware/authMiddleware");
-const { getUpload } = require("../middleware/uploadMiddleware"); // ← changed
+const { upload } = require("../middleware/uploadMiddleware");
 const Event = require("../models/eventModel");
 
 router.get("/", protect, getAllEvents);
@@ -23,7 +23,7 @@ router.post(
     "/:id/banner",
     protect,
     rep,
-    (req, res, next) => getUpload().single("photo")(req, res, next), // ← changed
+    upload.single("photo"),
     async (req, res) => {
         try {
             const event = await Event.findById(req.params.id);
