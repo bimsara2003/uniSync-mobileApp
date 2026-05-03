@@ -3,6 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
+// Home
+import HomeScreen from "../screens/main/HomeScreen";
+
 // Announcements
 import AnnouncementsScreen      from "../screens/announcements/AnnouncementsScreen";
 import AnnouncementDetailScreen from "../screens/announcements/AnnouncementDetailScreen";
@@ -24,6 +27,15 @@ import ProfileScreen from "../screens/profile/ProfileScreen";
 
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+// ─── Home Stack ──────────────────────────────────────
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="HomeMain" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+}
 
 // ─── Announcements Stack ─────────────────────────────────
 function AnnouncementsStack() {
@@ -88,6 +100,15 @@ export default function TabNavigator() {
         ),
       })}
     >
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>🏠</Text>
+          ),
+        }}
+      />
       <Tab.Screen
         name="Announcements"
         component={AnnouncementsStack}
