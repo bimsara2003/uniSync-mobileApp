@@ -10,7 +10,8 @@ const {
   moduleRouter,
 } = require("./routes/hierarchyRoute");
 const resourceRoutes = require("./routes/resourceRoute");
-const announcementRoutes = require("./routes/announcementRoute"); // ← add
+const announcementRoutes = require("./routes/announcementRoute");
+const lostFoundRoutes = require("./routes/lostFoundRoute");
 const PORT = process.env.PORT;
 
 const path = require("path");
@@ -30,7 +31,8 @@ app.use("/api/faculties", facultyRouter);
 app.use("/api/departments", departmentRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/resources", resourceRoutes);
-app.use("/api/announcements", announcementRoutes); // ← add
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/lost-found", lostFoundRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
