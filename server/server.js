@@ -33,6 +33,7 @@ app.use("/api/modules", moduleRouter);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/lost-found", lostFoundRoutes);
+app.use("/api/portfolio", require("./routes/portfolioRoute"));
 
 app.use(notFound);
 app.use(errorHandler);
