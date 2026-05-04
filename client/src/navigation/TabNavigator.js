@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
 // Home
@@ -166,23 +166,28 @@ function AdminStack() {
   );
 }
 
+import { Ionicons } from "@expo/vector-icons";
+
 // ─── Tab Navigator ───────────────────────────────────────
 export default function TabNavigator() {
   const { user } = useAuth();
   const isAdmin = user?.role?.includes("ADMIN");
   return (
     <Tab.Navigator
+      sceneContainerStyle={{ backgroundColor: "#f8fafc" }}
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
-          borderTopColor: "#e5e7eb",
-          borderTopWidth: 0.5,
-          height: 60,
-          paddingBottom: 8,
+          backgroundColor: "#0ea5e9",
+          borderTopColor: "transparent",
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          height: 65,
+          paddingBottom: 10,
+          paddingTop: 5,
         },
-        tabBarActiveTintColor: "#0ea5e9",
-        tabBarInactiveTintColor: "#9ca3af",
+        tabBarActiveTintColor: "#ffffff",
+        tabBarInactiveTintColor: "#bae6fd",
         tabBarLabel: ({ color }) => (
           <Text style={{ fontSize: 10, color }}>{route.name}</Text>
         ),
@@ -192,8 +197,8 @@ export default function TabNavigator() {
         name="Home"
         component={HomeStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>🏠</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -201,8 +206,28 @@ export default function TabNavigator() {
         name="Announcements"
         component={AnnouncementsStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>📢</Text>
+          tabBarLabel: () => null,
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: focused ? "#ffffff" : "#e0f2fe",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: -24,
+                shadowColor: "#0ea5e9",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.4,
+                shadowRadius: 8,
+                elevation: 6,
+                borderWidth: 4,
+                borderColor: "#f8fafc",
+              }}
+            >
+              <Ionicons name="megaphone" size={24} color="#0ea5e9" />
+            </View>
           ),
         }}
       />
@@ -210,29 +235,22 @@ export default function TabNavigator() {
         name="Resources"
         component={ResourcesStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>📚</Text>
-          ),
+          tabBarButton: () => null,
         }}
       />
       <Tab.Screen
         name="LostFound"
         component={LostFoundStack}
         options={{
-          tabBarLabel: ({ color }) => (
-            <Text style={{ fontSize: 10, color }}>Lost & Found</Text>
-          ),
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>🔍</Text>
-          ),
+          tabBarButton: () => null,
         }}
       />
       <Tab.Screen
         name="Events"
         component={EventsStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>🎉</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
           ),
         }}
       />
@@ -240,8 +258,8 @@ export default function TabNavigator() {
         name="Portfolio"
         component={PortfolioStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>💼</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="briefcase" size={size} color={color} />
           ),
         }}
       />
@@ -249,8 +267,8 @@ export default function TabNavigator() {
         name="Profile"
         component={ProfileStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>👤</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
           ),
         }}
       />
@@ -258,8 +276,8 @@ export default function TabNavigator() {
         name="Admin"
         component={AdminStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20, color }}>⚙️</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings" size={size} color={color} />
           ),
           tabBarButton: isAdmin ? undefined : () => null,
         }}
