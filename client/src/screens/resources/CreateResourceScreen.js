@@ -1,40 +1,55 @@
 import { useState, useEffect } from "react";
 import {
-  View, Text, TextInput, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { resourcesAPI } from "../../api/resources";
 
 const CATEGORIES = [
-  "LECTURE_NOTE", "PAST_PAPER", "PROJECT", "TEMPLATE", "SUMMARY", "OTHER",
+  "LECTURE_NOTE",
+  "PAST_PAPER",
+  "PROJECT",
+  "TEMPLATE",
+  "SUMMARY",
+  "OTHER",
 ];
 const CATEGORY_LABELS = {
-  LECTURE_NOTE: "Lecture Note", PAST_PAPER: "Past Paper", PROJECT: "Project",
-  TEMPLATE: "Template", SUMMARY: "Summary", OTHER: "Other",
+  LECTURE_NOTE: "Lecture Note",
+  PAST_PAPER: "Past Paper",
+  PROJECT: "Project",
+  TEMPLATE: "Template",
+  SUMMARY: "Summary",
+  OTHER: "Other",
 };
 
 export default function CreateResourceScreen({ navigation }) {
-  const [title, setTitle]           = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory]     = useState("LECTURE_NOTE");
+  const [category, setCategory] = useState("LECTURE_NOTE");
 
   // Hierarchy
-  const [faculties, setFaculties]       = useState([]);
-  const [departments, setDepartments]   = useState([]);
-  const [modules, setModules]           = useState([]);
-  const [facultyId, setFacultyId]       = useState("");
+  const [faculties, setFaculties] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [modules, setModules] = useState([]);
+  const [facultyId, setFacultyId] = useState("");
   const [departmentId, setDepartmentId] = useState("");
-  const [moduleId, setModuleId]         = useState("");
+  const [moduleId, setModuleId] = useState("");
 
-  const [file, setFile]         = useState(null);   // { uri, name, mimeType, size }
-  const [loading, setLoading]   = useState(true);
+  const [file, setFile] = useState(null); // { uri, name, mimeType, size }
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   // Load faculties on mount
   useEffect(() => {
-    resourcesAPI.getFaculties()
+    resourcesAPI
+      .getFaculties()
       .then(({ data }) => setFaculties(data))
       .catch(() => Alert.alert("Error", "Could not load faculties."))
       .finally(() => setLoading(false));
@@ -42,8 +57,13 @@ export default function CreateResourceScreen({ navigation }) {
 
   // Load departments when faculty changes
   useEffect(() => {
-    if (!facultyId) { setDepartments([]); setDepartmentId(""); return; }
-    resourcesAPI.getDepartments(facultyId)
+    if (!facultyId) {
+      setDepartments([]);
+      setDepartmentId("");
+      return;
+    }
+    resourcesAPI
+      .getDepartments(facultyId)
       .then(({ data }) => setDepartments(data))
       .catch(() => Alert.alert("Error", "Could not load departments."));
     setDepartmentId("");
@@ -53,8 +73,13 @@ export default function CreateResourceScreen({ navigation }) {
 
   // Load modules when department changes
   useEffect(() => {
-    if (!departmentId) { setModules([]); setModuleId(""); return; }
-    resourcesAPI.getModules(departmentId)
+    if (!departmentId) {
+      setModules([]);
+      setModuleId("");
+      return;
+    }
+    resourcesAPI
+      .getModules(departmentId)
       .then(({ data }) => setModules(data))
       .catch(() => Alert.alert("Error", "Could not load modules."));
     setModuleId("");
@@ -69,7 +94,8 @@ export default function CreateResourceScreen({ navigation }) {
         "application/vnd.ms-powerpoint",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "application/zip",
-        "image/jpeg", "image/png",
+        "image/jpeg",
+        "image/png",
       ],
       copyToCacheDirectory: true,
     });
@@ -79,11 +105,13 @@ export default function CreateResourceScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    if (!title.trim())    return Alert.alert("Validation", "Title is required.");
-    if (!facultyId)       return Alert.alert("Validation", "Please select a faculty.");
-    if (!departmentId)    return Alert.alert("Validation", "Please select a department.");
-    if (!moduleId)        return Alert.alert("Validation", "Please select a module.");
-    if (!file)            return Alert.alert("Validation", "Please attach a file.");
+    if (!title.trim()) return Alert.alert("Validation", "Title is required.");
+    if (!facultyId)
+      return Alert.alert("Validation", "Please select a faculty.");
+    if (!departmentId)
+      return Alert.alert("Validation", "Please select a department.");
+    if (!moduleId) return Alert.alert("Validation", "Please select a module.");
+    if (!file) return Alert.alert("Validation", "Please attach a file.");
 
     setSubmitting(true);
     try {
@@ -104,7 +132,10 @@ export default function CreateResourceScreen({ navigation }) {
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
-      Alert.alert("Error", e.response?.data?.message || "Could not upload resource.");
+      Alert.alert(
+        "Error",
+        e.response?.data?.message || "Could not upload resource.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -122,16 +153,28 @@ export default function CreateResourceScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 12 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 24,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 12 }}
+          >
             <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>Upload Resource</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
+            Upload Resource
+          </Text>
         </View>
 
         <Field label="Title *">
           <TextInput
-            value={title} onChangeText={setTitle}
+            value={title}
+            onChangeText={setTitle}
             placeholder="e.g. Data Structures Lecture Notes"
             style={inputStyle}
           />
@@ -139,9 +182,11 @@ export default function CreateResourceScreen({ navigation }) {
 
         <Field label="Description">
           <TextInput
-            value={description} onChangeText={setDescription}
+            value={description}
+            onChangeText={setDescription}
             placeholder="Brief description of the resource..."
-            multiline numberOfLines={3}
+            multiline
+            numberOfLines={3}
             style={[inputStyle, { height: 80, textAlignVertical: "top" }]}
           />
         </Field>
@@ -151,14 +196,24 @@ export default function CreateResourceScreen({ navigation }) {
             <View style={{ flexDirection: "row", gap: 8 }}>
               {CATEGORIES.map((c) => (
                 <TouchableOpacity
-                  key={c} onPress={() => setCategory(c)}
+                  key={c}
+                  onPress={() => setCategory(c)}
                   style={{
-                    paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 20,
                     backgroundColor: category === c ? "#0ea5e9" : "#fff",
-                    borderWidth: 1, borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
                   }}
                 >
-                  <Text style={{ fontSize: 12, fontWeight: "600", color: category === c ? "#fff" : "#64748b" }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "600",
+                      color: category === c ? "#fff" : "#64748b",
+                    }}
+                  >
                     {CATEGORY_LABELS[c]}
                   </Text>
                 </TouchableOpacity>
@@ -173,14 +228,24 @@ export default function CreateResourceScreen({ navigation }) {
             <View style={{ flexDirection: "row", gap: 8 }}>
               {faculties.map((f) => (
                 <TouchableOpacity
-                  key={f._id} onPress={() => setFacultyId(f._id)}
+                  key={f._id}
+                  onPress={() => setFacultyId(f._id)}
                   style={{
-                    paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 20,
                     backgroundColor: facultyId === f._id ? "#0f172a" : "#fff",
-                    borderWidth: 1, borderColor: facultyId === f._id ? "#0f172a" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: facultyId === f._id ? "#0f172a" : "#e2e8f0",
                   }}
                 >
-                  <Text style={{ fontSize: 12, fontWeight: "600", color: facultyId === f._id ? "#fff" : "#64748b" }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "600",
+                      color: facultyId === f._id ? "#fff" : "#64748b",
+                    }}
+                  >
                     {f.name}
                   </Text>
                 </TouchableOpacity>
@@ -196,14 +261,26 @@ export default function CreateResourceScreen({ navigation }) {
               <View style={{ flexDirection: "row", gap: 8 }}>
                 {departments.map((d) => (
                   <TouchableOpacity
-                    key={d._id} onPress={() => setDepartmentId(d._id)}
+                    key={d._id}
+                    onPress={() => setDepartmentId(d._id)}
                     style={{
-                      paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
-                      backgroundColor: departmentId === d._id ? "#0f172a" : "#fff",
-                      borderWidth: 1, borderColor: departmentId === d._id ? "#0f172a" : "#e2e8f0",
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                      borderRadius: 20,
+                      backgroundColor:
+                        departmentId === d._id ? "#0f172a" : "#fff",
+                      borderWidth: 1,
+                      borderColor:
+                        departmentId === d._id ? "#0f172a" : "#e2e8f0",
                     }}
                   >
-                    <Text style={{ fontSize: 12, fontWeight: "600", color: departmentId === d._id ? "#fff" : "#64748b" }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "600",
+                        color: departmentId === d._id ? "#fff" : "#64748b",
+                      }}
+                    >
                       {d.name}
                     </Text>
                   </TouchableOpacity>
@@ -220,14 +297,24 @@ export default function CreateResourceScreen({ navigation }) {
               <View style={{ flexDirection: "row", gap: 8 }}>
                 {modules.map((m) => (
                   <TouchableOpacity
-                    key={m._id} onPress={() => setModuleId(m._id)}
+                    key={m._id}
+                    onPress={() => setModuleId(m._id)}
                     style={{
-                      paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                      borderRadius: 20,
                       backgroundColor: moduleId === m._id ? "#0f172a" : "#fff",
-                      borderWidth: 1, borderColor: moduleId === m._id ? "#0f172a" : "#e2e8f0",
+                      borderWidth: 1,
+                      borderColor: moduleId === m._id ? "#0f172a" : "#e2e8f0",
                     }}
                   >
-                    <Text style={{ fontSize: 12, fontWeight: "600", color: moduleId === m._id ? "#fff" : "#64748b" }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "600",
+                        color: moduleId === m._id ? "#fff" : "#64748b",
+                      }}
+                    >
                       {m.code} — {m.name}
                     </Text>
                   </TouchableOpacity>
@@ -242,16 +329,22 @@ export default function CreateResourceScreen({ navigation }) {
           <TouchableOpacity
             onPress={pickFile}
             style={{
-              backgroundColor: "#fff", borderWidth: 1.5,
+              backgroundColor: "#fff",
+              borderWidth: 1.5,
               borderColor: file ? "#0ea5e9" : "#cbd5e1",
               borderStyle: file ? "solid" : "dashed",
-              borderRadius: 12, paddingVertical: 20, alignItems: "center",
+              borderRadius: 12,
+              paddingVertical: 20,
+              alignItems: "center",
             }}
           >
             {file ? (
               <>
                 <Text style={{ fontSize: 24, marginBottom: 4 }}>📎</Text>
-                <Text style={{ fontSize: 13, fontWeight: "600", color: "#0ea5e9" }} numberOfLines={1}>
+                <Text
+                  style={{ fontSize: 13, fontWeight: "600", color: "#0ea5e9" }}
+                  numberOfLines={1}
+                >
                   {file.name}
                 </Text>
                 <Text style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>
@@ -261,21 +354,31 @@ export default function CreateResourceScreen({ navigation }) {
             ) : (
               <>
                 <Text style={{ fontSize: 28, marginBottom: 6 }}>📁</Text>
-                <Text style={{ color: "#94a3b8", fontSize: 13 }}>Tap to attach a file</Text>
+                <Text style={{ color: "#94a3b8", fontSize: 13 }}>
+                  Tap to attach a file
+                </Text>
               </>
             )}
           </TouchableOpacity>
         </Field>
 
         <TouchableOpacity
-          onPress={handleSubmit} disabled={submitting}
+          onPress={handleSubmit}
+          disabled={submitting}
           style={{
-            backgroundColor: "#0ea5e9", borderRadius: 12,
-            paddingVertical: 14, alignItems: "center", marginTop: 8,
+            backgroundColor: "#0ea5e9",
+            borderRadius: 12,
+            paddingVertical: 14,
+            alignItems: "center",
+            marginTop: 8,
           }}
         >
-          {submitting ? <ActivityIndicator color="#fff" /> : (
-            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Upload Resource</Text>
+          {submitting ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>
+              Upload Resource
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -286,7 +389,16 @@ export default function CreateResourceScreen({ navigation }) {
 function Field({ label, children }) {
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: "#374151", marginBottom: 6 }}>{label}</Text>
+      <Text
+        style={{
+          fontSize: 13,
+          fontWeight: "600",
+          color: "#374151",
+          marginBottom: 6,
+        }}
+      >
+        {label}
+      </Text>
       {children}
     </View>
   );

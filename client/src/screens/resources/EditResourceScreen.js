@@ -1,43 +1,63 @@
 import { useState, useEffect } from "react";
 import {
-  View, Text, TextInput, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { resourcesAPI } from "../../api/resources";
 
 const CATEGORIES = [
-  "LECTURE_NOTE", "PAST_PAPER", "PROJECT", "TEMPLATE", "SUMMARY", "OTHER",
+  "LECTURE_NOTE",
+  "PAST_PAPER",
+  "PROJECT",
+  "TEMPLATE",
+  "SUMMARY",
+  "OTHER",
 ];
 const CATEGORY_LABELS = {
-  LECTURE_NOTE: "Lecture Note", PAST_PAPER: "Past Paper", PROJECT: "Project",
-  TEMPLATE: "Template", SUMMARY: "Summary", OTHER: "Other",
+  LECTURE_NOTE: "Lecture Note",
+  PAST_PAPER: "Past Paper",
+  PROJECT: "Project",
+  TEMPLATE: "Template",
+  SUMMARY: "Summary",
+  OTHER: "Other",
 };
 
 export default function EditResourceScreen({ route, navigation }) {
   const { resourceId } = route.params;
 
-  const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const [title, setTitle]           = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory]     = useState("LECTURE_NOTE");
+  const [category, setCategory] = useState("LECTURE_NOTE");
 
   // Read-only info to display
-  const [fileName, setFileName]     = useState("");
+  const [fileName, setFileName] = useState("");
   const [moduleName, setModuleName] = useState("");
 
   useEffect(() => {
-    resourcesAPI.getResourceById(resourceId)
+    resourcesAPI
+      .getResourceById(resourceId)
       .then(({ data }) => {
         setTitle(data.title ?? "");
         setDescription(data.description ?? "");
         setCategory(data.category ?? "LECTURE_NOTE");
         setFileName(data.fileUrl ? data.fileUrl.split("/").pop() : "");
-        setModuleName(data.module ? `${data.module.code} — ${data.module.name}` : "");
+        setModuleName(
+          data.module ? `${data.module.code} — ${data.module.name}` : "",
+        );
       })
-      .catch(() => { Alert.alert("Error", "Could not load resource."); navigation.goBack(); })
+      .catch(() => {
+        Alert.alert("Error", "Could not load resource.");
+        navigation.goBack();
+      })
       .finally(() => setLoading(false));
   }, [resourceId]);
 
@@ -55,7 +75,10 @@ export default function EditResourceScreen({ route, navigation }) {
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
-      Alert.alert("Error", e.response?.data?.message || "Could not update resource.");
+      Alert.alert(
+        "Error",
+        e.response?.data?.message || "Could not update resource.",
+      );
     } finally {
       setSaving(false);
     }
@@ -73,24 +96,51 @@ export default function EditResourceScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 12 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 24,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 12 }}
+          >
             <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>Edit Resource</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
+            Edit Resource
+          </Text>
         </View>
 
         {/* Read-only file info */}
         {(fileName || moduleName) && (
-          <View style={{
-            backgroundColor: "#f1f5f9", borderRadius: 12, padding: 14, marginBottom: 20,
-            borderWidth: 0.5, borderColor: "#e2e8f0",
-          }}>
-            <Text style={{ fontSize: 12, fontWeight: "700", color: "#64748b", marginBottom: 6 }}>
+          <View
+            style={{
+              backgroundColor: "#f1f5f9",
+              borderRadius: 12,
+              padding: 14,
+              marginBottom: 20,
+              borderWidth: 0.5,
+              borderColor: "#e2e8f0",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "700",
+                color: "#64748b",
+                marginBottom: 6,
+              }}
+            >
               ATTACHED FILE
             </Text>
             {fileName ? (
-              <Text style={{ fontSize: 13, color: "#0f172a", fontWeight: "500" }} numberOfLines={1}>
+              <Text
+                style={{ fontSize: 13, color: "#0f172a", fontWeight: "500" }}
+                numberOfLines={1}
+              >
                 📎 {fileName}
               </Text>
             ) : null}
@@ -111,8 +161,10 @@ export default function EditResourceScreen({ route, navigation }) {
 
         <Field label="Description">
           <TextInput
-            value={description} onChangeText={setDescription}
-            multiline numberOfLines={3}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            numberOfLines={3}
             style={[inputStyle, { height: 80, textAlignVertical: "top" }]}
           />
         </Field>
@@ -122,14 +174,24 @@ export default function EditResourceScreen({ route, navigation }) {
             <View style={{ flexDirection: "row", gap: 8 }}>
               {CATEGORIES.map((c) => (
                 <TouchableOpacity
-                  key={c} onPress={() => setCategory(c)}
+                  key={c}
+                  onPress={() => setCategory(c)}
                   style={{
-                    paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 20,
                     backgroundColor: category === c ? "#0ea5e9" : "#fff",
-                    borderWidth: 1, borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
                   }}
                 >
-                  <Text style={{ fontSize: 12, fontWeight: "600", color: category === c ? "#fff" : "#64748b" }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "600",
+                      color: category === c ? "#fff" : "#64748b",
+                    }}
+                  >
                     {CATEGORY_LABELS[c]}
                   </Text>
                 </TouchableOpacity>
@@ -139,14 +201,22 @@ export default function EditResourceScreen({ route, navigation }) {
         </Field>
 
         <TouchableOpacity
-          onPress={handleSave} disabled={saving}
+          onPress={handleSave}
+          disabled={saving}
           style={{
-            backgroundColor: "#0ea5e9", borderRadius: 12,
-            paddingVertical: 14, alignItems: "center", marginTop: 8,
+            backgroundColor: "#0ea5e9",
+            borderRadius: 12,
+            paddingVertical: 14,
+            alignItems: "center",
+            marginTop: 8,
           }}
         >
-          {saving ? <ActivityIndicator color="#fff" /> : (
-            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Save Changes</Text>
+          {saving ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>
+              Save Changes
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -157,7 +227,16 @@ export default function EditResourceScreen({ route, navigation }) {
 function Field({ label, children }) {
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: "#374151", marginBottom: 6 }}>{label}</Text>
+      <Text
+        style={{
+          fontSize: 13,
+          fontWeight: "600",
+          color: "#374151",
+          marginBottom: 6,
+        }}
+      >
+        {label}
+      </Text>
       {children}
     </View>
   );
