@@ -8,9 +8,14 @@ import {
   Switch,
   ActivityIndicator,
   Alert,
+  Image,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { eventsAPI } from "../../api/events";
+import api from "../../api/axiosInstance";
+import * as SecureStore from "expo-secure-store";
+import * as ImagePicker from "expo-image-picker";
 
 const CATEGORIES = ["ACADEMIC", "SPORTS", "SOCIETY", "CULTURAL", "CAREER"];
 const STATUSES = ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"];
@@ -32,6 +37,20 @@ export default function EditEventScreen({ route, navigation }) {
   const [capacity, setCapacity] = useState("");
   const [registrationDeadline, setRegDeadline] = useState("");
   const [status, setStatus] = useState("UPCOMING");
+  const [bannerUri, setBannerUri] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setBannerUri(result.assets[0].uri);
+    }
+  };
 
   useEffect(() => {
     eventsAPI
@@ -52,6 +71,7 @@ export default function EditEventScreen({ route, navigation }) {
             : "",
         );
         setStatus(data.status ?? "UPCOMING");
+        setBannerUri(data.bannerImageUrl ?? null);
       })
       .catch(() => {
         Alert.alert("Error", "Could not load event.");
@@ -81,6 +101,40 @@ export default function EditEventScreen({ route, navigation }) {
         status,
       };
       await eventsAPI.update(eventId, payload);
+
+      // Handle banner upload if changed
+      if (bannerUri && !bannerUri.startsWith("http")) {
+        console.log("Uploading new banner for event:", eventId);
+        const formData = new FormData();
+        const filename = bannerUri.split("/").pop();
+        const match = /\.([a-zA-Z0-9]+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : `image/jpeg`;
+
+        formData.append("photo", {
+          uri: Platform.OS === "android" ? bannerUri : bannerUri.replace("file://", ""),
+          name: filename,
+          type,
+        });
+
+        try {
+          const token = await SecureStore.getItemAsync("accessToken");
+          const uploadUrl = `${api.defaults.baseURL}/events/${eventId}/banner`;
+          
+          await fetch(uploadUrl, {
+            method: "POST",
+            body: formData,
+            headers: {
+              "Accept": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+          });
+          console.log("Banner updated successfully");
+        } catch (uploadError) {
+          console.error("Banner upload failed:", uploadError.message);
+          Alert.alert("Warning", "Event updated, but banner upload failed.");
+        }
+      }
+
       Alert.alert("Saved!", "Event updated successfully.", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
@@ -123,6 +177,34 @@ export default function EditEventScreen({ route, navigation }) {
             Edit Event
           </Text>
         </View>
+
+        {/* Banner Upload */}
+        <TouchableOpacity
+          onPress={pickImage}
+          style={{
+            height: 320,
+            width: 240,
+            alignSelf: "center",
+            backgroundColor: "#e2e8f0",
+            borderRadius: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 20,
+            overflow: "hidden",
+          }}
+        >
+          {bannerUri ? (
+            <Image
+              source={{ uri: bannerUri }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
+          ) : (
+            <Text style={{ color: "#64748b", fontWeight: "600" }}>
+              + Add Event Banner
+            </Text>
+          )}
+        </TouchableOpacity>
 
         <Field label="Title *">
           <TextInput value={title} onChangeText={setTitle} style={inputStyle} />
