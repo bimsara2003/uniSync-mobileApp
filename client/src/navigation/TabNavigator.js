@@ -42,6 +42,11 @@ import EditPortfolioItemScreen    from "../screens/portfolio/EditPortfolioItemSc
 import EditPortfolioScreen        from "../screens/portfolio/EditPortfolioScreen";
 import ViewUserPortfolioScreen    from "../screens/portfolio/ViewUserPortfolioScreen";
 
+// Admin
+import AdminDashboardScreen  from "../screens/admin/AdminDashboardScreen";
+import UserManagementScreen  from "../screens/admin/UserManagementScreen";
+import UserDetailScreen      from "../screens/admin/UserDetailScreen";
+
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -124,8 +129,21 @@ function PortfolioStack() {
   );
 }
 
+// ─── Admin Stack ────────────────────────────────────────
+function AdminStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="AdminDashboard"   component={AdminDashboardScreen} />
+      <Stack.Screen name="UserManagement"   component={UserManagementScreen} />
+      <Stack.Screen name="UserDetail"       component={UserDetailScreen} />
+    </Stack.Navigator>
+  );
+}
+
 // ─── Tab Navigator ───────────────────────────────────────
 export default function TabNavigator() {
+  const { user } = useAuth();
+  const isAdmin = user?.role?.includes("ADMIN");
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -210,6 +228,17 @@ export default function TabNavigator() {
           ),
         }}
       />
+      {isAdmin && (
+        <Tab.Screen
+          name="Admin"
+          component={AdminStack}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Text style={{ fontSize: 20, color }}>⚙️</Text>
+            ),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 }
