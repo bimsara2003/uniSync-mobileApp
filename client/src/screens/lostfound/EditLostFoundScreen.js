@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  Alert, ActivityIndicator, Image, SafeAreaView,
+  Alert, ActivityIndicator, Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { lostFoundAPI } from "../../api/lostFound";
 

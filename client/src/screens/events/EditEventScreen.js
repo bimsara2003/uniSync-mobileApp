@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import {
   View, Text, TextInput, ScrollView, TouchableOpacity,
-  Switch, ActivityIndicator, Alert, SafeAreaView,
+  Switch, ActivityIndicator, Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { eventsAPI } from "../../api/events";
 
 const CATEGORIES = ["ACADEMIC", "SPORTS", "SOCIETY", "CULTURAL", "CAREER"];

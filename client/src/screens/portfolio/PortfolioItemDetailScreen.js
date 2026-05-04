@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity, Image,
-  ActivityIndicator, Alert, SafeAreaView,
+  ActivityIndicator, Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
 

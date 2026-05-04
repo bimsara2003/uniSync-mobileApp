@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   View, Text, TextInput, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, SafeAreaView,
+  ActivityIndicator, Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { resourcesAPI } from "../../api/resources";
 
 const CATEGORIES = [

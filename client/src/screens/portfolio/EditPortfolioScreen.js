@@ -1,8 +1,9 @@
 import { useState } from "react";
 import {
   View, Text, TextInput, ScrollView, TouchableOpacity,
-  Switch, ActivityIndicator, Alert, SafeAreaView,
+  Switch, ActivityIndicator, Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
 
 export default function EditPortfolioScreen({ route, navigation }) {

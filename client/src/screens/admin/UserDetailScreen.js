@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, SafeAreaView,
+  ActivityIndicator, Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { adminAPI } from "../../api/admin";
 
 const ROLES = ["STUDENT", "STAFF", "REP", "ADMIN"];
