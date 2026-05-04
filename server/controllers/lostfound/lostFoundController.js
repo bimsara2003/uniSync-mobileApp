@@ -1,6 +1,15 @@
 const LostFound = require("../../models/lostFoundModel");
 const { deleteFromS3 } = require("../../utils/s3Delete");
-const { createS3Uploader } = require("../../utils/s3Upload");
+const { createS3Uploader, getPresignedUrl } = require("../../utils/s3Upload");
+
+// Attach a presigned photoUrl to a Mongoose doc or plain object
+async function signItem(item) {
+  const obj = item.toObject ? item.toObject() : { ...item };
+  if (obj.photoS3Key) {
+    obj.photoUrl = await getPresignedUrl(obj.photoS3Key);
+  }
+  return obj;
+}
 
 // Multer upload — images only, max 10 MB
 const uploadPhoto = createS3Uploader({
@@ -41,7 +50,7 @@ exports.createItem = async (req, res) => {
       "postedBy",
       "firstName lastName email",
     );
-    res.status(201).json(populated);
+    res.status(201).json(await signItem(populated));
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -65,7 +74,8 @@ exports.getItems = async (req, res) => {
       .populate("postedBy", "firstName lastName email profilePictureUrl")
       .sort({ createdAt: -1 });
 
-    res.status(200).json(items);
+    const signed = await Promise.all(items.map(signItem));
+    res.status(200).json(signed);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -83,7 +93,7 @@ exports.getItemById = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    res.status(200).json(item);
+    res.status(200).json(await signItem(item));
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -120,7 +130,7 @@ exports.updateItem = async (req, res) => {
       "postedBy",
       "firstName lastName email",
     );
-    res.status(200).json(populated);
+    res.status(200).json(await signItem(populated));
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
