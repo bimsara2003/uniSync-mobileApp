@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 import {
   View, Text, FlatList, TouchableOpacity,
   RefreshControl, ActivityIndicator, Image,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { eventsAPI } from "../../api/events";
 import { useAuth } from "../../context/AuthContext";

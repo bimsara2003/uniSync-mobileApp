@@ -1,9 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-// Change this to your computer's local IP when testing on a phone
-// Keep localhost for emulator
-const BASE_URL = "https://unisync-mobileapp-production.up.railway.app/api";
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 const api = axios.create({
     baseURL: BASE_URL,
     timeout: 10000,

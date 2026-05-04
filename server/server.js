@@ -14,7 +14,7 @@ const {
 const resourceRoutes = require("./routes/resourceRoute");
 const announcementRoutes = require("./routes/announcementRoute");
 const lostFoundRoutes = require("./routes/lostFoundRoute");
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const path = require("path");
 const app = express();
