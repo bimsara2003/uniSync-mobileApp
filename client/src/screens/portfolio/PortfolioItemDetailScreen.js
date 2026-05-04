@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -234,9 +235,19 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
             >
               GitHub
             </Text>
-            <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
-              {item.githubLink}
-            </Text>
+            <TouchableOpacity
+              onPress={async () => {
+                let url = item.githubLink;
+                if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+                await Linking.openURL(url).catch(() =>
+                  Alert.alert("Error", "Cannot open URL"),
+                );
+              }}
+            >
+              <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
+                {item.githubLink}
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : null}
 
@@ -261,9 +272,19 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
             >
               Live Link
             </Text>
-            <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
-              {item.liveLink}
-            </Text>
+            <TouchableOpacity
+              onPress={async () => {
+                let url = item.liveLink;
+                if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+                await Linking.openURL(url).catch(() =>
+                  Alert.alert("Error", "Cannot open URL"),
+                );
+              }}
+            >
+              <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
+                {item.liveLink}
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : null}
 

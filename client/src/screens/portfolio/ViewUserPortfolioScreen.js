@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -215,9 +216,27 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
                 justifyContent: "center",
               }}
             >
-              {portfolio.linkedIn && <LinkBadge label="LinkedIn" icon="💼" />}
-              {portfolio.gitHub && <LinkBadge label="GitHub" icon="🐙" />}
-              {portfolio.website && <LinkBadge label="Website" icon="🌐" />}
+              {portfolio.linkedIn && (
+                <LinkBadge
+                  label="LinkedIn"
+                  icon="💼"
+                  url={portfolio.linkedIn}
+                />
+              )}
+              {portfolio.gitHub && (
+                <LinkBadge
+                  label="GitHub"
+                  icon="🐙"
+                  url={portfolio.gitHub}
+                />
+              )}
+              {portfolio.website && (
+                <LinkBadge
+                  label="Website"
+                  icon="🌐"
+                  url={portfolio.website}
+                />
+              )}
             </View>
           )}
         </View>
@@ -416,9 +435,28 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
   );
 }
 
-function LinkBadge({ label, icon }) {
+function LinkBadge({ label, icon, url }) {
+  const handlePress = async () => {
+    if (!url) return;
+    try {
+      let fullUrl = url;
+      if (!/^https?:\/\//i.test(url)) {
+        fullUrl = "https://" + url;
+      }
+      const supported = await Linking.canOpenURL(fullUrl);
+      if (supported) {
+        await Linking.openURL(fullUrl);
+      } else {
+        Alert.alert("Error", "Cannot open this link.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred.");
+    }
+  };
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={handlePress}
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -435,7 +473,7 @@ function LinkBadge({ label, icon }) {
       <Text style={{ fontSize: 12, color: "#64748b", fontWeight: "500" }}>
         {label}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
