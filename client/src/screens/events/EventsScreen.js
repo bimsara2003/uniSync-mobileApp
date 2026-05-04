@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   View,
   Text,
   FlatList,
+  ScrollView,
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 import { eventsAPI } from "../../api/events";
 import { useAuth } from "../../context/AuthContext";
 
@@ -47,30 +49,37 @@ function EventCard({ item, onPress }) {
       onPress={onPress}
       style={{
         backgroundColor: "#fff",
-        borderRadius: 14,
-        marginBottom: 12,
+        borderRadius: 16,
+        marginBottom: 16,
         overflow: "hidden",
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderColor: "#e2e8f0",
+        shadowColor: "#1a3c6e",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+        elevation: 3,
       }}
     >
       {item.bannerImageUrl ? (
         <Image
           source={{ uri: item.bannerImageUrl }}
-          style={{ width: "100%", height: 140 }}
+          style={{ width: "100%", height: 160 }}
           resizeMode="cover"
         />
       ) : (
         <View
           style={{
             width: "100%",
-            height: 100,
-            backgroundColor: "#dbeafe",
+            height: 120,
+            backgroundColor: "#f8fafc",
             alignItems: "center",
             justifyContent: "center",
+            borderBottomWidth: 1,
+            borderBottomColor: "#f1f5f9",
           }}
         >
-          <Text style={{ fontSize: 36 }}>🎉</Text>
+          <Ionicons name="calendar-outline" size={40} color="#94a3b8" />
         </View>
       )}
 
@@ -130,36 +139,43 @@ function EventCard({ item, onPress }) {
 
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: "700",
             color: "#0f172a",
-            marginBottom: 6,
+            marginBottom: 10,
           }}
         >
           {item.title}
         </Text>
 
-        <View style={{ flexDirection: "row", gap: 16 }}>
-          <Text style={{ fontSize: 12, color: "#64748b" }}>
-            📅{" "}
-            {new Date(item.date).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </Text>
-          <Text style={{ fontSize: 12, color: "#64748b" }}>
-            ⏰ {item.startTime} – {item.endTime}
-          </Text>
+        <View style={{ gap: 6 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <Ionicons name="time-outline" size={16} color="#64748b" />
+            <Text style={{ fontSize: 13, color: "#475569" }}>
+              {new Date(item.date).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })} • {item.startTime} – {item.endTime}
+            </Text>
+          </View>
+          
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <Ionicons name="location-outline" size={16} color="#64748b" />
+            <Text style={{ fontSize: 13, color: "#475569" }} numberOfLines={1}>
+              {item.venue}
+            </Text>
+          </View>
+
+          {item.capacity && (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+              <Ionicons name="people-outline" size={16} color="#94a3b8" />
+              <Text style={{ fontSize: 13, color: "#64748b" }}>
+                {item.registrationCount ?? 0} / {item.capacity} registered
+              </Text>
+            </View>
+          )}
         </View>
-        <Text style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
-          📍 {item.venue}
-        </Text>
-        {item.capacity && (
-          <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
-            👥 {item.registrationCount ?? 0} / {item.capacity} registered
-          </Text>
-        )}
       </View>
     </TouchableOpacity>
   );
@@ -173,13 +189,11 @@ export default function EventsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeCategory, setCategory] = useState("ALL");
-  const [activeStatus, setStatus] = useState("UPCOMING");
 
   const fetchEvents = async () => {
     try {
       const params = {};
       if (activeCategory !== "ALL") params.category = activeCategory;
-      if (activeStatus !== "ALL") params.status = activeStatus;
       const res = await eventsAPI.getAll(params);
       setEvents(res.data.events || []);
     } catch {
@@ -190,12 +204,18 @@ export default function EventsScreen({ navigation }) {
     }
   };
 
+  // Fetch when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setLoading(true);
       fetchEvents();
-    }, [activeCategory, activeStatus]),
+    }, [])
   );
+
+  // Fetch when filters change
+  useEffect(() => {
+    setLoading(true);
+    fetchEvents();
+  }, [activeCategory]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -235,77 +255,41 @@ export default function EventsScreen({ navigation }) {
         )}
       </View>
 
-      {/* Status filter */}
-      <FlatList
-        data={STATUSES}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(i) => i}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 8 }}
-        renderItem={({ item }) => {
-          const active = item === activeStatus;
-          return (
-            <TouchableOpacity
-              onPress={() => setStatus(item)}
-              style={{
-                marginRight: 8,
-                paddingHorizontal: 14,
-                paddingVertical: 6,
-                borderRadius: 20,
-                borderWidth: 1,
-                backgroundColor: active ? "#1a3c6e" : "#fff",
-                borderColor: active ? "#1a3c6e" : "#e2e8f0",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "600",
-                  color: active ? "#fff" : "#64748b",
-                }}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-
       {/* Category filter */}
-      <FlatList
-        data={CATEGORIES}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(i) => i}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12 }}
-        renderItem={({ item }) => {
-          const active = item === activeCategory;
-          return (
-            <TouchableOpacity
-              onPress={() => setCategory(item)}
-              style={{
-                marginRight: 8,
-                paddingHorizontal: 12,
-                paddingVertical: 5,
-                borderRadius: 16,
-                borderWidth: 1,
-                backgroundColor: active ? "#0f172a" : "#fff",
-                borderColor: active ? "#0f172a" : "#e2e8f0",
-              }}
-            >
-              <Text
+      <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingRight: 16 }}
+        >
+          {CATEGORIES.map((item) => {
+            const active = item === activeCategory;
+            return (
+              <TouchableOpacity
+                key={item}
+                onPress={() => setCategory(item)}
                 style={{
-                  fontSize: 11,
-                  fontWeight: "500",
-                  color: active ? "#fff" : "#64748b",
+                  marginRight: 10,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  borderRadius: 24,
+                  backgroundColor: active ? "#1a3c6e" : "#e2e8f0",
                 }}
               >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: active ? "700" : "600",
+                    color: active ? "#ffffff" : "#475569",
+                  }}
+                >
+                  {item === "ALL" ? "All Events" : item.charAt(0) + item.slice(1).toLowerCase()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       {/* List */}
       {loading ? (
