@@ -31,6 +31,14 @@ import EventDetailScreen  from "../screens/events/EventDetailScreen";
 import CreateEventScreen  from "../screens/events/CreateEventScreen";
 import EditEventScreen    from "../screens/events/EditEventScreen";
 
+// Portfolio
+import PortfolioScreen            from "../screens/portfolio/PortfolioScreen";
+import PortfolioItemDetailScreen  from "../screens/portfolio/PortfolioItemDetailScreen";
+import CreatePortfolioItemScreen  from "../screens/portfolio/CreatePortfolioItemScreen";
+import EditPortfolioItemScreen    from "../screens/portfolio/EditPortfolioItemScreen";
+import EditPortfolioScreen        from "../screens/portfolio/EditPortfolioScreen";
+import ViewUserPortfolioScreen    from "../screens/portfolio/ViewUserPortfolioScreen";
+
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -94,6 +102,20 @@ function EventsStack() {
       <Stack.Screen name="EventDetail"   component={EventDetailScreen} />
       <Stack.Screen name="CreateEvent"   component={CreateEventScreen} />
       <Stack.Screen name="EditEvent"     component={EditEventScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// ─── Portfolio Stack ─────────────────────────────────────
+function PortfolioStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PortfolioMain"        component={PortfolioScreen} />
+      <Stack.Screen name="PortfolioItemDetail"  component={PortfolioItemDetailScreen} />
+      <Stack.Screen name="CreatePortfolioItem"  component={CreatePortfolioItemScreen} />
+      <Stack.Screen name="EditPortfolioItem"    component={EditPortfolioItemScreen} />
+      <Stack.Screen name="EditPortfolio"        component={EditPortfolioScreen} />
+      <Stack.Screen name="ViewUserPortfolio"    component={ViewUserPortfolioScreen} />
     </Stack.Navigator>
   );
 }
@@ -163,6 +185,15 @@ export default function TabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 20, color }}>🎉</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Portfolio"
+        component={PortfolioStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>💼</Text>
           ),
         }}
       />
