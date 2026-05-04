@@ -89,9 +89,9 @@ function ResourcesStack() {
       <Stack.Screen
         name="PendingResources"
         component={PendingResourcesScreen}
-      />{" "}
+      />
       <Stack.Screen name="CreateResource" component={CreateResourceScreen} />
-      <Stack.Screen name="EditResource" component={EditResourceScreen} />{" "}
+      <Stack.Screen name="EditResource" component={EditResourceScreen} />
     </Stack.Navigator>
   );
 }

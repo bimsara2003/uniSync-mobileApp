@@ -12,7 +12,7 @@ const uploadResource = createS3Uploader({
   fieldName: "file",
 });
 
-// ─── CREATE ─────────────────────────────────────────────
+//CREATE
 
 const createResource = async (req, res) => {
   try {
@@ -51,7 +51,7 @@ const createResource = async (req, res) => {
   }
 };
 
-// ─── READ ───────────────────────────────────────────────
+//READ
 
 const getResources = async (req, res) => {
   try {
@@ -133,7 +133,7 @@ const getResourceById = async (req, res) => {
   }
 };
 
-// ─── DOWNLOAD ───────────────────────────────────────────
+//DOWNLOAD
 
 const downloadResource = async (req, res) => {
   try {
@@ -163,7 +163,7 @@ const downloadResource = async (req, res) => {
   }
 };
 
-// ─── UPDATE ─────────────────────────────────────────────
+// UPDATE
 
 const updateResource = async (req, res) => {
   try {
@@ -193,7 +193,7 @@ const updateResource = async (req, res) => {
   }
 };
 
-// ─── DELETE ─────────────────────────────────────────────
+//DELETE
 
 const deleteResource = async (req, res) => {
   try {
@@ -221,7 +221,7 @@ const deleteResource = async (req, res) => {
   }
 };
 
-// ─── APPROVAL WORKFLOW ──────────────────────────────────
+//APPROVAL WORKFLOW
 
 const approveResource = async (req, res) => {
   try {
@@ -282,7 +282,7 @@ const rejectResource = async (req, res) => {
   }
 };
 
-// ─── BOOKMARKS ──────────────────────────────────────────
+//BOOKMARKS 
 
 const toggleBookmark = async (req, res) => {
   try {
