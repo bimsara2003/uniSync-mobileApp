@@ -217,14 +217,14 @@ export default function AnnouncementsScreen({ navigation }) {
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              onPress={logout}
+              onPress={() => navigation.navigate("Home")}
               style={{
                 backgroundColor: "#f1f5f9", borderRadius: 10,
                 paddingHorizontal: 14, paddingVertical: 8,
                 borderWidth: 0.5, borderColor: "#e2e8f0",
               }}
             >
-              <Text style={{ color: "#64748b", fontWeight: "600", fontSize: 13 }}>Logout</Text>
+              <Text style={{ color: "#64748b", fontWeight: "600", fontSize: 13 }}>Dashboard</Text>
             </TouchableOpacity>
           </View>
         </View>
