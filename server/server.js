@@ -16,8 +16,11 @@ const announcementRoutes = require("./routes/announcementRoute");
 const lostFoundRoutes = require("./routes/lostFoundRoute");
 const PORT = process.env.PORT || 5000;
 
+const cors = require("cors");
 const path = require("path");
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
