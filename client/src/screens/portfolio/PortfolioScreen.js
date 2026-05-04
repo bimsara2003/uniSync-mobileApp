@@ -281,6 +281,101 @@ export default function PortfolioScreen({ navigation }) {
           </View>
         )}
 
+        {/* ── Experience & Journey (Timeline) ── */}
+        {items.filter((i) => i.type === "EXPERIENCE").length > 0 && (
+          <View style={{ paddingHorizontal: 20, paddingTop: 24 }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "800",
+                color: "#1a3c6e",
+                marginBottom: 20,
+              }}
+            >
+              Experience & Journey
+            </Text>
+            <View style={{ paddingLeft: 6 }}>
+              {items
+                .filter((i) => i.type === "EXPERIENCE")
+                .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+                .map((exp, index, arr) => (
+                  <View key={exp._id} style={{ flexDirection: "row" }}>
+                    {/* Timeline line and dot */}
+                    <View style={{ alignItems: "center", marginRight: 16 }}>
+                      <View
+                        style={{
+                          width: 14,
+                          height: 14,
+                          borderRadius: 7,
+                          backgroundColor: "#10b981",
+                          zIndex: 1,
+                          marginTop: 4,
+                        }}
+                      />
+                      {index !== arr.length - 1 && (
+                        <View
+                          style={{
+                            width: 2,
+                            flex: 1,
+                            backgroundColor: "#10b981",
+                            opacity: 0.2,
+                            marginVertical: 2,
+                          }}
+                        />
+                      )}
+                    </View>
+
+                    {/* Content */}
+                    <View style={{ flex: 1, paddingBottom: 30 }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: "800",
+                          color: "#10b981",
+                          textTransform: "uppercase",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {formatDateRange(exp)}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "700",
+                          color: "#0f172a",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {exp.title}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: "#64748b",
+                          fontWeight: "500",
+                          marginBottom: 10,
+                        }}
+                      >
+                        {exp.organization}
+                      </Text>
+                      {exp.description ? (
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            color: "#475569",
+                            lineHeight: 20,
+                          }}
+                        >
+                          {exp.description}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                ))}
+            </View>
+          </View>
+        )}
+
         {/* ── Items section ── */}
         <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
           <View
@@ -515,4 +610,21 @@ function typeEmoji(type) {
     EXTRACURRICULAR: "🎯",
   };
   return map[type] || "📁";
+}
+
+function formatDateRange(item) {
+  if (!item.startDate) return "";
+  const from = new Date(item.startDate).toLocaleDateString("en-GB", {
+    month: "short",
+    year: "numeric",
+  });
+  if (item.isOngoing) return `${from} – Present`;
+  if (item.endDate) {
+    const to = new Date(item.endDate).toLocaleDateString("en-GB", {
+      month: "short",
+      year: "numeric",
+    });
+    return `${from} – ${to}`;
+  }
+  return from;
 }
