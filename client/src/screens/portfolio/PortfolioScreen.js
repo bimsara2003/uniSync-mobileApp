@@ -1,11 +1,11 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity, Image,
   ActivityIndicator, Alert, SafeAreaView, Switch, RefreshControl,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const ITEM_TYPES = ["ALL", "PROJECT", "ACHIEVEMENT", "CERTIFICATION", "EXPERIENCE", "EXTRACURRICULAR"];
 
@@ -18,7 +18,7 @@ const TYPE_COLORS = {
 };
 
 export default function PortfolioScreen({ navigation }) {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [portfolio, setPortfolio]   = useState(null);
   const [items, setItems]           = useState([]);
   const [filter, setFilter]         = useState("ALL");
