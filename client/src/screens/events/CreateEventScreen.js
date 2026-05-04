@@ -37,7 +37,7 @@ export default function CreateEventScreen({ navigation }) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [3, 4],
       quality: 0.8,
     });
 
@@ -95,9 +95,9 @@ export default function CreateEventScreen({ navigation }) {
         try {
           const token = await SecureStore.getItemAsync("accessToken");
           const uploadUrl = `${api.defaults.baseURL}/events/${res.data.event._id}/banner`;
-          
+
           console.log("Using fetch to upload to:", uploadUrl);
-          
+
           const fetchResponse = await fetch(uploadUrl, {
             method: "POST",
             body: formData,
@@ -116,7 +116,7 @@ export default function CreateEventScreen({ navigation }) {
         } catch (uploadError) {
           console.error("Banner upload failed:", uploadError.message);
           Alert.alert("Event Created", "Event was created but the banner upload failed: " + uploadError.message);
-          return; 
+          return;
         }
       }
 
@@ -159,7 +159,9 @@ export default function CreateEventScreen({ navigation }) {
         <TouchableOpacity
           onPress={pickImage}
           style={{
-            height: 160,
+            height: 320,
+            width: 240,
+            alignSelf: "center",
             backgroundColor: "#e2e8f0",
             borderRadius: 12,
             justifyContent: "center",
@@ -169,7 +171,11 @@ export default function CreateEventScreen({ navigation }) {
           }}
         >
           {bannerUri ? (
-            <Image source={{ uri: bannerUri }} style={{ width: "100%", height: "100%" }} />
+            <Image
+              source={{ uri: bannerUri }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
           ) : (
             <Text style={{ color: "#64748b", fontWeight: "600" }}>+ Add Event Banner</Text>
           )}
