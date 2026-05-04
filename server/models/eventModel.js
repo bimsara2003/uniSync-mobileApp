@@ -50,6 +50,10 @@ const eventSchema = new mongoose.Schema(
             type: Date,
             default: null,
         },
+        registrationCount: {
+            type: Number,
+            default: 0,
+        },
         status: {
             type: String,
             enum: ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"],

@@ -15,9 +15,9 @@ exports.registerForEvent = async (req, res) => {
             });
         }
 
-        if(event.status!=="UPCOMING"){
+        if (event.status !== "UPCOMING") {
             return res.status(400).json({
-                message:"Registration is clodes. Event is $(event.status.toLowerCase())",
+                message: `Registration is closed. Event is ${event.status.toLowerCase()}`,
             });
         }
 
@@ -84,9 +84,9 @@ exports.cancelRegistration = async (req, res) => {
             return res.status(404).json({message:"Event not found"});
         }
 
-        if(event.status!=="UPCOMING"){
+        if (event.status !== "UPCOMING") {
             return res.status(400).json({
-                message:"Cannot cancel registration. Event is $(event.status.toLowerCase())",
+                message: `Cannot cancel registration. Event is ${event.status.toLowerCase()}`,
             });
         }
 
@@ -101,13 +101,13 @@ exports.cancelRegistration = async (req, res) => {
             });
         }
 
-        if(registration.status==="CANCELED"){
+        if (registration.status === "CANCELLED") {
             return res.status(400).json({
-                message:"Your registration is already canceled",
+                message: "Your registration is already cancelled",
             });
         }
 
-        registration.status="CANCELED";
+        registration.status = "CANCELLED";
         await registration.save();
 
         event.registrationCount-=1;
@@ -148,7 +148,7 @@ exports.getEventRegistrations = async (req, res) => {
         res.status(200).json({
             count: registrations.length,
             capacity: event.capacity,
-            sportsRemaining: event.capacity - event.registrationCount,
+            spotsRemaining: event.capacity - event.registrationCount,
             registrations,
         });
     } catch(error){

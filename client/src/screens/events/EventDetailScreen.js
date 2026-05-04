@@ -35,7 +35,7 @@ export default function EventDetailScreen({ route, navigation }) {
   const isRep = user?.role?.includes("REP") || user?.role?.includes("ADMIN");
 
   const [event, setEvent] = useState(null);
-  const [myStatus, setMyStatus] = useState(null); // "CONFIRMED" | "CANCELED" | null
+  const [myStatus, setMyStatus] = useState(null); // "CONFIRMED" | "CANCELLED" | null
   const [loading, setLoading] = useState(true);
   const [regLoading, setRegLoading] = useState(false);
 
@@ -65,7 +65,7 @@ export default function EventDetailScreen({ route, navigation }) {
     setRegLoading(true);
     try {
       await eventsAPI.register(eventId);
-      setMyStatus("CONFIRMED");
+      await fetchAll();
       Alert.alert("Registered!", "You have been registered for this event.");
     } catch (e) {
       Alert.alert("Error", e.response?.data?.message || "Could not register.");
@@ -87,7 +87,7 @@ export default function EventDetailScreen({ route, navigation }) {
             setRegLoading(true);
             try {
               await eventsAPI.cancelRegistration(eventId);
-              setMyStatus("CANCELED");
+              await fetchAll();
             } catch (e) {
               Alert.alert(
                 "Error",
