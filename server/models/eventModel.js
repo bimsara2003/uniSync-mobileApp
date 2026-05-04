@@ -46,9 +46,9 @@ const eventSchema = new mongoose.Schema(
             type: Number,
             default: null,
         },
-        registrationdeadline: {
-            type: Number,
-            default: 0,
+        registrationDeadline: {
+            type: Date,
+            default: null,
         },
         status: {
             type: String,
