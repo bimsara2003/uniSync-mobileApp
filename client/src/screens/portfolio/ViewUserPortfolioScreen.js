@@ -294,43 +294,82 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
                   }}
                 >
                   <View
-                    style={{ flexDirection: "row", gap: 6, marginBottom: 4 }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: colors.bg,
-                        paddingHorizontal: 8,
-                        paddingVertical: 2,
-                        borderRadius: 8,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: "700",
-                          color: colors.text,
-                        }}
-                      >
-                        {item.type}
-                      </Text>
-                    </View>
-                  </View>
-                  <Text
                     style={{
-                      fontSize: 14,
-                      fontWeight: "600",
-                      color: "#0f172a",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      gap: 10,
                     }}
                   >
-                    {item.title}
-                  </Text>
-                  {item.organization ? (
-                    <Text
-                      style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}
-                    >
-                      {item.organization}
-                    </Text>
-                  ) : null}
+                    {item.imageUrl ? (
+                      <Image
+                        source={{ uri: item.imageUrl }}
+                        style={{ width: 52, height: 52, borderRadius: 8 }}
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          width: 52,
+                          height: 52,
+                          borderRadius: 8,
+                          backgroundColor: "#f1f5f9",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ fontSize: 22 }}>
+                          {typeEmoji(item.type)}
+                        </Text>
+                      </View>
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 6,
+                          marginBottom: 4,
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: colors.bg,
+                            paddingHorizontal: 8,
+                            paddingVertical: 2,
+                            borderRadius: 8,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontWeight: "700",
+                              color: colors.text,
+                            }}
+                          >
+                            {item.type}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "600",
+                          color: "#0f172a",
+                        }}
+                      >
+                        {item.title}
+                      </Text>
+                      {item.organization ? (
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: "#64748b",
+                            marginTop: 2,
+                          }}
+                        >
+                          {item.organization}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
                   {item.description ? (
                     <Text
                       style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}
@@ -397,4 +436,15 @@ function LinkBadge({ label, icon }) {
       </Text>
     </View>
   );
+}
+
+function typeEmoji(type) {
+  const map = {
+    PROJECT: "💻",
+    ACHIEVEMENT: "🏆",
+    CERTIFICATION: "📜",
+    EXPERIENCE: "🏢",
+    EXTRACURRICULAR: "🎯",
+  };
+  return map[type] || "📁";
 }

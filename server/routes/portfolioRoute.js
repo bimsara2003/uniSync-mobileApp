@@ -17,7 +17,7 @@ const {
 // Static paths come before /:userId to avoid param conflict
 
 router.get("/me", protect, getMyPortfolio);
-router.put("/me", protect, updateMyPortfolio);
+router.put("/me", protect, uploadPortfolioImage.single("image"), updateMyPortfolio);
 router.get("/user/:userId", protect, getPortfolioByUserId);
 
 // ─── PORTFOLIO ITEMS ─────────────────────────────────────

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -8,6 +9,7 @@ import {
   Switch,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
@@ -22,24 +24,43 @@ export default function EditPortfolioScreen({ route, navigation }) {
   const [gitHub, setGitHub] = useState(portfolio?.gitHub ?? "");
   const [website, setWebsite] = useState(portfolio?.website ?? "");
   const [isPublic, setIsPublic] = useState(portfolio?.isPublic ?? true);
+  const [image, setImage] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = {
-        headline: headline.trim(),
-        bio: bio.trim(),
-        skills: skills
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-        linkedIn: linkedIn.trim(),
-        gitHub: gitHub.trim(),
-        website: website.trim(),
-        isPublic,
-      };
-      await portfolioAPI.updateMyPortfolio(payload);
+      const formData = new FormData();
+      formData.append("headline", headline.trim());
+      formData.append("bio", bio.trim());
+      formData.append("skills", JSON.stringify(skills.split(",").map(s => s.trim()).filter(Boolean)));
+      formData.append("linkedIn", linkedIn.trim());
+      formData.append("gitHub", gitHub.trim());
+      formData.append("website", website.trim());
+      formData.append("isPublic", isPublic);
+
+      if (image) {
+        const uri = image.uri;
+        const name = uri.split("/").pop();
+        const match = /\.(\w+)$/.exec(name);
+        const type = match ? `image/${match[1]}` : `image`;
+        formData.append("image", { uri, name, type });
+      }
+
+      await portfolioAPI.updateMyPortfolio(formData);
       Alert.alert("Saved!", "Portfolio profile updated.", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
@@ -72,6 +93,56 @@ export default function EditPortfolioScreen({ route, navigation }) {
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             Edit Portfolio Profile
+          </Text>
+        </View>
+
+        {/* Profile Photo */}
+        <View style={{ alignItems: "center", marginBottom: 24 }}>
+          <TouchableOpacity onPress={pickImage}>
+            {image ? (
+              <Image
+                source={{ uri: image.uri }}
+                style={{ width: 100, height: 100, borderRadius: 50 }}
+              />
+            ) : portfolio?.userId?.profilePictureUrl ? (
+              <Image
+                source={{ uri: portfolio.userId.profilePictureUrl }}
+                style={{ width: 100, height: 100, borderRadius: 50 }}
+              />
+            ) : (
+              <View
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 50,
+                  backgroundColor: "#e2e8f0",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: 40 }}>👤</Text>
+              </View>
+            )}
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#0ea5e9",
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 2,
+                borderColor: "#fff",
+              }}
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>+</Text>
+            </View>
+          </TouchableOpacity>
+          <Text style={{ fontSize: 12, color: "#64748b", marginTop: 8 }}>
+            Tap to change profile photo
           </Text>
         </View>
 
