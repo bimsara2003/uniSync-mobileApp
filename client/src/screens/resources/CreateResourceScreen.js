@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { resourcesAPI } from "../../api/resources";
+import { Ionicons } from '@expo/vector-icons';
 
 const CATEGORIES = [
   "LECTURE_NOTE",
@@ -144,13 +145,13 @@ export default function CreateResourceScreen({ navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -164,7 +165,7 @@ export default function CreateResourceScreen({ navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             Upload Resource
@@ -202,9 +203,9 @@ export default function CreateResourceScreen({ navigation }) {
                     paddingHorizontal: 12,
                     paddingVertical: 8,
                     borderRadius: 20,
-                    backgroundColor: category === c ? "#0ea5e9" : "#fff",
+                    backgroundColor: category === c ? "#1a3c6e" : "#fff",
                     borderWidth: 1,
-                    borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
+                    borderColor: category === c ? "#1a3c6e" : "#e2e8f0",
                   }}
                 >
                   <Text
@@ -331,7 +332,7 @@ export default function CreateResourceScreen({ navigation }) {
             style={{
               backgroundColor: "#fff",
               borderWidth: 1.5,
-              borderColor: file ? "#0ea5e9" : "#cbd5e1",
+              borderColor: file ? "#1a3c6e" : "#cbd5e1",
               borderStyle: file ? "solid" : "dashed",
               borderRadius: 12,
               paddingVertical: 20,
@@ -342,7 +343,7 @@ export default function CreateResourceScreen({ navigation }) {
               <>
                 <Text style={{ fontSize: 24, marginBottom: 4 }}>📎</Text>
                 <Text
-                  style={{ fontSize: 13, fontWeight: "600", color: "#0ea5e9" }}
+                  style={{ fontSize: 13, fontWeight: "600", color: "#1a3c6e" }}
                   numberOfLines={1}
                 >
                   {file.name}
@@ -366,7 +367,7 @@ export default function CreateResourceScreen({ navigation }) {
           onPress={handleSubmit}
           disabled={submitting}
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             borderRadius: 12,
             paddingVertical: 14,
             alignItems: "center",

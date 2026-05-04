@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EditPortfolioScreen({ route, navigation }) {
   const { portfolio } = route.params;
@@ -75,7 +76,7 @@ export default function EditPortfolioScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -89,7 +90,7 @@ export default function EditPortfolioScreen({ route, navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             Edit Portfolio Profile
@@ -224,7 +225,7 @@ export default function EditPortfolioScreen({ route, navigation }) {
           <Switch
             value={isPublic}
             onValueChange={setIsPublic}
-            trackColor={{ true: "#0ea5e9" }}
+            trackColor={{ true: "#1a3c6e" }}
           />
         </View>
 
@@ -232,7 +233,7 @@ export default function EditPortfolioScreen({ route, navigation }) {
           onPress={handleSave}
           disabled={saving}
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             borderRadius: 12,
             paddingVertical: 14,
             alignItems: "center",

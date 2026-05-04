@@ -11,10 +11,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { eventsAPI } from "../../api/events";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 
 const CAT_STYLE = {
-  ACADEMIC: { bg: "#dbeafe", text: "#1e40af" },
+  ACADEMIC: { bg: "#dbeafe", text: "#1a3c6e" },
   SPORTS: { bg: "#dcfce7", text: "#166534" },
   SOCIETY: { bg: "#f3e8ff", text: "#6b21a8" },
   CULTURAL: { bg: "#fef9c3", text: "#854d0e" },
@@ -22,7 +23,7 @@ const CAT_STYLE = {
 };
 
 const STATUS_STYLE = {
-  UPCOMING: { bg: "#dbeafe", text: "#1e40af" },
+  UPCOMING: { bg: "#dbeafe", text: "#1a3c6e" },
   ONGOING: { bg: "#dcfce7", text: "#166534" },
   COMPLETED: { bg: "#f1f5f9", text: "#475569" },
   CANCELLED: { bg: "#fee2e2", text: "#991b1b" },
@@ -125,7 +126,7 @@ export default function EventDetailScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -139,7 +140,7 @@ export default function EventDetailScreen({ route, navigation }) {
   const isConfirmed = myStatus === "CONFIRMED";
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView>
         {/* Banner */}
         {event.bannerImageUrl ? (
@@ -153,7 +154,7 @@ export default function EventDetailScreen({ route, navigation }) {
             style={{
               width: "100%",
               height: 160,
-              backgroundColor: "#e0f2fe",
+              backgroundColor: "#dbeafe",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -171,11 +172,10 @@ export default function EventDetailScreen({ route, navigation }) {
             left: 12,
             backgroundColor: "rgba(0,0,0,0.4)",
             borderRadius: 20,
-            paddingHorizontal: 12,
-            paddingVertical: 6,
+            padding: 8,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "600" }}>← Back</Text>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
 
         <View style={{ padding: 20 }}>
@@ -290,7 +290,7 @@ export default function EventDetailScreen({ route, navigation }) {
               onPress={isConfirmed ? handleCancel : handleRegister}
               disabled={regLoading}
               style={{
-                backgroundColor: isConfirmed ? "#fee2e2" : "#0ea5e9",
+                backgroundColor: isConfirmed ? "#fee2e2" : "#1a3c6e",
                 borderRadius: 12,
                 paddingVertical: 14,
                 alignItems: "center",

@@ -66,13 +66,13 @@ export default function PortfolioScreen({ navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -87,7 +87,7 @@ export default function PortfolioScreen({ navigation }) {
         {/* ── Profile card ── */}
         <View
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             paddingTop: 40,
             paddingBottom: 24,
             alignItems: "center",
@@ -200,7 +200,7 @@ export default function PortfolioScreen({ navigation }) {
                 <View
                   key={i}
                   style={{
-                    backgroundColor: "#e0f2fe",
+                    backgroundColor: "#dbeafe",
                     paddingHorizontal: 10,
                     paddingVertical: 4,
                     borderRadius: 12,
@@ -209,7 +209,7 @@ export default function PortfolioScreen({ navigation }) {
                   <Text
                     style={{
                       fontSize: 12,
-                      color: "#0369a1",
+                      color: "#0c1d36",
                       fontWeight: "500",
                     }}
                   >
@@ -272,7 +272,7 @@ export default function PortfolioScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => navigation.navigate("CreatePortfolioItem")}
               style={{
-                backgroundColor: "#0ea5e9",
+                backgroundColor: "#1a3c6e",
                 paddingHorizontal: 14,
                 paddingVertical: 6,
                 borderRadius: 16,
@@ -299,9 +299,9 @@ export default function PortfolioScreen({ navigation }) {
                     paddingHorizontal: 12,
                     paddingVertical: 6,
                     borderRadius: 16,
-                    backgroundColor: filter === t ? "#0ea5e9" : "#fff",
+                    backgroundColor: filter === t ? "#1a3c6e" : "#fff",
                     borderWidth: 1,
-                    borderColor: filter === t ? "#0ea5e9" : "#e2e8f0",
+                    borderColor: filter === t ? "#1a3c6e" : "#e2e8f0",
                   }}
                 >
                   <Text

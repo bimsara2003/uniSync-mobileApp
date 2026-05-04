@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { adminAPI } from "../../api/admin";
+import { Ionicons } from '@expo/vector-icons';
 
 const ROLES = ["STUDENT", "STAFF", "REP", "ADMIN"];
 const ROLE_COLOR = {
@@ -106,7 +107,7 @@ export default function UserDetailScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -116,7 +117,7 @@ export default function UserDetailScreen({ route, navigation }) {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: "#f8fafc",
+          backgroundColor: "#f0f9ff",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -129,7 +130,7 @@ export default function UserDetailScreen({ route, navigation }) {
   const currentRole = user.role?.[0] ?? "STUDENT";
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -143,7 +144,7 @@ export default function UserDetailScreen({ route, navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             User Detail
@@ -151,7 +152,7 @@ export default function UserDetailScreen({ route, navigation }) {
           {actioning && (
             <ActivityIndicator
               size="small"
-              color="#0ea5e9"
+              color="#1a3c6e"
               style={{ marginLeft: 12 }}
             />
           )}
@@ -174,13 +175,13 @@ export default function UserDetailScreen({ route, navigation }) {
               width: 72,
               height: 72,
               borderRadius: 36,
-              backgroundColor: "#e0f2fe",
+              backgroundColor: "#dbeafe",
               justifyContent: "center",
               alignItems: "center",
               marginBottom: 12,
             }}
           >
-            <Text style={{ fontSize: 26, fontWeight: "700", color: "#0ea5e9" }}>
+            <Text style={{ fontSize: 26, fontWeight: "700", color: "#1a3c6e" }}>
               {user.firstName?.[0]}
               {user.lastName?.[0]}
             </Text>

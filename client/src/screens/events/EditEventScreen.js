@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { eventsAPI } from "../../api/events";
+import { Ionicons } from '@expo/vector-icons';
 import api from "../../api/axiosInstance";
 import * as SecureStore from "expo-secure-store";
 import * as ImagePicker from "expo-image-picker";
@@ -151,13 +152,13 @@ export default function EditEventScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -171,7 +172,7 @@ export default function EditEventScreen({ route, navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             Edit Event
@@ -231,9 +232,9 @@ export default function EditEventScreen({ route, navigation }) {
                     paddingHorizontal: 14,
                     paddingVertical: 8,
                     borderRadius: 20,
-                    backgroundColor: category === c ? "#0ea5e9" : "#fff",
+                    backgroundColor: category === c ? "#1a3c6e" : "#fff",
                     borderWidth: 1,
-                    borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
+                    borderColor: category === c ? "#1a3c6e" : "#e2e8f0",
                   }}
                 >
                   <Text
@@ -337,7 +338,7 @@ export default function EditEventScreen({ route, navigation }) {
           <Switch
             value={requiresRegistration}
             onValueChange={setRequiresReg}
-            trackColor={{ true: "#0ea5e9" }}
+            trackColor={{ true: "#1a3c6e" }}
           />
         </View>
 
@@ -366,7 +367,7 @@ export default function EditEventScreen({ route, navigation }) {
           onPress={handleSave}
           disabled={saving}
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             borderRadius: 12,
             paddingVertical: 14,
             alignItems: "center",

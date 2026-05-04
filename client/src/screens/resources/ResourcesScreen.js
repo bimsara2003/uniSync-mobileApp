@@ -142,14 +142,14 @@ export default function ResourcesScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f0f9ff" }}>
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
@@ -163,9 +163,9 @@ export default function ResourcesScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => setShowBookmarks(!showBookmarks)}
               style={{
-                backgroundColor: showBookmarks ? "#0ea5e9" : "#f1f5f9",
+                backgroundColor: showBookmarks ? "#1a3c6e" : "#f1f5f9",
                 borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8,
-                borderWidth: 0.5, borderColor: showBookmarks ? "#0ea5e9" : "#e2e8f0",
+                borderWidth: 0.5, borderColor: showBookmarks ? "#1a3c6e" : "#e2e8f0",
               }}
             >
               <Text style={{ fontSize: 13, fontWeight: "600", color: showBookmarks ? "#fff" : "#64748b" }}>
@@ -213,7 +213,7 @@ export default function ResourcesScreen({ navigation }) {
                 style={{
                   paddingHorizontal: 14, paddingVertical: 6,
                   borderRadius: 20, marginRight: 8,
-                  backgroundColor: activeCategory === item.key ? "#0ea5e9" : "#f1f5f9",
+                  backgroundColor: activeCategory === item.key ? "#1a3c6e" : "#f1f5f9",
                 }}
               >
                 <Text style={{
@@ -237,7 +237,7 @@ export default function ResourcesScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => { setRefreshing(true); fetchResources(); }}
-            tintColor="#0ea5e9"
+            tintColor="#1a3c6e"
           />
         }
         ListEmptyComponent={
@@ -265,13 +265,13 @@ export default function ResourcesScreen({ navigation }) {
           position: "absolute",
           bottom: 24,
           right: 24,
-          backgroundColor: "#0ea5e9",
+          backgroundColor: "#1a3c6e",
           width: 56,
           height: 56,
           borderRadius: 28,
           alignItems: "center",
           justifyContent: "center",
-          shadowColor: "#0ea5e9",
+          shadowColor: "#1a3c6e",
           shadowOpacity: 0.3,
           shadowRadius: 8,
           elevation: 5,

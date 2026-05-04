@@ -54,20 +54,20 @@ export default function AdminDashboardScreen({ navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView
         contentContainerStyle={{ padding: 20 }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#0ea5e9"
+            tintColor="#1a3c6e"
           />
         }
       >
@@ -105,7 +105,7 @@ export default function AdminDashboardScreen({ navigation }) {
             marginBottom: 24,
           }}
         >
-          <StatCard label="Total Users" value={total} color="#0ea5e9" />
+          <StatCard label="Total Users" value={total} color="#1a3c6e" />
           <StatCard label="Active" value={active} color="#22c55e" />
           <StatCard label="Students" value={students} color="#8b5cf6" />
           <StatCard label="Staff" value={staff} color="#f59e0b" />

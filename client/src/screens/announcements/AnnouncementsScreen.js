@@ -12,7 +12,7 @@ const CATEGORIES = ["ALL", "GENERAL", "EXAM", "EVENT", "URGENT"];
 const CATEGORY_STYLE = {
   GENERAL: { bg: "#f1f5f9", text: "#475569" },
   EXAM:    { bg: "#fef3c7", text: "#92400e" },
-  EVENT:   { bg: "#dbeafe", text: "#1e40af" },
+  EVENT:   { bg: "#dbeafe", text: "#1a3c6e" },
   URGENT:  { bg: "#fee2e2", text: "#991b1b" },
 };
 
@@ -59,18 +59,18 @@ function AnnouncementCard({ item, onPress, isStaff, onPin }) {
         padding: 16,
         marginBottom: 12,
         borderWidth: 0.5,
-        borderColor: item.isPinned ? "#bae6fd" : "#e2e8f0",
+        borderColor: item.isPinned ? "#93c5fd" : "#e2e8f0",
         borderLeftWidth: item.isPinned ? 3 : 0.5,
-        borderLeftColor: item.isPinned ? "#0ea5e9" : "#e2e8f0",
+        borderLeftColor: item.isPinned ? "#1a3c6e" : "#e2e8f0",
       }}
     >
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
         <View style={{
           width: 34, height: 34, borderRadius: 17,
-          backgroundColor: "#e0f2fe", alignItems: "center", justifyContent: "center", marginRight: 10,
+          backgroundColor: "#dbeafe", alignItems: "center", justifyContent: "center", marginRight: 10,
         }}>
-          <Text style={{ fontSize: 12, fontWeight: "600", color: "#0284c7" }}>{initials}</Text>
+          <Text style={{ fontSize: 12, fontWeight: "600", color: "#122a4f" }}>{initials}</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 13, fontWeight: "600", color: "#0f172a" }}>
@@ -124,7 +124,7 @@ function AnnouncementCard({ item, onPress, isStaff, onPin }) {
 
       {/* Footer */}
       <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
-        <Text style={{ fontSize: 12, color: "#0ea5e9", fontWeight: "500" }}>
+        <Text style={{ fontSize: 12, color: "#1a3c6e", fontWeight: "500" }}>
           Read more →
         </Text>
         {item.attachments?.length > 0 && (
@@ -186,14 +186,14 @@ export default function AnnouncementsScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f0f9ff" }}>
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
 
       {/* Top bar */}
       <View style={{
@@ -209,7 +209,7 @@ export default function AnnouncementsScreen({ navigation }) {
               <TouchableOpacity
                 onPress={() => navigation.navigate("CreateAnnouncement")}
                 style={{
-                  backgroundColor: "#0ea5e9", borderRadius: 10,
+                  backgroundColor: "#1a3c6e", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 8,
                 }}
               >
@@ -253,7 +253,7 @@ export default function AnnouncementsScreen({ navigation }) {
               style={{
                 paddingHorizontal: 14, paddingVertical: 6,
                 borderRadius: 20, marginRight: 8,
-                backgroundColor: activeTab === item ? "#0ea5e9" : "#f1f5f9",
+                backgroundColor: activeTab === item ? "#1a3c6e" : "#f1f5f9",
               }}
             >
               <Text style={{
@@ -276,7 +276,7 @@ export default function AnnouncementsScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => { setRefreshing(true); fetchAnnouncements(); }}
-            tintColor="#0ea5e9"
+            tintColor="#1a3c6e"
           />
         }
         ListHeaderComponent={

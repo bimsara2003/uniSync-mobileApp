@@ -59,13 +59,13 @@ export default function ForgotPasswordScreen({ navigation }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#f8fafc" }}
+      style={{ flex: 1, backgroundColor: "#f0f9ff" }}
     >
       <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 24 }}>
 
         {/* Logo */}
         <View style={{ marginBottom: 40, alignItems: "center" }}>
-          <Text style={{ fontSize: 32, fontWeight: "700", color: "#0ea5e9" }}>
+          <Text style={{ fontSize: 32, fontWeight: "700", color: "#1a3c6e" }}>
             UniSync
           </Text>
           <Text style={{ fontSize: 14, color: "#64748b", marginTop: 4 }}>
@@ -97,7 +97,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 12,
-                  fontSize: 14, color: "#0f172a", marginBottom: 24, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 24, backgroundColor: "#f0f9ff",
                 }}
               />
 
@@ -105,7 +105,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 onPress={handleSendOTP}
                 disabled={loading}
                 style={{
-                  backgroundColor: "#0ea5e9", borderRadius: 10,
+                  backgroundColor: "#1a3c6e", borderRadius: 10,
                   paddingVertical: 14, alignItems: "center",
                 }}
               >
@@ -134,7 +134,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 12,
-                  fontSize: 18, color: "#0f172a", marginBottom: 16, backgroundColor: "#f8fafc",
+                  fontSize: 18, color: "#0f172a", marginBottom: 16, backgroundColor: "#f0f9ff",
                   textAlign: "center", letterSpacing: 8,
                 }}
               />
@@ -148,7 +148,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 12,
-                  fontSize: 14, color: "#0f172a", marginBottom: 16, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 16, backgroundColor: "#f0f9ff",
                 }}
               />
 
@@ -161,7 +161,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 12,
-                  fontSize: 14, color: "#0f172a", marginBottom: 24, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 24, backgroundColor: "#f0f9ff",
                 }}
               />
 
@@ -169,7 +169,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 onPress={handleResetPassword}
                 disabled={loading}
                 style={{
-                  backgroundColor: "#0ea5e9", borderRadius: 10,
+                  backgroundColor: "#1a3c6e", borderRadius: 10,
                   paddingVertical: 14, alignItems: "center",
                 }}
               >
@@ -188,7 +188,7 @@ export default function ForgotPasswordScreen({ navigation }) {
         >
           <Text style={{ color: "#64748b", fontSize: 13 }}>
             Back to{" "}
-            <Text style={{ color: "#0ea5e9", fontWeight: "600" }}>Sign In</Text>
+            <Text style={{ color: "#1a3c6e", fontWeight: "600" }}>Sign In</Text>
           </Text>
         </TouchableOpacity>
       </View>

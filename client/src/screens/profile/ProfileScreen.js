@@ -141,7 +141,7 @@ export default function ProfileScreen() {
   const roleLabel = (user?.role || ["STUDENT"]).join(", ");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
@@ -167,9 +167,9 @@ export default function ProfileScreen() {
             ) : (
               <View style={{
                 width: 90, height: 90, borderRadius: 45,
-                backgroundColor: "#e0f2fe", alignItems: "center", justifyContent: "center",
+                backgroundColor: "#dbeafe", alignItems: "center", justifyContent: "center",
               }}>
-                <Text style={{ fontSize: 30, fontWeight: "700", color: "#0284c7" }}>
+                <Text style={{ fontSize: 30, fontWeight: "700", color: "#122a4f" }}>
                   {initials}
                 </Text>
               </View>
@@ -196,10 +196,10 @@ export default function ProfileScreen() {
         {/* Role badge */}
         <View style={{ alignItems: "center", marginBottom: 20 }}>
           <View style={{
-            backgroundColor: "#e0f2fe", borderRadius: 20,
+            backgroundColor: "#dbeafe", borderRadius: 20,
             paddingHorizontal: 14, paddingVertical: 4,
           }}>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#0284c7" }}>
+            <Text style={{ fontSize: 12, fontWeight: "600", color: "#122a4f" }}>
               {roleLabel}
             </Text>
           </View>
@@ -216,7 +216,7 @@ export default function ProfileScreen() {
             </Text>
             {!editing ? (
               <TouchableOpacity onPress={() => setEditing(true)}>
-                <Text style={{ fontSize: 13, color: "#0ea5e9", fontWeight: "600" }}>Edit</Text>
+                <Text style={{ fontSize: 13, color: "#1a3c6e", fontWeight: "600" }}>Edit</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={() => { setEditing(false); setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); }}>
@@ -234,7 +234,7 @@ export default function ProfileScreen() {
                 borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                 paddingHorizontal: 14, paddingVertical: 10,
                 fontSize: 14, color: "#0f172a", marginBottom: 14,
-                backgroundColor: "#f8fafc",
+                backgroundColor: "#f0f9ff",
               }}
             />
           ) : (
@@ -250,7 +250,7 @@ export default function ProfileScreen() {
                 borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                 paddingHorizontal: 14, paddingVertical: 10,
                 fontSize: 14, color: "#0f172a", marginBottom: 14,
-                backgroundColor: "#f8fafc",
+                backgroundColor: "#f0f9ff",
               }}
             />
           ) : (
@@ -265,7 +265,7 @@ export default function ProfileScreen() {
               onPress={handleSave}
               disabled={saving}
               style={{
-                backgroundColor: "#0ea5e9", borderRadius: 10,
+                backgroundColor: "#1a3c6e", borderRadius: 10,
                 paddingVertical: 12, alignItems: "center", marginTop: 20,
               }}
             >
@@ -304,7 +304,7 @@ export default function ProfileScreen() {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 10,
-                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f0f9ff",
                 }}
               />
               <Text style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>New Password</Text>
@@ -315,7 +315,7 @@ export default function ProfileScreen() {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 10,
-                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f0f9ff",
                 }}
               />
               <Text style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>Confirm New Password</Text>
@@ -326,14 +326,14 @@ export default function ProfileScreen() {
                 style={{
                   borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
                   paddingHorizontal: 14, paddingVertical: 10,
-                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f8fafc",
+                  fontSize: 14, color: "#0f172a", marginBottom: 14, backgroundColor: "#f0f9ff",
                 }}
               />
               <TouchableOpacity
                 onPress={handleChangePassword}
                 disabled={changingPw}
                 style={{
-                  backgroundColor: "#0ea5e9", borderRadius: 10,
+                  backgroundColor: "#1a3c6e", borderRadius: 10,
                   paddingVertical: 12, alignItems: "center",
                 }}
               >
@@ -355,7 +355,7 @@ export default function ProfileScreen() {
             alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 15, fontWeight: "600", color: "#0ea5e9" }}>
+          <Text style={{ fontSize: 15, fontWeight: "600", color: "#1a3c6e" }}>
             Log Out
           </Text>
         </TouchableOpacity>

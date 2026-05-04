@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
+import { Ionicons } from '@expo/vector-icons';
 
 const TYPE_COLORS = {
   PROJECT: { bg: "#eff6ff", text: "#2563eb" },
@@ -60,7 +61,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -87,7 +88,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -101,7 +102,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text
             style={{
@@ -191,7 +192,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
                 <View
                   key={i}
                   style={{
-                    backgroundColor: "#e0f2fe",
+                    backgroundColor: "#dbeafe",
                     paddingHorizontal: 10,
                     paddingVertical: 4,
                     borderRadius: 12,
@@ -200,7 +201,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
                   <Text
                     style={{
                       fontSize: 12,
-                      color: "#0369a1",
+                      color: "#0c1d36",
                       fontWeight: "500",
                     }}
                   >
@@ -243,7 +244,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
                 );
               }}
             >
-              <Text style={{ fontSize: 13, color: "#0ea5e9" }}>
+              <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
                 {item.githubLink}
               </Text>
             </TouchableOpacity>
@@ -280,7 +281,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
                 );
               }}
             >
-              <Text style={{ fontSize: 13, color: "#0ea5e9" }}>
+              <Text style={{ fontSize: 13, color: "#1a3c6e" }}>
                 {item.liveLink}
               </Text>
             </TouchableOpacity>
@@ -295,7 +296,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
             }
             style={{
               flex: 1,
-              backgroundColor: "#0ea5e9",
+              backgroundColor: "#1a3c6e",
               borderRadius: 12,
               paddingVertical: 13,
               alignItems: "center",

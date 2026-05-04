@@ -5,6 +5,7 @@ import {
 } from "react-native";
 import { lostFoundAPI } from "../../api/lostFound";
 import { useAuth } from "../../context/AuthContext";
+import { Ionicons } from '@expo/vector-icons';
 
 const CATEGORY_ICONS = {
   ELECTRONICS: "📱", DOCUMENTS: "📄", CLOTHING: "👕",
@@ -80,7 +81,7 @@ export default function LostFoundDetailScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -107,7 +108,7 @@ export default function LostFoundDetailScreen({ route, navigation }) {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Back */}
       <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-        <Text style={styles.backText}>← Back</Text>
+        <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
       </TouchableOpacity>
 
       {/* Photo */}
@@ -130,8 +131,8 @@ export default function LostFoundDetailScreen({ route, navigation }) {
           </Text>
         </View>
         {item.status === "RESOLVED" && (
-          <View style={[styles.badge, { backgroundColor: "#e0f2fe" }]}>
-            <Text style={[styles.badgeText, { color: "#0369a1" }]}>✓ Resolved</Text>
+          <View style={[styles.badge, { backgroundColor: "#dbeafe" }]}>
+            <Text style={[styles.badgeText, { color: "#0c1d36" }]}>✓ Resolved</Text>
           </View>
         )}
       </View>
@@ -200,12 +201,12 @@ function DetailRow({ icon, label, value }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f8fafc" },
+  container: { flex: 1, backgroundColor: "#f0f9ff" },
   content: { paddingBottom: 40 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   emptyText: { color: "#94a3b8", fontSize: 15 },
   backBtn: { padding: 16, paddingTop: 56 },
-  backText: { color: "#0ea5e9", fontSize: 15, fontWeight: "600" },
+  backText: { color: "#1a3c6e", fontSize: 15, fontWeight: "600" },
   photo: { width: "100%", height: 240, backgroundColor: "#e2e8f0" },
   photoPlaceholder: {
     width: "100%", height: 200, backgroundColor: "#f1f5f9",
@@ -228,15 +229,15 @@ const styles = StyleSheet.create({
     borderWidth: 0.5, borderColor: "#e2e8f0", flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16,
   },
   avatar: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: "#e0f2fe",
+    width: 44, height: 44, borderRadius: 22, backgroundColor: "#dbeafe",
     alignItems: "center", justifyContent: "center",
   },
   avatarImg: { width: 44, height: 44, borderRadius: 22 },
-  avatarText: { fontSize: 15, fontWeight: "700", color: "#0284c7" },
+  avatarText: { fontSize: 15, fontWeight: "700", color: "#122a4f" },
   posterName: { fontSize: 14, fontWeight: "600", color: "#0f172a" },
   posterDate: { fontSize: 11, color: "#94a3b8" },
   contactBtn: {
-    backgroundColor: "#0ea5e9", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
+    backgroundColor: "#1a3c6e", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
   },
   contactBtnText: { color: "#fff", fontSize: 12, fontWeight: "700" },
   resolveBtn: {

@@ -13,6 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import api from "../../api/axiosInstance";
+import { Ionicons } from '@expo/vector-icons';
 
 const CATEGORIES = ["GENERAL", "EXAM", "EVENT", "URGENT"];
 
@@ -127,25 +128,17 @@ export default function CreateAnnouncementScreen({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
+
       {/* Header */}
-      <View
-        style={{
-          backgroundColor: "#fff",
-          paddingTop: 56,
-          paddingHorizontal: 20,
-          paddingBottom: 14,
-          flexDirection: "row",
-          alignItems: "center",
-          borderBottomWidth: 0.5,
-          borderBottomColor: "#e2e8f0",
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ marginRight: 14 }}
-        >
-          <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+      <View style={{
+        backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
+        paddingBottom: 14, flexDirection: "row", alignItems: "center",
+        borderBottomWidth: 0.5, borderBottomColor: "#e2e8f0",
+      }}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 14 }}>
+          <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
         </TouchableOpacity>
         <Text style={{ fontSize: 18, fontWeight: "600", color: "#0f172a" }}>
           New Announcement
@@ -199,41 +192,47 @@ export default function CreateAnnouncementScreen({ navigation }) {
           }}
         />
 
-        {/* Category */}
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
+        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 10 }}>
           Category
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 8,
-            marginBottom: 16,
-          }}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10, marginBottom: 20 }}
         >
-          {CATEGORIES.map((c) => (
-            <TouchableOpacity
-              key={c}
-              onPress={() => set("category")(c)}
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 20,
-                backgroundColor: form.category === c ? "#0ea5e9" : "#f1f5f9",
-              }}
-            >
-              <Text
+          {CATEGORIES.map((c) => {
+            const isSelected = form.category === c;
+            return (
+              <TouchableOpacity
+                key={c}
+                onPress={() => set("category")(c)}
                 style={{
-                  fontSize: 13,
-                  fontWeight: "500",
-                  color: form.category === c ? "#fff" : "#64748b",
+                  paddingHorizontal: 18,
+                  paddingVertical: 10,
+                  borderRadius: 12,
+                  backgroundColor: isSelected ? "#1a3c6e" : "#fff",
+                  borderWidth: 1,
+                  borderColor: isSelected ? "#1a3c6e" : "#e2e8f0",
+                  shadowColor: isSelected ? "#1a3c6e" : "transparent",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: isSelected ? 2 : 0,
                 }}
               >
-                {c}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: isSelected ? "700" : "500",
+                    color: isSelected ? "#fff" : "#64748b",
+                  }}
+                >
+                  {c.charAt(0) + c.slice(1).toLowerCase()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
         {/* Pin toggle */}
         <View
@@ -260,8 +259,8 @@ export default function CreateAnnouncementScreen({ navigation }) {
           <Switch
             value={form.isPinned}
             onValueChange={set("isPinned")}
-            trackColor={{ false: "#e2e8f0", true: "#bae6fd" }}
-            thumbColor={form.isPinned ? "#0ea5e9" : "#f1f5f9"}
+            trackColor={{ false: "#e2e8f0", true: "#93c5fd" }}
+            thumbColor={form.isPinned ? "#1a3c6e" : "#f1f5f9"}
           />
         </View>
 
@@ -318,9 +317,9 @@ export default function CreateAnnouncementScreen({ navigation }) {
           onPress={pickImage}
           style={{
             backgroundColor: coverImage ? "#f0f9ff" : "#fff",
-            borderRadius: 10,
-            borderWidth: 0.5,
-            borderColor: coverImage ? "#bae6fd" : "#cbd5e1",
+            borderRadius: 10, borderWidth: 0.5,
+            borderColor: coverImage ? "#93c5fd" : "#cbd5e1",
+
             borderStyle: coverImage ? "solid" : "dashed",
             padding: 16,
             alignItems: "center",
@@ -328,7 +327,7 @@ export default function CreateAnnouncementScreen({ navigation }) {
           }}
         >
           {coverImage ? (
-            <Text style={{ fontSize: 13, color: "#0284c7", fontWeight: "500" }}>
+            <Text style={{ fontSize: 13, color: "#122a4f", fontWeight: "500" }}>
               ✓ {coverImage.fileName || "Image selected"} — tap to change
             </Text>
           ) : (
@@ -346,21 +345,15 @@ export default function CreateAnnouncementScreen({ navigation }) {
           <View
             key={i}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: "#f0f9ff",
-              borderRadius: 10,
-              padding: 12,
-              marginBottom: 8,
-              borderWidth: 0.5,
-              borderColor: "#bae6fd",
+              flexDirection: "row", alignItems: "center",
+              backgroundColor: "#f0f9ff", borderRadius: 10,
+              padding: 12, marginBottom: 8,
+              borderWidth: 0.5, borderColor: "#93c5fd",
             }}
           >
             <Text style={{ fontSize: 16, marginRight: 10 }}>📎</Text>
-            <Text
-              style={{ flex: 1, fontSize: 13, color: "#0284c7" }}
-              numberOfLines={1}
-            >
+            <Text style={{ flex: 1, fontSize: 13, color: "#122a4f" }} numberOfLines={1}>
+
               {f.name}
             </Text>
             <TouchableOpacity onPress={() => removeAttachment(i)}>
@@ -391,11 +384,9 @@ export default function CreateAnnouncementScreen({ navigation }) {
           onPress={handleSubmit}
           disabled={loading}
           style={{
-            backgroundColor: "#0ea5e9",
-            borderRadius: 12,
-            paddingVertical: 16,
-            alignItems: "center",
-            marginBottom: 20,
+            backgroundColor: "#1a3c6e", borderRadius: 12,
+            paddingVertical: 16, alignItems: "center", marginBottom: 20,
+
           }}
         >
           {loading ? (
