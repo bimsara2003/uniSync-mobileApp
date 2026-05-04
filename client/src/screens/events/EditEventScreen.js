@@ -1,34 +1,41 @@
 import { useEffect, useState } from "react";
 import {
-  View, Text, TextInput, ScrollView, TouchableOpacity,
-  Switch, ActivityIndicator, Alert,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { eventsAPI } from "../../api/events";
 
 const CATEGORIES = ["ACADEMIC", "SPORTS", "SOCIETY", "CULTURAL", "CAREER"];
-const STATUSES   = ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"];
+const STATUSES = ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"];
 
 export default function EditEventScreen({ route, navigation }) {
   const { eventId } = route.params;
 
-  const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const [title, setTitle]                       = useState("");
-  const [description, setDescription]           = useState("");
-  const [category, setCategory]                 = useState("ACADEMIC");
-  const [date, setDate]                         = useState("");
-  const [startTime, setStartTime]               = useState("");
-  const [endTime, setEndTime]                   = useState("");
-  const [venue, setVenue]                       = useState("");
-  const [requiresRegistration, setRequiresReg]  = useState(false);
-  const [capacity, setCapacity]                 = useState("");
-  const [registrationDeadline, setRegDeadline]  = useState("");
-  const [status, setStatus]                     = useState("UPCOMING");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("ACADEMIC");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [venue, setVenue] = useState("");
+  const [requiresRegistration, setRequiresReg] = useState(false);
+  const [capacity, setCapacity] = useState("");
+  const [registrationDeadline, setRegDeadline] = useState("");
+  const [status, setStatus] = useState("UPCOMING");
 
   useEffect(() => {
-    eventsAPI.getById(eventId)
+    eventsAPI
+      .getById(eventId)
       .then(({ data }) => {
         setTitle(data.title ?? "");
         setDescription(data.description ?? "");
@@ -42,7 +49,7 @@ export default function EditEventScreen({ route, navigation }) {
         setRegDeadline(
           data.registrationDeadline
             ? new Date(data.registrationDeadline).toISOString().slice(0, 10)
-            : ""
+            : "",
         );
         setStatus(data.status ?? "UPCOMING");
       })
@@ -78,7 +85,10 @@ export default function EditEventScreen({ route, navigation }) {
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
-      Alert.alert("Error", e.response?.data?.message || "Could not update event.");
+      Alert.alert(
+        "Error",
+        e.response?.data?.message || "Could not update event.",
+      );
     } finally {
       setSaving(false);
     }
@@ -96,11 +106,22 @@ export default function EditEventScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 12 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 24,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 12 }}
+          >
             <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>Edit Event</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
+            Edit Event
+          </Text>
         </View>
 
         <Field label="Title *">
@@ -109,8 +130,10 @@ export default function EditEventScreen({ route, navigation }) {
 
         <Field label="Description *">
           <TextInput
-            value={description} onChangeText={setDescription}
-            multiline numberOfLines={4}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            numberOfLines={4}
             style={[inputStyle, { height: 100, textAlignVertical: "top" }]}
           />
         </Field>
@@ -120,17 +143,26 @@ export default function EditEventScreen({ route, navigation }) {
             <View style={{ flexDirection: "row", gap: 8 }}>
               {CATEGORIES.map((c) => (
                 <TouchableOpacity
-                  key={c} onPress={() => setCategory(c)}
+                  key={c}
+                  onPress={() => setCategory(c)}
                   style={{
-                    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 20,
                     backgroundColor: category === c ? "#0ea5e9" : "#fff",
-                    borderWidth: 1, borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: category === c ? "#0ea5e9" : "#e2e8f0",
                   }}
                 >
-                  <Text style={{
-                    fontSize: 13, fontWeight: "600",
-                    color: category === c ? "#fff" : "#64748b",
-                  }}>{c}</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: category === c ? "#fff" : "#64748b",
+                    }}
+                  >
+                    {c}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -142,17 +174,26 @@ export default function EditEventScreen({ route, navigation }) {
             <View style={{ flexDirection: "row", gap: 8 }}>
               {STATUSES.map((s) => (
                 <TouchableOpacity
-                  key={s} onPress={() => setStatus(s)}
+                  key={s}
+                  onPress={() => setStatus(s)}
                   style={{
-                    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 20,
                     backgroundColor: status === s ? "#0f172a" : "#fff",
-                    borderWidth: 1, borderColor: status === s ? "#0f172a" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: status === s ? "#0f172a" : "#e2e8f0",
                   }}
                 >
-                  <Text style={{
-                    fontSize: 13, fontWeight: "600",
-                    color: status === s ? "#fff" : "#64748b",
-                  }}>{s}</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: status === s ? "#fff" : "#64748b",
+                    }}
+                  >
+                    {s}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -160,18 +201,33 @@ export default function EditEventScreen({ route, navigation }) {
         </Field>
 
         <Field label="Date (YYYY-MM-DD)">
-          <TextInput value={date} onChangeText={setDate} placeholder="2026-06-15" style={inputStyle} />
+          <TextInput
+            value={date}
+            onChangeText={setDate}
+            placeholder="2026-06-15"
+            style={inputStyle}
+          />
         </Field>
 
         <View style={{ flexDirection: "row", gap: 12 }}>
           <View style={{ flex: 1 }}>
             <Field label="Start Time (HH:MM)">
-              <TextInput value={startTime} onChangeText={setStartTime} placeholder="09:00" style={inputStyle} />
+              <TextInput
+                value={startTime}
+                onChangeText={setStartTime}
+                placeholder="09:00"
+                style={inputStyle}
+              />
             </Field>
           </View>
           <View style={{ flex: 1 }}>
             <Field label="End Time (HH:MM)">
-              <TextInput value={endTime} onChangeText={setEndTime} placeholder="17:00" style={inputStyle} />
+              <TextInput
+                value={endTime}
+                onChangeText={setEndTime}
+                placeholder="17:00"
+                style={inputStyle}
+              />
             </Field>
           </View>
         </View>
@@ -180,46 +236,67 @@ export default function EditEventScreen({ route, navigation }) {
           <TextInput value={venue} onChangeText={setVenue} style={inputStyle} />
         </Field>
 
-        <View style={{
-          flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-          backgroundColor: "#fff", borderRadius: 10, padding: 14,
-          borderWidth: 0.5, borderColor: "#e2e8f0", marginBottom: 16,
-        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 14,
+            borderWidth: 0.5,
+            borderColor: "#e2e8f0",
+            marginBottom: 16,
+          }}
+        >
           <Text style={{ fontSize: 14, color: "#0f172a", fontWeight: "500" }}>
             Requires Registration
           </Text>
-          <Switch value={requiresRegistration} onValueChange={setRequiresReg}
-            trackColor={{ true: "#0ea5e9" }} />
+          <Switch
+            value={requiresRegistration}
+            onValueChange={setRequiresReg}
+            trackColor={{ true: "#0ea5e9" }}
+          />
         </View>
 
         {requiresRegistration && (
           <>
             <Field label="Capacity">
               <TextInput
-                value={capacity} onChangeText={setCapacity}
-                keyboardType="numeric" style={inputStyle}
+                value={capacity}
+                onChangeText={setCapacity}
+                keyboardType="numeric"
+                style={inputStyle}
               />
             </Field>
             <Field label="Registration Deadline (YYYY-MM-DD)">
               <TextInput
-                value={registrationDeadline} onChangeText={setRegDeadline}
-                placeholder="2026-06-10" style={inputStyle}
+                value={registrationDeadline}
+                onChangeText={setRegDeadline}
+                placeholder="2026-06-10"
+                style={inputStyle}
               />
             </Field>
           </>
         )}
 
         <TouchableOpacity
-          onPress={handleSave} disabled={saving}
+          onPress={handleSave}
+          disabled={saving}
           style={{
-            backgroundColor: "#0ea5e9", borderRadius: 12,
-            paddingVertical: 14, alignItems: "center", marginTop: 8,
+            backgroundColor: "#0ea5e9",
+            borderRadius: 12,
+            paddingVertical: 14,
+            alignItems: "center",
+            marginTop: 8,
           }}
         >
           {saving ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Save Changes</Text>
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>
+              Save Changes
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -230,7 +307,14 @@ export default function EditEventScreen({ route, navigation }) {
 function Field({ label, children }) {
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: "#374151", marginBottom: 6 }}>
+      <Text
+        style={{
+          fontSize: 13,
+          fontWeight: "600",
+          color: "#374151",
+          marginBottom: 6,
+        }}
+      >
         {label}
       </Text>
       {children}

@@ -31,6 +31,7 @@ const createS3Uploader = ({
     storage: multerS3({
       s3,
       bucket: process.env.AWS_S3_BUCKET,
+      acl: "public-read",
       metadata: (req, file, cb) => {
         cb(null, { fieldName: file.fieldname });
       },

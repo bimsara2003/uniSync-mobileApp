@@ -21,7 +21,7 @@ exports.createItem = async (req, res) => {
     let photoUrl = null;
     let photoS3Key = null;
     if (req.file) {
-      photoUrl = req.file.location;       // S3 public URL
+      photoUrl = req.file.location; // S3 public URL
       photoS3Key = req.file.key;
     }
 
@@ -37,7 +37,10 @@ exports.createItem = async (req, res) => {
       postedBy: req.user._id,
     });
 
-    const populated = await item.populate("postedBy", "firstName lastName email");
+    const populated = await item.populate(
+      "postedBy",
+      "firstName lastName email",
+    );
     res.status(201).json(populated);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -49,7 +52,7 @@ exports.getItems = async (req, res) => {
   try {
     const filter = {};
 
-    if (req.query.type)     filter.type     = req.query.type;
+    if (req.query.type) filter.type = req.query.type;
     if (req.query.category) filter.category = req.query.category;
     // default to ACTIVE only; pass ?status=ALL to get everything
     if (req.query.status && req.query.status !== "ALL") {
@@ -73,7 +76,7 @@ exports.getItemById = async (req, res) => {
   try {
     const item = await LostFound.findById(req.params.id).populate(
       "postedBy",
-      "firstName lastName email profilePictureUrl"
+      "firstName lastName email profilePictureUrl",
     );
 
     if (!item) {
@@ -99,21 +102,24 @@ exports.updateItem = async (req, res) => {
     }
 
     const { title, description, category, location, dateLostFound } = req.body;
-    if (title)          item.title          = title;
+    if (title) item.title = title;
     if (description !== undefined) item.description = description;
-    if (category)       item.category       = category;
-    if (location)       item.location       = location;
-    if (dateLostFound)  item.dateLostFound  = dateLostFound;
+    if (category) item.category = category;
+    if (location) item.location = location;
+    if (dateLostFound) item.dateLostFound = dateLostFound;
 
     // Replace photo if a new one was uploaded
     if (req.file) {
       if (item.photoS3Key) await deleteFromS3(item.photoS3Key).catch(() => {});
-      item.photoUrl   = req.file.location;
+      item.photoUrl = req.file.location;
       item.photoS3Key = req.file.key;
     }
 
     await item.save();
-    const populated = await item.populate("postedBy", "firstName lastName email");
+    const populated = await item.populate(
+      "postedBy",
+      "firstName lastName email",
+    );
     res.status(200).json(populated);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
