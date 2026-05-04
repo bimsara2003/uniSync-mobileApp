@@ -16,6 +16,8 @@ import EditAnnouncementScreen   from "../screens/announcements/EditAnnouncementS
 import ResourcesScreen          from "../screens/resources/ResourcesScreen";
 import ResourceDetailScreen     from "../screens/resources/ResourceDetailScreen";
 import PendingResourcesScreen   from "../screens/resources/PendingResourcesScreen";
+import CreateResourceScreen     from "../screens/resources/CreateResourceScreen";
+import EditResourceScreen       from "../screens/resources/EditResourceScreen";
 
 // Lost & Found
 import LostFoundScreen          from "../screens/lostfound/LostFoundScreen";
@@ -70,8 +72,8 @@ function ResourcesStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ResourcesList"      component={ResourcesScreen} />
       <Stack.Screen name="ResourceDetail"     component={ResourceDetailScreen} />
-      <Stack.Screen name="PendingResources"   component={PendingResourcesScreen} />
-    </Stack.Navigator>
+      <Stack.Screen name="PendingResources"   component={PendingResourcesScreen} />      <Stack.Screen name="CreateResource"     component={CreateResourceScreen} />
+      <Stack.Screen name="EditResource"       component={EditResourceScreen} />    </Stack.Navigator>
   );
 }
 
