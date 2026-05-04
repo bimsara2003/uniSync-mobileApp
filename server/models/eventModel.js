@@ -2,88 +2,88 @@ const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema(
     {
-        title:{
-            type:String,
+        title: {
+            type: String,
             required: [true, "Event title is required"],
             trim: true,
         },
-        description:{
-            type:String,
+        description: {
+            type: String,
             required: [true, "Event description is required"],
             trim: true,
         },
-        category:{
-            type:String,
+        category: {
+            type: String,
             required: [true, "Event category is required"],
-            enum:["ACADEMIC","SPORTS","SOCIETY","CULTURAL","CAREER"],
+            enum: ["ACADEMIC", "SPORTS", "SOCIETY", "CULTURAL", "CAREER"],
         },
-        bannerImageUrl:{
-            type:String,
-            default:null,
+        bannerImageUrl: {
+            type: String,
+            default: null,
         },
-        date:{
-            type:Date,
+        date: {
+            type: Date,
             required: [true, "Event date is required"],
         },
-        startTime:{
-            type:String,
-            required:[true, "Event start time is required"],
+        startTime: {
+            type: String,
+            required: [true, "Event start time is required"],
         },
-        endTime:{
-            type:String,
-            required:[true, "Event end time is required"],
+        endTime: {
+            type: String,
+            required: [true, "Event end time is required"],
         },
-        venue:{
-            type:String,
-            required:[true, "Event venue is required"],
+        venue: {
+            type: String,
+            required: [true, "Event venue is required"],
             trim: true,
         },
-        requiresRegistration:{
-            type:Boolean,
-            default:false,
+        requiresRegistration: {
+            type: Boolean,
+            default: false,
         },
-        capacity:{
-            type:Number,
-            default:null,
+        capacity: {
+            type: Number,
+            default: null,
         },
-        registrationDeadline:{
-            type:Date,
-            default:null,
+        registrationdeadline: {
+            type: Number,
+            default: 0,
         },
-        status:{
-            type:String,
-            enum:["UPCOMING","ONGOING","COMPLETED","CANCELLED"],
-            default:"UPCOMING",
+        status: {
+            type: String,
+            enum: ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"],
+            default: "UPCOMING",
         },
-        createdBy:{
+        createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required:true,
+            required: true,
         },
-        
+
     },
-    {timestamps:true}
+    { timestamps: true }
 
 );
 
 
-eventSchema.pre("save", function () {
+eventSchema.pre("save", async function () {
     if (this.requiresRegistration) {
-        if(!this.capacity){
+        if (!this.capacity) {
             throw new Error("Capacity is required when registration is enabled");
         }
-        if(!this.registrationDeadline){
+        if (!this.registrationDeadline) {
             throw new Error("Registration deadline is required when registration is enabled");
         }
-        if(this.registrationDeadline >= this.date){
+        if (this.registrationDeadline >= this.date) {
             throw new Error("Registration deadline must be before the event date");
         }
     }
-    
-    if(!this.requiresRegistration){
+
+    if (!this.requiresRegistration) {
         this.capacity = null;
         this.registrationDeadline = null;
-        this.registrationCount=0;
+        this.registrationCount = 0;
     }
 });
 

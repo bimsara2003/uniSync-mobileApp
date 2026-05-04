@@ -1,10 +1,12 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.1.11:5000/api";
+console.log("Connecting to API at:", BASE_URL);
+
 const api = axios.create({
     baseURL: BASE_URL,
-    timeout: 10000,
+    timeout: 15000,
 });
 
 // Attach token to every request automatically

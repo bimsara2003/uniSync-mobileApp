@@ -13,6 +13,10 @@ export const eventsAPI = {
   // PUT /api/events/:id  (REP / ADMIN)
   update: (id, data) => api.put(`/events/${id}`, data),
 
+  // POST /api/events/:id/banner
+  uploadBanner: (id, formData) =>
+    api.post(`/events/${id}/banner`, formData),
+
   // DELETE /api/events/:id  (REP / ADMIN)
   remove: (id) => api.delete(`/events/${id}`),
 
