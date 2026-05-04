@@ -5,7 +5,7 @@ const { createS3Uploader } = require("../../utils/s3Upload");
 // Multer upload — images only, max 10 MB
 const uploadPhoto = createS3Uploader({
   keyPrefix: "lost-found",
-  allowedTypes: /\.(jpeg|jpg|png|webp)$/,
+  allowedTypes: /jpeg|jpg|png|webp/,
   maxSizeMB: 10,
   fieldName: "photo",
 });
