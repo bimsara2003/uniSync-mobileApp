@@ -17,13 +17,13 @@ import { Ionicons } from "@expo/vector-icons";
 const CATEGORY_STYLE = {
   GENERAL: { bg: "#f1f5f9", text: "#475569" },
   EXAM:    { bg: "#fef3c7", text: "#92400e" },
-  EVENT:   { bg: "#dbeafe", text: "#1e40af" },
+  EVENT:   { bg: "#dbeafe", text: "#1a3c6e" },
   URGENT:  { bg: "#fee2e2", text: "#991b1b" },
 };
 
 const ROLE_STYLE = {
   admin:   { bg: "#fee2e2", text: "#991b1b", label: "Admin" },
-  staff:   { bg: "#dbeafe", text: "#1e40af", label: "Staff" },
+  staff:   { bg: "#dbeafe", text: "#1a3c6e", label: "Staff" },
   student: { bg: "#dcfce7", text: "#166534", label: "Student" },
 };
 
@@ -76,7 +76,7 @@ function QuickAction({ iconName, label, subtitle, onPress, accent }) {
         shadowRadius: 8,
         elevation: 2,
         borderWidth: 1,
-        borderColor: "#f8fafc",
+        borderColor: "#f0f9ff",
       }}
     >
       <View
@@ -120,7 +120,7 @@ function RecentAnnouncementCard({ item, onPress }) {
         shadowRadius: 8,
         elevation: 2,
         borderLeftWidth: 4,
-        borderLeftColor: item.isPinned ? "#0ea5e9" : "transparent",
+        borderLeftColor: item.isPinned ? "#1a3c6e" : "transparent",
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
@@ -140,7 +140,7 @@ function RecentAnnouncementCard({ item, onPress }) {
         <Text style={{ fontSize: 13, fontWeight: "500", color: "#64748b", flex: 1 }}>
           {item.postedBy?.firstName} {item.postedBy?.lastName}
         </Text>
-        {item.isPinned && <Ionicons name="pin" size={14} color="#0ea5e9" style={{ marginRight: 6 }} />}
+        {item.isPinned && <Ionicons name="pin" size={14} color="#1a3c6e" style={{ marginRight: 6 }} />}
         <View
           style={{
             backgroundColor: cat.bg,
@@ -222,7 +222,11 @@ export default function HomeScreen({ navigation }) {
     fetchData();
   };
 
-  const roleInfo = ROLE_STYLE[user?.role] || ROLE_STYLE.student;
+  let currentRole = "student";
+  if (user?.role?.includes("ADMIN")) currentRole = "admin";
+  else if (user?.role?.includes("STAFF")) currentRole = "staff";
+  else if (user?.role?.includes("REP")) currentRole = "rep";
+  const roleInfo = ROLE_STYLE[currentRole] || ROLE_STYLE.student;
   const initials = `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`;
   const greeting = () => {
     const h = new Date().getHours();
@@ -233,31 +237,31 @@ export default function HomeScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, backgroundColor: "#f8fafc", justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+      <View style={{ flex: 1, backgroundColor: "#f0f9ff", justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f0f9ff" />
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 32 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0ea5e9" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1a3c6e" />}
         showsVerticalScrollIndicator={false}
       >
         {/* ── Header ── */}
         <View
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             paddingTop: 60,
             paddingBottom: 32,
             paddingHorizontal: 24,
             borderBottomLeftRadius: 28,
             borderBottomRightRadius: 28,
-            shadowColor: "#0ea5e9",
+            shadowColor: "#1a3c6e",
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
             shadowRadius: 12,
@@ -279,7 +283,7 @@ export default function HomeScreen({ navigation }) {
                 overflow: "hidden",
                 marginRight: 14,
                 borderWidth: 2,
-                borderColor: "#bae6fd",
+                borderColor: "#93c5fd",
               }}
             >
               {user?.profilePhotoUrl ? (
@@ -288,7 +292,7 @@ export default function HomeScreen({ navigation }) {
                   style={{ width: 50, height: 50, borderRadius: 25 }}
                 />
               ) : (
-                <Text style={{ fontSize: 18, fontWeight: "700", color: "#0ea5e9" }}>
+                <Text style={{ fontSize: 18, fontWeight: "700", color: "#1a3c6e" }}>
                   {initials}
                 </Text>
               )}
@@ -296,7 +300,7 @@ export default function HomeScreen({ navigation }) {
 
             {/* Greeting */}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, color: "#bae6fd" }}>{greeting()},</Text>
+              <Text style={{ fontSize: 13, color: "#93c5fd" }}>{greeting()},</Text>
               <Text style={{ fontSize: 18, fontWeight: "700", color: "#fff" }} numberOfLines={1}>
                 {user?.firstName} {user?.lastName}
               </Text>
@@ -311,13 +315,13 @@ export default function HomeScreen({ navigation }) {
                 paddingVertical: 4,
               }}
             >
-              <Text style={{ fontSize: 11, fontWeight: "700", color: "#0ea5e9" }}>
+              <Text style={{ fontSize: 11, fontWeight: "700", color: "#1a3c6e" }}>
                 {roleInfo.label}
               </Text>
             </View>
           </View>
 
-          <Text style={{ fontSize: 13, color: "#e0f2fe", marginTop: 10 }}>
+          <Text style={{ fontSize: 13, color: "#dbeafe", marginTop: 10 }}>
             Welcome back to UniSync
           </Text>
         </View>
@@ -329,7 +333,7 @@ export default function HomeScreen({ navigation }) {
             Overview
           </Text>
           <View style={{ flexDirection: "row", gap: 12, marginBottom: 28 }}>
-            <StatCard iconName="megaphone" count={stats.announcements} label="Announcement" color="#0ea5e9" />
+            <StatCard iconName="megaphone" count={stats.announcements} label="Announcement" color="#1a3c6e" />
             <StatCard iconName="book" count={stats.resources}     label="Resources"     color="#8b5cf6" />
             <StatCard iconName="search" count={stats.lostFound}     label="Lost & Found"  color="#f97316" />
           </View>
@@ -343,7 +347,7 @@ export default function HomeScreen({ navigation }) {
             iconName="megaphone"
             label="Announcements"
             subtitle="Campus news and updates"
-            accent="#0ea5e9"
+            accent="#1a3c6e"
             onPress={() => navigation.navigate("Announcements")}
           />
           <QuickAction
@@ -384,7 +388,7 @@ export default function HomeScreen({ navigation }) {
                   Recent Announcements
                 </Text>
                 <TouchableOpacity onPress={() => navigation.navigate("Announcements")}>
-                  <Text style={{ fontSize: 12, color: "#0ea5e9", fontWeight: "600" }}>See all →</Text>
+                  <Text style={{ fontSize: 12, color: "#1a3c6e", fontWeight: "600" }}>See all →</Text>
                 </TouchableOpacity>
               </View>
 

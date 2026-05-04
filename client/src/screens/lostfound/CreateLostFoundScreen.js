@@ -96,7 +96,7 @@ export default function CreateLostFoundScreen({ navigation }) {
         <Text style={styles.headerTitle}>Post Item</Text>
         <TouchableOpacity onPress={handleSubmit} disabled={submitting}>
           {submitting ? (
-            <ActivityIndicator size="small" color="#0ea5e9" />
+            <ActivityIndicator size="small" color="#1a3c6e" />
           ) : (
             <Text style={styles.submitText}>Post</Text>
           )}
@@ -216,7 +216,7 @@ export default function CreateLostFoundScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f8fafc" },
+  container: { flex: 1, backgroundColor: "#f0f9ff" },
   content: { paddingBottom: 40 },
   header: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: { fontSize: 17, fontWeight: "700", color: "#0f172a" },
   cancelText: { color: "#64748b", fontSize: 15 },
-  submitText: { color: "#0ea5e9", fontSize: 15, fontWeight: "700" },
+  submitText: { color: "#1a3c6e", fontSize: 15, fontWeight: "700" },
   label: { fontSize: 13, fontWeight: "600", color: "#374151", marginHorizontal: 16, marginTop: 16, marginBottom: 6 },
   input: {
     backgroundColor: "#fff", marginHorizontal: 16, borderRadius: 10,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
     backgroundColor: "#fff", borderWidth: 1, borderColor: "#e2e8f0",
   },
-  catChipActive: { backgroundColor: "#0ea5e9", borderColor: "#0ea5e9" },
+  catChipActive: { backgroundColor: "#1a3c6e", borderColor: "#1a3c6e" },
   catChipText: { fontSize: 13, color: "#374151", fontWeight: "500" },
   photoPickerBtn: {
     marginHorizontal: 16, height: 140, borderRadius: 12, backgroundColor: "#fff",
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   photoPreview: { width: "100%", height: "100%" },
   removePhoto: { color: "#ef4444", textAlign: "center", marginTop: 8, fontSize: 13 },
   submitBtn: {
-    marginHorizontal: 16, marginTop: 24, backgroundColor: "#0ea5e9",
+    marginHorizontal: 16, marginTop: 24, backgroundColor: "#1a3c6e",
     borderRadius: 12, padding: 16, alignItems: "center",
   },
   submitBtnText: { color: "#fff", fontWeight: "700", fontSize: 16 },

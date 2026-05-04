@@ -24,7 +24,7 @@ const CATEGORIES = [
 const STATUSES = ["ALL", "UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"];
 
 const CAT_STYLE = {
-  ACADEMIC: { bg: "#dbeafe", text: "#1e40af" },
+  ACADEMIC: { bg: "#dbeafe", text: "#1a3c6e" },
   SPORTS: { bg: "#dcfce7", text: "#166534" },
   SOCIETY: { bg: "#f3e8ff", text: "#6b21a8" },
   CULTURAL: { bg: "#fef9c3", text: "#854d0e" },
@@ -32,7 +32,7 @@ const CAT_STYLE = {
 };
 
 const STATUS_STYLE = {
-  UPCOMING: { bg: "#dbeafe", text: "#1e40af" },
+  UPCOMING: { bg: "#dbeafe", text: "#1a3c6e" },
   ONGOING: { bg: "#dcfce7", text: "#166534" },
   COMPLETED: { bg: "#f1f5f9", text: "#475569" },
   CANCELLED: { bg: "#fee2e2", text: "#991b1b" },
@@ -65,7 +65,7 @@ function EventCard({ item, onPress }) {
           style={{
             width: "100%",
             height: 100,
-            backgroundColor: "#e0f2fe",
+            backgroundColor: "#dbeafe",
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -203,7 +203,7 @@ export default function EventsScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View
         style={{
@@ -222,7 +222,7 @@ export default function EventsScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => navigation.navigate("CreateEvent")}
             style={{
-              backgroundColor: "#0ea5e9",
+              backgroundColor: "#1a3c6e",
               borderRadius: 20,
               paddingHorizontal: 14,
               paddingVertical: 7,
@@ -253,8 +253,8 @@ export default function EventsScreen({ navigation }) {
                 paddingVertical: 6,
                 borderRadius: 20,
                 borderWidth: 1,
-                backgroundColor: active ? "#0ea5e9" : "#fff",
-                borderColor: active ? "#0ea5e9" : "#e2e8f0",
+                backgroundColor: active ? "#1a3c6e" : "#fff",
+                borderColor: active ? "#1a3c6e" : "#e2e8f0",
               }}
             >
               <Text
@@ -311,7 +311,7 @@ export default function EventsScreen({ navigation }) {
       {loading ? (
         <ActivityIndicator
           size="large"
-          color="#0ea5e9"
+          color="#1a3c6e"
           style={{ marginTop: 40 }}
         />
       ) : (

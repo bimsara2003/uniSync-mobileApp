@@ -4,6 +4,7 @@ import {
   Alert, ActivityIndicator, Linking,
 } from "react-native";
 import { resourcesAPI } from "../../api/resources";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 
 const STATUS_STYLE = {
@@ -126,8 +127,8 @@ export default function ResourceDetailScreen({ route, navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f0f9ff" }}>
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -142,7 +143,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
     : "Unknown";
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
@@ -150,7 +151,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
         flexDirection: "row", alignItems: "center",
       }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 14 }}>
-          <Text style={{ fontSize: 22, color: "#0ea5e9" }}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
         </TouchableOpacity>
         <Text style={{ fontSize: 18, fontWeight: "700", color: "#0f172a", flex: 1 }} numberOfLines={1}>
           {resource.title}
@@ -238,7 +239,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
             onPress={handleDownload}
             disabled={downloading}
             style={{
-              backgroundColor: "#0ea5e9", borderRadius: 12,
+              backgroundColor: "#1a3c6e", borderRadius: 12,
               paddingVertical: 14, alignItems: "center",
               flexDirection: "row", justifyContent: "center", gap: 8,
             }}
@@ -256,7 +257,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
           <TouchableOpacity
             onPress={handleBookmark}
             style={{
-              backgroundColor: isBookmarked ? "#e0f2fe" : "#fff",
+              backgroundColor: isBookmarked ? "#dbeafe" : "#fff",
               borderRadius: 12, paddingVertical: 14, alignItems: "center",
               borderWidth: 0.5, borderColor: isBookmarked ? "#7dd3fc" : "#e2e8f0",
               flexDirection: "row", justifyContent: "center", gap: 8,
@@ -264,7 +265,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
           >
             <Text style={{ fontSize: 16 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
             <Text style={{
-              color: isBookmarked ? "#0284c7" : "#475569",
+              color: isBookmarked ? "#122a4f" : "#475569",
               fontWeight: "600", fontSize: 15,
             }}>
               {isBookmarked ? "Bookmarked" : "Bookmark"}

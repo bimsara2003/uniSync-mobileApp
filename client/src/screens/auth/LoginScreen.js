@@ -32,13 +32,13 @@ export default function LoginScreen({ navigation }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#f8fafc" }}
+      style={{ flex: 1, backgroundColor: "#f0f9ff" }}
     >
       <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 24 }}>
 
         {/* Logo area */}
         <View style={{ marginBottom: 40, alignItems: "center" }}>
-          <Text style={{ fontSize: 32, fontWeight: "700", color: "#0ea5e9" }}>
+          <Text style={{ fontSize: 32, fontWeight: "700", color: "#1a3c6e" }}>
             UniSync
           </Text>
           <Text style={{ fontSize: 14, color: "#64748b", marginTop: 4 }}>
@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }) {
               borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
               paddingHorizontal: 14, paddingVertical: 12,
               fontSize: 14, color: "#0f172a", marginBottom: 16,
-              backgroundColor: "#f8fafc",
+              backgroundColor: "#f0f9ff",
             }}
           />
 
@@ -89,7 +89,7 @@ export default function LoginScreen({ navigation }) {
               borderWidth: 0.5, borderColor: "#cbd5e1", borderRadius: 10,
               paddingHorizontal: 14, paddingVertical: 12,
               fontSize: 14, color: "#0f172a", marginBottom: 24,
-              backgroundColor: "#f8fafc",
+              backgroundColor: "#f0f9ff",
             }}
           />
 
@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
             onPress={handleLogin}
             disabled={loading}
             style={{
-              backgroundColor: "#0ea5e9",
+              backgroundColor: "#1a3c6e",
               borderRadius: 10,
               paddingVertical: 14,
               alignItems: "center",
@@ -114,7 +114,7 @@ export default function LoginScreen({ navigation }) {
           onPress={() => navigation.navigate("ForgotPassword")}
           style={{ marginTop: 16, alignItems: "center" }}
         >
-          <Text style={{ color: "#0ea5e9", fontSize: 13, fontWeight: "500" }}>
+          <Text style={{ color: "#1a3c6e", fontSize: 13, fontWeight: "500" }}>
             Forgot password?
           </Text>
         </TouchableOpacity>
@@ -125,7 +125,7 @@ export default function LoginScreen({ navigation }) {
         >
           <Text style={{ color: "#64748b", fontSize: 13 }}>
             No account?{" "}
-            <Text style={{ color: "#0ea5e9", fontWeight: "600" }}>Register</Text>
+            <Text style={{ color: "#1a3c6e", fontWeight: "600" }}>Register</Text>
           </Text>
         </TouchableOpacity>
 

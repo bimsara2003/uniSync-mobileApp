@@ -174,11 +174,11 @@ export default function TabNavigator() {
   const isAdmin = user?.role?.includes("ADMIN");
   return (
     <Tab.Navigator
-      sceneContainerStyle={{ backgroundColor: "#f8fafc" }}
+      sceneContainerStyle={{ backgroundColor: "#f0f9ff" }}
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#0ea5e9",
+          backgroundColor: "#1a3c6e",
           borderTopColor: "transparent",
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
@@ -187,7 +187,7 @@ export default function TabNavigator() {
           paddingTop: 5,
         },
         tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "#bae6fd",
+        tabBarInactiveTintColor: "#93c5fd",
         tabBarLabel: ({ color }) => (
           <Text style={{ fontSize: 10, color }}>{route.name}</Text>
         ),
@@ -197,43 +197,66 @@ export default function TabNavigator() {
         name="Home"
         component={HomeStack}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home" size={24} color={color} />
           ),
+          tabBarItemStyle: { flex: 0, width: 70, marginLeft: 10 },
         }}
       />
       <Tab.Screen
-        name="Announcements"
-        component={AnnouncementsStack}
+        name="Admin"
+        component={AdminStack}
         options={{
-          tabBarLabel: () => null,
-          tabBarIcon: ({ focused }) => (
-            <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: focused ? "#ffffff" : "#e0f2fe",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: -24,
-                shadowColor: "#0ea5e9",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.4,
-                shadowRadius: 8,
-                elevation: 6,
-                borderWidth: 4,
-                borderColor: "#f8fafc",
-              }}
-            >
-              <Ionicons name="megaphone" size={24} color="#0ea5e9" />
-            </View>
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="settings" size={24} color={color} />
           ),
+          tabBarButton: isAdmin ? undefined : () => null,
+          tabBarItemStyle: { flex: 0, width: 58, marginLeft: 'auto' },
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person" size={24} color={color} />
+          ),
+          tabBarItemStyle: { flex: 0, width: 58 },
         }}
       />
       <Tab.Screen
         name="Resources"
         component={ResourcesStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="library" size={24} color={color} />
+          ),
+          tabBarItemStyle: { flex: 0, width: 58 },
+        }}
+      />
+      <Tab.Screen
+        name="Portfolio"
+        component={PortfolioStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="briefcase" size={24} color={color} />
+          ),
+          tabBarItemStyle: { flex: 0, width: 58 },
+        }}
+      />
+      <Tab.Screen
+        name="Events"
+        component={EventsStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="calendar" size={24} color={color} />
+          ),
+          tabBarItemStyle: { flex: 0, width: 58, marginRight: 5 },
+        }}
+      />
+      <Tab.Screen
+        name="Announcements"
+        component={AnnouncementsStack}
         options={{
           tabBarButton: () => null,
         }}
@@ -243,43 +266,6 @@ export default function TabNavigator() {
         component={LostFoundStack}
         options={{
           tabBarButton: () => null,
-        }}
-      />
-      <Tab.Screen
-        name="Events"
-        component={EventsStack}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Portfolio"
-        component={PortfolioStack}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="briefcase" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Admin"
-        component={AdminStack}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
-          tabBarButton: isAdmin ? undefined : () => null,
         }}
       />
     </Tab.Navigator>

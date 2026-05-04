@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
+import { Ionicons } from '@expo/vector-icons';
 
 const TYPES = [
   "PROJECT",
@@ -92,7 +93,7 @@ export default function CreatePortfolioItemScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Header */}
         <View
@@ -106,7 +107,7 @@ export default function CreatePortfolioItemScreen({ navigation }) {
             onPress={() => navigation.goBack()}
             style={{ marginRight: 12 }}
           >
-            <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
             Add Portfolio Item
@@ -125,9 +126,9 @@ export default function CreatePortfolioItemScreen({ navigation }) {
                     paddingHorizontal: 12,
                     paddingVertical: 8,
                     borderRadius: 20,
-                    backgroundColor: type === t ? "#0ea5e9" : "#fff",
+                    backgroundColor: type === t ? "#1a3c6e" : "#fff",
                     borderWidth: 1,
-                    borderColor: type === t ? "#0ea5e9" : "#e2e8f0",
+                    borderColor: type === t ? "#1a3c6e" : "#e2e8f0",
                   }}
                 >
                   <Text
@@ -235,7 +236,7 @@ export default function CreatePortfolioItemScreen({ navigation }) {
           <Switch
             value={isOngoing}
             onValueChange={setIsOngoing}
-            trackColor={{ true: "#0ea5e9" }}
+            trackColor={{ true: "#1a3c6e" }}
           />
         </View>
 
@@ -283,7 +284,7 @@ export default function CreatePortfolioItemScreen({ navigation }) {
           onPress={handleCreate}
           disabled={loading}
           style={{
-            backgroundColor: "#0ea5e9",
+            backgroundColor: "#1a3c6e",
             borderRadius: 12,
             paddingVertical: 14,
             alignItems: "center",

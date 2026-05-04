@@ -159,7 +159,7 @@ export default function LostFoundScreen({ navigation }) {
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#0ea5e9" />
+          <ActivityIndicator size="large" color="#1a3c6e" />
         </View>
       ) : filtered.length === 0 ? (
         <View style={styles.center}>
@@ -185,7 +185,7 @@ export default function LostFoundScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f8fafc" },
+  container: { flex: 1, backgroundColor: "#f0f9ff" },
   header: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
     paddingHorizontal: 16, paddingTop: 56, paddingBottom: 12,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: { fontSize: 20, fontWeight: "700", color: "#0f172a" },
   fab: {
-    backgroundColor: "#0ea5e9", paddingHorizontal: 14, paddingVertical: 8,
+    backgroundColor: "#1a3c6e", paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 20,
   },
   fabText: { color: "#fff", fontWeight: "700", fontSize: 13 },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18, paddingVertical: 7, borderRadius: 20,
     backgroundColor: "#fff", borderWidth: 1, borderColor: "#e2e8f0",
   },
-  tabActive: { backgroundColor: "#0ea5e9", borderColor: "#0ea5e9" },
+  tabActive: { backgroundColor: "#1a3c6e", borderColor: "#1a3c6e" },
   tabText: { fontSize: 13, fontWeight: "500", color: "#64748b" },
   tabTextActive: { color: "#fff", fontWeight: "700" },
   list: { padding: 12 },

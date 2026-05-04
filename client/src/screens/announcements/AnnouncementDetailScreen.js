@@ -7,12 +7,13 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
 import api from "../../api/axiosInstance";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 
 const CATEGORY_STYLE = {
   GENERAL: { bg: "#f1f5f9", text: "#475569" },
   EXAM:    { bg: "#fef3c7", text: "#92400e" },
-  EVENT:   { bg: "#dbeafe", text: "#1e40af" },
+  EVENT:   { bg: "#dbeafe", text: "#1a3c6e" },
   URGENT:  { bg: "#fee2e2", text: "#991b1b" },
 };
 
@@ -48,9 +49,9 @@ function LiveCountdown({ eventDate }) {
   return (
     <View style={{
       backgroundColor: "#f0f9ff", borderRadius: 14, padding: 20,
-      marginBottom: 20, borderWidth: 0.5, borderColor: "#bae6fd",
+      marginBottom: 20, borderWidth: 0.5, borderColor: "#93c5fd",
     }}>
-      <Text style={{ fontSize: 12, fontWeight: "600", color: "#0284c7", marginBottom: 14 }}>
+      <Text style={{ fontSize: 12, fontWeight: "600", color: "#122a4f", marginBottom: 14 }}>
         ⏱ EVENT COUNTDOWN
       </Text>
       <View style={{ flexDirection: "row", justifyContent: "center", gap: 8, alignItems: "center" }}>
@@ -127,7 +128,7 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
@@ -138,14 +139,14 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
   const initials = `${ann.postedBy?.firstName?.[0] || ""}${ann.postedBy?.lastName?.[0] || ""}`;
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
         paddingBottom: 14, flexDirection: "row", alignItems: "center",
         borderBottomWidth: 0.5, borderBottomColor: "#e2e8f0",
       }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 14 }}>
-          <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
         </TouchableOpacity>
         <Text style={{ fontSize: 16, fontWeight: "600", color: "#0f172a", flex: 1 }} numberOfLines={1}>
           {ann.title}
@@ -153,7 +154,7 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
         {isStaffOrAdmin && (
           <View style={{ flexDirection: "row", gap: 12 }}>
             <TouchableOpacity onPress={() => navigation.navigate("EditAnnouncement", { id })}>
-              <Text style={{ fontSize: 13, color: "#0ea5e9", fontWeight: "600" }}>Edit</Text>
+              <Text style={{ fontSize: 13, color: "#1a3c6e", fontWeight: "600" }}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleDelete}>
               <Text style={{ fontSize: 13, color: "#ef4444" }}>Delete</Text>
@@ -176,9 +177,9 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16, gap: 10 }}>
           <View style={{
             width: 40, height: 40, borderRadius: 20,
-            backgroundColor: "#e0f2fe", alignItems: "center", justifyContent: "center",
+            backgroundColor: "#dbeafe", alignItems: "center", justifyContent: "center",
           }}>
-            <Text style={{ fontWeight: "700", color: "#0284c7" }}>{initials}</Text>
+            <Text style={{ fontWeight: "700", color: "#122a4f" }}>{initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontWeight: "600", color: "#0f172a" }}>
@@ -240,9 +241,9 @@ export default function AnnouncementDetailScreen({ route, navigation }) {
                   </Text>
                 </View>
                 {downloading === att._id ? (
-                  <ActivityIndicator size="small" color="#0ea5e9" />
+                  <ActivityIndicator size="small" color="#1a3c6e" />
                 ) : (
-                  <Text style={{ color: "#0ea5e9", fontSize: 18 }}>↗</Text>
+                  <Text style={{ color: "#1a3c6e", fontSize: 18 }}>↗</Text>
                 )}
               </TouchableOpacity>
             ))}

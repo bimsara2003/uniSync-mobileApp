@@ -5,6 +5,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { resourcesAPI } from "../../api/resources";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function PendingResourcesScreen({ navigation }) {
   const [resources, setResources] = useState([]);
@@ -45,14 +46,14 @@ export default function PendingResourcesScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f0f9ff" }}>
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <View style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View style={{
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
@@ -60,7 +61,7 @@ export default function PendingResourcesScreen({ navigation }) {
         flexDirection: "row", alignItems: "center",
       }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 14 }}>
-          <Text style={{ fontSize: 22, color: "#0ea5e9" }}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
         </TouchableOpacity>
         <Text style={{ fontSize: 18, fontWeight: "700", color: "#0f172a" }}>
           Pending Review ({resources.length})
@@ -72,7 +73,7 @@ export default function PendingResourcesScreen({ navigation }) {
         keyExtractor={(i) => i._id}
         contentContainerStyle={{ padding: 16 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetch(); }} tintColor="#0ea5e9" />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetch(); }} tintColor="#1a3c6e" />
         }
         ListEmptyComponent={
           <View style={{ alignItems: "center", marginTop: 60 }}>

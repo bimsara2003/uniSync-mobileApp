@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { adminAPI } from "../../api/admin";
+import { Ionicons } from '@expo/vector-icons';
 
 const ROLE_FILTERS = ["ALL", "STUDENT", "STAFF", "REP", "ADMIN"];
 
@@ -63,13 +64,13 @@ export default function UserManagementScreen({ navigation }) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f9ff" }}>
       {/* Header */}
       <View
         style={{
@@ -83,7 +84,7 @@ export default function UserManagementScreen({ navigation }) {
           onPress={() => navigation.goBack()}
           style={{ marginRight: 12 }}
         >
-          <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#1a3c6e" />
         </TouchableOpacity>
         <Text style={{ fontSize: 20, fontWeight: "700", color: "#0f172a" }}>
           Users ({users.length})
@@ -125,9 +126,9 @@ export default function UserManagementScreen({ navigation }) {
                 paddingVertical: 7,
                 borderRadius: 20,
                 marginRight: 8,
-                backgroundColor: roleFilter === item ? "#0ea5e9" : "#fff",
+                backgroundColor: roleFilter === item ? "#1a3c6e" : "#fff",
                 borderWidth: 1,
-                borderColor: roleFilter === item ? "#0ea5e9" : "#e2e8f0",
+                borderColor: roleFilter === item ? "#1a3c6e" : "#e2e8f0",
               }}
             >
               <Text
@@ -153,7 +154,7 @@ export default function UserManagementScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#0ea5e9"
+            tintColor="#1a3c6e"
           />
         }
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
@@ -186,13 +187,13 @@ export default function UserManagementScreen({ navigation }) {
                 height: 44,
                 borderRadius: 22,
                 marginRight: 12,
-                backgroundColor: "#e0f2fe",
+                backgroundColor: "#dbeafe",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
               <Text
-                style={{ fontSize: 16, fontWeight: "700", color: "#0ea5e9" }}
+                style={{ fontSize: 16, fontWeight: "700", color: "#1a3c6e" }}
               >
                 {item.firstName?.[0]}
                 {item.lastName?.[0]}
