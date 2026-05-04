@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
-  Alert, ActivityIndicator, Switch, Platform,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+  Switch,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
@@ -12,8 +19,12 @@ const CATEGORIES = ["GENERAL", "EXAM", "EVENT", "URGENT"];
 export default function EditAnnouncementScreen({ route, navigation }) {
   const { id } = route.params;
   const [form, setForm] = useState({
-    title: "", body: "", category: "GENERAL",
-    isPinned: false, eventDate: "", eventVenue: "",
+    title: "",
+    body: "",
+    category: "GENERAL",
+    isPinned: false,
+    eventDate: "",
+    eventVenue: "",
   });
   const [coverImage, setCoverImage] = useState(null);
   const [attachments, setAttachments] = useState([]);
@@ -36,7 +47,7 @@ export default function EditAnnouncementScreen({ route, navigation }) {
         eventDate: ann.eventDate || "",
         eventVenue: ann.eventVenue || "",
       });
-      // We don't load existing images/files into the picker state 
+      // We don't load existing images/files into the picker state
       // but they remain on the server unless replaced.
     } catch (err) {
       Alert.alert("Error", "Could not load announcement details");
@@ -51,7 +62,10 @@ export default function EditAnnouncementScreen({ route, navigation }) {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission needed", "Allow photo library access to add a cover image");
+      Alert.alert(
+        "Permission needed",
+        "Allow photo library access to add a cover image",
+      );
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -67,10 +81,13 @@ export default function EditAnnouncementScreen({ route, navigation }) {
       return;
     }
     const result = await DocumentPicker.getDocumentAsync({
-      type: ["application/pdf", "application/msword",
+      type: [
+        "application/pdf",
+        "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.ms-powerpoint",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation"],
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      ],
       copyToCacheDirectory: true,
     });
     if (!result.canceled && result.assets?.[0]) {
@@ -111,13 +128,24 @@ export default function EditAnnouncementScreen({ route, navigation }) {
 
       await api.put(`/announcements/${id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
+        timeout: 120000,
       });
 
       Alert.alert("Success", "Announcement updated!", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (err) {
-      Alert.alert("Error", err.response?.data?.message || "Could not update announcement");
+      if (err.code === "ECONNABORTED") {
+        Alert.alert(
+          "Error",
+          "Upload timed out. Please try again or use smaller files.",
+        );
+      } else {
+        Alert.alert(
+          "Error",
+          err.response?.data?.message || "Could not update announcement",
+        );
+      }
     } finally {
       setUpdating(false);
     }
@@ -133,30 +161,52 @@ export default function EditAnnouncementScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-      <View style={{
-        backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
-        paddingBottom: 14, flexDirection: "row", alignItems: "center",
-        borderBottomWidth: 0.5, borderBottomColor: "#e2e8f0",
-      }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 14 }}>
+      <View
+        style={{
+          backgroundColor: "#fff",
+          paddingTop: 56,
+          paddingHorizontal: 20,
+          paddingBottom: 14,
+          flexDirection: "row",
+          alignItems: "center",
+          borderBottomWidth: 0.5,
+          borderBottomColor: "#e2e8f0",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginRight: 14 }}
+        >
           <Text style={{ fontSize: 24, color: "#0ea5e9" }}>←</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: 18, fontWeight: "600", color: "#0f172a" }}>Edit Announcement</Text>
+        <Text style={{ fontSize: 18, fontWeight: "600", color: "#0f172a" }}>
+          Edit Announcement
+        </Text>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>Title *</Text>
+        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>
+          Title *
+        </Text>
         <TextInput
           value={form.title}
           onChangeText={set("title")}
           style={{
-            backgroundColor: "#fff", borderRadius: 10, borderWidth: 0.5,
-            borderColor: "#cbd5e1", paddingHorizontal: 14, paddingVertical: 12,
-            fontSize: 14, color: "#0f172a", marginBottom: 16,
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            borderWidth: 0.5,
+            borderColor: "#cbd5e1",
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+            fontSize: 14,
+            color: "#0f172a",
+            marginBottom: 16,
           }}
         />
 
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>Body *</Text>
+        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>
+          Body *
+        </Text>
         <TextInput
           value={form.body}
           onChangeText={set("body")}
@@ -164,38 +214,71 @@ export default function EditAnnouncementScreen({ route, navigation }) {
           numberOfLines={6}
           textAlignVertical="top"
           style={{
-            backgroundColor: "#fff", borderRadius: 10, borderWidth: 0.5,
-            borderColor: "#cbd5e1", paddingHorizontal: 14, paddingVertical: 12,
-            fontSize: 14, color: "#0f172a", marginBottom: 16, minHeight: 130,
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            borderWidth: 0.5,
+            borderColor: "#cbd5e1",
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+            fontSize: 14,
+            color: "#0f172a",
+            marginBottom: 16,
+            minHeight: 130,
           }}
         />
 
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>Category</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
+          Category
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 8,
+            marginBottom: 16,
+          }}
+        >
           {CATEGORIES.map((c) => (
             <TouchableOpacity
               key={c}
               onPress={() => set("category")(c)}
               style={{
-                paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 20,
                 backgroundColor: form.category === c ? "#0ea5e9" : "#f1f5f9",
               }}
             >
-              <Text style={{
-                fontSize: 13, fontWeight: "500",
-                color: form.category === c ? "#fff" : "#64748b",
-              }}>{c}</Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "500",
+                  color: form.category === c ? "#fff" : "#64748b",
+                }}
+              >
+                {c}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <View style={{
-          flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-          backgroundColor: "#fff", borderRadius: 10, padding: 14,
-          borderWidth: 0.5, borderColor: "#e2e8f0", marginBottom: 16,
-        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 14,
+            borderWidth: 0.5,
+            borderColor: "#e2e8f0",
+            marginBottom: 16,
+          }}
+        >
           <View>
-            <Text style={{ fontSize: 14, fontWeight: "500", color: "#0f172a" }}>📌 Pin this announcement</Text>
+            <Text style={{ fontSize: 14, fontWeight: "500", color: "#0f172a" }}>
+              📌 Pin this announcement
+            </Text>
           </View>
           <Switch
             value={form.isPinned}
@@ -207,40 +290,63 @@ export default function EditAnnouncementScreen({ route, navigation }) {
 
         {form.category === "EVENT" && (
           <>
-            <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>Event date (ISO format)</Text>
+            <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>
+              Event date (ISO format)
+            </Text>
             <TextInput
               value={form.eventDate}
               onChangeText={set("eventDate")}
               style={{
-                backgroundColor: "#fff", borderRadius: 10, borderWidth: 0.5,
-                borderColor: "#cbd5e1", paddingHorizontal: 14, paddingVertical: 12,
-                fontSize: 14, color: "#0f172a", marginBottom: 16,
+                backgroundColor: "#fff",
+                borderRadius: 10,
+                borderWidth: 0.5,
+                borderColor: "#cbd5e1",
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+                fontSize: 14,
+                color: "#0f172a",
+                marginBottom: 16,
               }}
             />
-            <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>Venue</Text>
+            <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>
+              Venue
+            </Text>
             <TextInput
               value={form.eventVenue}
               onChangeText={set("eventVenue")}
               style={{
-                backgroundColor: "#fff", borderRadius: 10, borderWidth: 0.5,
-                borderColor: "#cbd5e1", paddingHorizontal: 14, paddingVertical: 12,
-                fontSize: 14, color: "#0f172a", marginBottom: 16,
+                backgroundColor: "#fff",
+                borderRadius: 10,
+                borderWidth: 0.5,
+                borderColor: "#cbd5e1",
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+                fontSize: 14,
+                color: "#0f172a",
+                marginBottom: 16,
               }}
             />
           </>
         )}
 
-        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>Update cover image (optional)</Text>
+        <Text style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
+          Update cover image (optional)
+        </Text>
         <TouchableOpacity
           onPress={pickImage}
           style={{
             backgroundColor: coverImage ? "#f0f9ff" : "#fff",
-            borderRadius: 10, borderWidth: 0.5,
+            borderRadius: 10,
+            borderWidth: 0.5,
             borderColor: coverImage ? "#bae6fd" : "#cbd5e1",
-            padding: 16, alignItems: "center", marginBottom: 16,
+            padding: 16,
+            alignItems: "center",
+            marginBottom: 16,
           }}
         >
-          <Text style={{ fontSize: 13, color: coverImage ? "#0284c7" : "#94a3b8" }}>
+          <Text
+            style={{ fontSize: 13, color: coverImage ? "#0284c7" : "#94a3b8" }}
+          >
             {coverImage ? "✓ Image selected" : "📷 Tap to replace cover image"}
           </Text>
         </TouchableOpacity>
@@ -249,14 +355,20 @@ export default function EditAnnouncementScreen({ route, navigation }) {
           onPress={handleUpdate}
           disabled={updating}
           style={{
-            backgroundColor: "#0ea5e9", borderRadius: 12,
-            paddingVertical: 16, alignItems: "center", marginBottom: 40,
+            backgroundColor: "#0ea5e9",
+            borderRadius: 12,
+            paddingVertical: 16,
+            alignItems: "center",
+            marginBottom: 40,
           }}
         >
-          {updating
-            ? <ActivityIndicator color="#fff" />
-            : <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Save Changes</Text>
-          }
+          {updating ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>
+              Save Changes
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </View>
