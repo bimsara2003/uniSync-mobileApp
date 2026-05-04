@@ -21,6 +21,7 @@ import PendingResourcesScreen   from "../screens/resources/PendingResourcesScree
 import LostFoundScreen          from "../screens/lostfound/LostFoundScreen";
 import LostFoundDetailScreen    from "../screens/lostfound/LostFoundDetailScreen";
 import CreateLostFoundScreen    from "../screens/lostfound/CreateLostFoundScreen";
+import EditLostFoundScreen      from "../screens/lostfound/EditLostFoundScreen";
 
 // Profile
 import ProfileScreen from "../screens/profile/ProfileScreen";
@@ -73,6 +74,7 @@ function LostFoundStack() {
       <Stack.Screen name="LostFoundList"   component={LostFoundScreen} />
       <Stack.Screen name="LostFoundDetail" component={LostFoundDetailScreen} />
       <Stack.Screen name="CreateLostFound" component={CreateLostFoundScreen} />
+      <Stack.Screen name="EditLostFound"   component={EditLostFoundScreen} />
     </Stack.Navigator>
   );
 }
