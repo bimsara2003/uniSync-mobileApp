@@ -254,17 +254,16 @@ export default function TabNavigator() {
           ),
         }}
       />
-      {isAdmin && (
-        <Tab.Screen
-          name="Admin"
-          component={AdminStack}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Text style={{ fontSize: 20, color }}>⚙️</Text>
-            ),
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="Admin"
+        component={AdminStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>⚙️</Text>
+          ),
+          tabBarButton: isAdmin ? undefined : () => null,
+        }}
+      />
     </Tab.Navigator>
   );
 }
