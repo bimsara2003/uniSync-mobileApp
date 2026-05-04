@@ -11,6 +11,7 @@ const {
 const { protect, rep } = require("../middleware/authMiddleware");
 const { upload } = require("../middleware/uploadMiddleware");
 const Event = require("../models/eventModel");
+const registrationRoute = require("./registrationRoute");
 
 router.get("/", protect, getAllEvents);
 router.get("/:id", protect, getEventById);
@@ -18,6 +19,7 @@ router.post("/", protect, rep, createEvent);
 router.put("/:id", protect, rep, updateEvent);
 router.delete("/:id", protect, rep, deleteEvent);
 router.patch("/:id/status", protect, rep, updateEventStatus);
+router.use("/:id/registrations", registrationRoute);
 
 router.post(
   "/:id/banner",
