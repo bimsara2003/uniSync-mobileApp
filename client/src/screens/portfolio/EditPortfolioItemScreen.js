@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -8,6 +9,7 @@ import {
   Switch,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
@@ -37,6 +39,21 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
   const [githubLink, setGithubLink] = useState("");
   const [liveLink, setLiveLink] = useState("");
   const [isVisible, setIsVisible] = useState(true);
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   useEffect(() => {
     portfolioAPI
@@ -59,6 +76,7 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
         setGithubLink(data.githubLink ?? "");
         setLiveLink(data.liveLink ?? "");
         setIsVisible(data.isVisible ?? true);
+        setCurrentImageUrl(data.imageUrl ?? null);
       })
       .catch(() => {
         Alert.alert("Error", "Could not load item.");
@@ -74,23 +92,28 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
     }
     setSaving(true);
     try {
-      const payload = {
-        type,
-        title: title.trim(),
-        description: description.trim(),
-        organization: organization.trim(),
-        startDate: startDate || undefined,
-        endDate: isOngoing ? undefined : endDate || undefined,
-        isOngoing,
-        tags: tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        githubLink: githubLink.trim(),
-        liveLink: liveLink.trim(),
-        isVisible,
-      };
-      await portfolioAPI.updateItem(itemId, payload);
+      const formData = new FormData();
+      formData.append("type", type);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("organization", organization.trim());
+      if (startDate) formData.append("startDate", startDate);
+      if (!isOngoing && endDate) formData.append("endDate", endDate);
+      formData.append("isOngoing", isOngoing);
+      formData.append("tags", JSON.stringify(tags.split(",").map(t => t.trim()).filter(Boolean)));
+      formData.append("githubLink", githubLink.trim());
+      formData.append("liveLink", liveLink.trim());
+      formData.append("isVisible", isVisible);
+
+      if (image) {
+        const uri = image.uri;
+        const name = uri.split("/").pop();
+        const match = /\.(\w+)$/.exec(name);
+        const type = match ? `image/${match[1]}` : `image`;
+        formData.append("image", { uri, name, type });
+      }
+
+      await portfolioAPI.updateItem(itemId, formData);
       Alert.alert("Saved!", "Item updated.", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
@@ -175,6 +198,44 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
             onChangeText={setOrganization}
             style={inputStyle}
           />
+        </Field>
+
+        <Field label="Item Image">
+          <TouchableOpacity
+            onPress={pickImage}
+            style={{
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: "#e2e8f0",
+              borderStyle: "dashed",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
+            }}
+          >
+            {image ? (
+              <Image
+                source={{ uri: image.uri }}
+                style={{ width: "100%", height: "100%" }}
+                resizeMode="cover"
+              />
+            ) : currentImageUrl ? (
+              <Image
+                source={{ uri: currentImageUrl }}
+                style={{ width: "100%", height: "100%" }}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={{ alignItems: "center" }}>
+                <Text style={{ fontSize: 32, marginBottom: 8 }}>📸</Text>
+                <Text style={{ color: "#64748b", fontSize: 13 }}>
+                  Tap to change image
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </Field>
 
         <Field label="Description">
