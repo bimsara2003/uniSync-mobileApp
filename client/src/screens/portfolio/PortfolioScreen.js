@@ -1,13 +1,24 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity, Image,
   ActivityIndicator, Alert, SafeAreaView, Switch, RefreshControl,
+  Linking,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import { authAPI } from "../../api/auth";
 
 const ITEM_TYPES = ["ALL", "PROJECT", "ACHIEVEMENT", "CERTIFICATION", "EXPERIENCE", "EXTRACURRICULAR"];
+
+// Helper to get full image URL
+const getFullImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  // Adjust this to your server's base URL
+  return `http://localhost:5000${path.startsWith("/") ? "" : "/"}${path}`;
+};
 
 const TYPE_COLORS = {
   PROJECT:        { bg: "#eff6ff", text: "#2563eb" },
@@ -18,7 +29,7 @@ const TYPE_COLORS = {
 };
 
 export default function PortfolioScreen({ navigation }) {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [portfolio, setPortfolio]   = useState(null);
   const [items, setItems]           = useState([]);
   const [filter, setFilter]         = useState("ALL");
@@ -37,6 +48,44 @@ export default function PortfolioScreen({ navigation }) {
       setRefreshing(false);
     }
   }, []);
+
+  const handleUpdatePhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      setLoading(true);
+      try {
+        const file = result.assets[0];
+        const formData = new FormData();
+        
+        // For Web compatibility, we need to handle the file blob correctly
+        if (Platform.OS === "web") {
+          const response = await fetch(file.uri);
+          const blob = await response.blob();
+          formData.append("photo", blob, "profile.jpg");
+        } else {
+          formData.append("photo", {
+            uri: file.uri,
+            name: "profile.jpg",
+            type: "image/jpeg",
+          });
+        }
+
+        await authAPI.uploadProfilePhoto(formData);
+        fetchData(); // Refresh data to show new photo
+        Alert.alert("Success", "Profile photo updated!");
+      } catch (err) {
+        Alert.alert("Error", "Failed to upload photo");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useFocusEffect(useCallback(() => { fetchData(); }, [fetchData]));
 
@@ -60,19 +109,30 @@ export default function PortfolioScreen({ navigation }) {
           backgroundColor: "#0ea5e9", paddingTop: 40, paddingBottom: 24,
           alignItems: "center", paddingHorizontal: 20,
         }}>
-          {portfolio?.userId?.profilePictureUrl ? (
-            <Image
-              source={{ uri: portfolio.userId.profilePictureUrl }}
-              style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 12, borderWidth: 3, borderColor: "#fff" }}
-            />
-          ) : (
+          <TouchableOpacity onPress={handleUpdatePhoto} style={{ position: "relative" }}>
+            {portfolio?.userId?.profilePictureUrl ? (
+              <Image
+                source={{ uri: getFullImageUrl(portfolio.userId.profilePictureUrl) }}
+                style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 12, borderWidth: 3, borderColor: "#fff" }}
+              />
+            ) : (
+              <View style={{
+                width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.3)",
+                justifyContent: "center", alignItems: "center", marginBottom: 12,
+              }}>
+                <Text style={{ fontSize: 36 }}>👤</Text>
+              </View>
+            )}
+            {/* Small Plus Icon */}
             <View style={{
-              width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.3)",
-              justifyContent: "center", alignItems: "center", marginBottom: 12,
+              position: "absolute", bottom: 15, right: 0,
+              backgroundColor: "#fff", width: 24, height: 24,
+              borderRadius: 12, justifyContent: "center", alignItems: "center",
+              borderWidth: 2, borderColor: "#0ea5e9",
             }}>
-              <Text style={{ fontSize: 36 }}>👤</Text>
+              <Text style={{ color: "#0ea5e9", fontSize: 16, fontWeight: "bold", lineHeight: 18 }}>+</Text>
             </View>
-          )}
+          </TouchableOpacity>
           <Text style={{ color: "#fff", fontSize: 20, fontWeight: "700" }}>
             {portfolio?.userId?.firstName} {portfolio?.userId?.lastName}
           </Text>
@@ -131,9 +191,9 @@ export default function PortfolioScreen({ navigation }) {
         {/* ── Links ── */}
         {(portfolio?.linkedIn || portfolio?.gitHub || portfolio?.website) && (
           <View style={{ paddingHorizontal: 20, paddingTop: 12, flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
-            {portfolio.linkedIn && <LinkBadge label="LinkedIn" icon="💼" />}
-            {portfolio.gitHub   && <LinkBadge label="GitHub"   icon="🐙" />}
-            {portfolio.website  && <LinkBadge label="Website"  icon="🌐" />}
+            {portfolio.linkedIn && <LinkBadge label="LinkedIn" icon="💼" url={portfolio.linkedIn} />}
+            {portfolio.gitHub   && <LinkBadge label="GitHub"   icon="🐙" url={portfolio.gitHub} />}
+            {portfolio.website  && <LinkBadge label="Website"  icon="🌐" url={portfolio.website} />}
           </View>
         )}
 
@@ -236,16 +296,30 @@ function TypeBadge({ type }) {
   );
 }
 
-function LinkBadge({ label, icon }) {
+function LinkBadge({ label, icon, url }) {
+  const handlePress = () => {
+    if (!url) return;
+    let finalUrl = url;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      finalUrl = `https://${url}`;
+    }
+    Linking.openURL(finalUrl).catch(() => {
+      Alert.alert("Error", "Could not open URL");
+    });
+  };
+
   return (
-    <View style={{
-      flexDirection: "row", alignItems: "center", gap: 4,
-      backgroundColor: "#fff", borderWidth: 0.5, borderColor: "#e2e8f0",
-      borderRadius: 16, paddingHorizontal: 10, paddingVertical: 5,
-    }}>
+    <TouchableOpacity 
+      onPress={handlePress}
+      style={{
+        flexDirection: "row", alignItems: "center", gap: 4,
+        backgroundColor: "#fff", borderWidth: 0.5, borderColor: "#e2e8f0",
+        borderRadius: 16, paddingHorizontal: 10, paddingVertical: 5,
+      }}
+    >
       <Text style={{ fontSize: 12 }}>{icon}</Text>
       <Text style={{ fontSize: 12, color: "#64748b", fontWeight: "500" }}>{label}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
