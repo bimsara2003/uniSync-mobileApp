@@ -1,5 +1,23 @@
 const Announcement = require("../../models/announcementModel");
 const { deleteFromS3 } = require("../../utils/s3Delete");
+const { getPresignedUrl } = require("../../utils/s3Upload");
+
+// ── Helper: attach presigned URLs to a plain announcement object ──
+const withPresignedUrls = async (ann) => {
+  const obj = ann.toObject ? ann.toObject() : { ...ann };
+  if (obj.coverImageKey) {
+    obj.coverImageUrl = await getPresignedUrl(obj.coverImageKey, 3600);
+  }
+  if (obj.attachments?.length) {
+    obj.attachments = await Promise.all(
+      obj.attachments.map(async (att) => ({
+        ...att,
+        fileUrl: att.s3Key ? await getPresignedUrl(att.s3Key, 3600) : att.fileUrl,
+      }))
+    );
+  }
+  return obj;
+};
 
 // ── CREATE ────────────────────────────────────────────────
 exports.createAnnouncement = async (req, res) => {
@@ -60,7 +78,8 @@ exports.getAnnouncements = async (req, res) => {
       .populate("targetDepartment", "name")
       .sort({ isPinned: -1, createdAt: -1 });  // pinned first
 
-    res.status(200).json(announcements);
+    const result = await Promise.all(announcements.map(withPresignedUrls));
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -78,7 +97,7 @@ exports.getAnnouncementById = async (req, res) => {
       return res.status(404).json({ message: "Announcement not found" });
     }
 
-    res.status(200).json(ann);
+    res.status(200).json(await withPresignedUrls(ann));
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
