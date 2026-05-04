@@ -8,9 +8,14 @@ import {
   Switch,
   ActivityIndicator,
   Alert,
+  Image,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { eventsAPI } from "../../api/events";
+import api from "../../api/axiosInstance";
+import * as SecureStore from "expo-secure-store";
+import * as ImagePicker from "expo-image-picker";
 
 const CATEGORIES = ["ACADEMIC", "SPORTS", "SOCIETY", "CULTURAL", "CAREER"];
 
@@ -25,7 +30,21 @@ export default function CreateEventScreen({ navigation }) {
   const [requiresRegistration, setRequiresReg] = useState(false);
   const [capacity, setCapacity] = useState("");
   const [registrationDeadline, setRegDeadline] = useState(""); // YYYY-MM-DD
+  const [bannerUri, setBannerUri] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setBannerUri(result.assets[0].uri);
+    }
+  };
 
   const validate = () => {
     if (!title.trim()) return "Title is required";
@@ -58,14 +77,56 @@ export default function CreateEventScreen({ navigation }) {
         capacity: capacity ? Number(capacity) : null,
         registrationDeadline: registrationDeadline || undefined,
       };
-      await eventsAPI.create(payload);
+      const res = await eventsAPI.create(payload);
+
+      if (bannerUri) {
+        console.log("Uploading banner for event:", res.data.event._id);
+        const formData = new FormData();
+        const filename = bannerUri.split("/").pop();
+        const match = /\.([a-zA-Z0-9]+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : `image/jpeg`;
+
+        formData.append("photo", {
+          uri: Platform.OS === "android" ? bannerUri : bannerUri.replace("file://", ""),
+          name: filename,
+          type,
+        });
+
+        try {
+          const token = await SecureStore.getItemAsync("accessToken");
+          const uploadUrl = `${api.defaults.baseURL}/events/${res.data.event._id}/banner`;
+          
+          console.log("Using fetch to upload to:", uploadUrl);
+          
+          const fetchResponse = await fetch(uploadUrl, {
+            method: "POST",
+            body: formData,
+            headers: {
+              "Accept": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+          });
+
+          if (!fetchResponse.ok) {
+            const errorData = await fetchResponse.json();
+            throw new Error(errorData.message || "Upload failed");
+          }
+
+          console.log("Banner uploaded successfully via fetch");
+        } catch (uploadError) {
+          console.error("Banner upload failed:", uploadError.message);
+          Alert.alert("Event Created", "Event was created but the banner upload failed: " + uploadError.message);
+          return; 
+        }
+      }
+
       Alert.alert("Created!", "Event created successfully.", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
       Alert.alert(
         "Error",
-        e.response?.data?.message || "Could not create event.",
+        e.response?.data?.message || JSON.stringify(e.response?.data) || e.message || "Could not create event."
       );
     } finally {
       setLoading(false);
@@ -93,6 +154,26 @@ export default function CreateEventScreen({ navigation }) {
             Create Event
           </Text>
         </View>
+
+        {/* Banner Upload */}
+        <TouchableOpacity
+          onPress={pickImage}
+          style={{
+            height: 160,
+            backgroundColor: "#e2e8f0",
+            borderRadius: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 20,
+            overflow: "hidden",
+          }}
+        >
+          {bannerUri ? (
+            <Image source={{ uri: bannerUri }} style={{ width: "100%", height: "100%" }} />
+          ) : (
+            <Text style={{ color: "#64748b", fontWeight: "600" }}>+ Add Event Banner</Text>
+          )}
+        </TouchableOpacity>
 
         <Field label="Title *">
           <TextInput
