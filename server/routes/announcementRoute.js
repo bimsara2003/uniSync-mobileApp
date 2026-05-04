@@ -2,13 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { protect, staff } = require("../middleware/authMiddleware");
 const ctrl = require("../controllers/announcements/announcementController");
-const { uploadCoverImage, uploadAttachments } = require("../utils/announcementUpload");
-const multer = require("multer");
+const { uploadAnnouncementFiles } = require("../utils/announcementUpload");
 
 // Combine cover image + attachments in one multipart request
-const uploadFields = multer({
-  storage: uploadCoverImage.storage, // shared S3 storage config is fine
-}).fields([
+const uploadFields = uploadAnnouncementFiles.fields([
   { name: "coverImage",   maxCount: 1 },
   { name: "attachments",  maxCount: 5 },
 ]);
