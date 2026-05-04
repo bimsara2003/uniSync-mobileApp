@@ -1,4 +1,5 @@
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
@@ -31,7 +32,6 @@ const createS3Uploader = ({
     storage: multerS3({
       s3,
       bucket: process.env.AWS_S3_BUCKET,
-      acl: "public-read",
       metadata: (req, file, cb) => {
         cb(null, { fieldName: file.fieldname });
       },
@@ -61,4 +61,17 @@ const createS3Uploader = ({
   });
 };
 
-module.exports = { createS3Uploader, s3 };
+/**
+ * Generates a presigned GET URL for a private S3 object.
+ * @param {string} key - The S3 object key
+ * @param {number} expiresIn - Expiry in seconds (default: 3600)
+ */
+const getPresignedUrl = (key, expiresIn = 3600) => {
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: key,
+  });
+  return getSignedUrl(s3, command, { expiresIn });
+};
+
+module.exports = { createS3Uploader, s3, getPresignedUrl };
