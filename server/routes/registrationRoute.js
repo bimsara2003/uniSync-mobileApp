@@ -1,22 +1,20 @@
-const express = require('express');
-const router=express.Router({mergeParams:true});
-const{
-    registerForEvent,
-    cancelRegistration,
-    getEventRegistrations,
-    getMyregistrationStatus,
-    getMyRegisteredEvents,
+const express = require("express");
+const router = express.Router({ mergeParams: true });
+const {
+  registerForEvent,
+  cancelRegistration,
+  getEventRegistrations,
+  getMyRegistrationStatus,
+  getMyRegisteredEvents,
 } = require("../controllers/registrationController");
-const {protect} = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/",protect,registerForEvent);
+router.post("/", protect, registerForEvent);
 
-router.delete("/",protect,cancelRegistration);
+router.delete("/", protect, cancelRegistration);
 
-router.get("/",protect,getEventRegistrations);
+router.get("/", protect, getEventRegistrations);
 
-router.get("/me",protect,getMyregistrationStatus);
+router.get("/me", protect, getMyRegistrationStatus);
 
-
-module.exports=router;
-
+module.exports = router;
