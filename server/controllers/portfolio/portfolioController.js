@@ -1,5 +1,6 @@
 const Portfolio = require("../../models/portfolioModel");
 const PortfolioItem = require("../../models/portfolioItemModel");
+const User = require("../../models/userModel");
 const { createS3Uploader } = require("../../utils/s3Upload");
 const { deleteFromS3 } = require("../../utils/s3Delete");
 
@@ -92,6 +93,20 @@ const updateMyPortfolio = async (req, res) => {
     if (isPublic !== undefined) portfolio.isPublic = isPublic;
 
     await portfolio.save();
+
+    // Update user profile picture if uploaded
+    if (req.file) {
+      // Delete old profile picture from S3 if exists
+      if (req.user.profilePictureS3Key) {
+        await deleteFromS3(req.user.profilePictureS3Key);
+      }
+      
+      // Update user document
+      const user = await User.findById(req.user._id);
+      user.profilePictureUrl = req.file.location;
+      user.profilePictureS3Key = req.file.key;
+      await user.save();
+    }
 
     res.status(200).json({ message: "Portfolio updated", portfolio });
   } catch (error) {
