@@ -1,4 +1,4 @@
-import api from "./client";
+import api from "./axiosInstance";
 
 export const portfolioAPI = {
   // Portfolio profile
