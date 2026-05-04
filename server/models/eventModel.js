@@ -46,9 +46,9 @@ const eventSchema = new mongoose.Schema(
             type:Number,
             default:null,
         },
-        registrationdeadline:{
-            type:Number,
-            default:0,
+        registrationDeadline:{
+            type:Date,
+            default:null,
         },
         status:{
             type:String,
@@ -67,20 +67,16 @@ const eventSchema = new mongoose.Schema(
 );
 
 
-eventSchema.pre("save", function (next) {
+eventSchema.pre("save", function () {
     if (this.requiresRegistration) {
         if(!this.capacity){
-            return next(new Error("Capacity is required when registration is enabled"));
+            throw new Error("Capacity is required when registration is enabled");
         }
         if(!this.registrationDeadline){
-            return next(
-                new Error("Registration deadline is required when registration is enabled")
-            );
+            throw new Error("Registration deadline is required when registration is enabled");
         }
         if(this.registrationDeadline >= this.date){
-            return next(
-                new Error("Registration deadline must be before the event date")
-            );
+            throw new Error("Registration deadline must be before the event date");
         }
     }
     
@@ -89,8 +85,6 @@ eventSchema.pre("save", function (next) {
         this.registrationDeadline = null;
         this.registrationCount=0;
     }
-
-    next();
 });
 
 module.exports = mongoose.model("Event", eventSchema);

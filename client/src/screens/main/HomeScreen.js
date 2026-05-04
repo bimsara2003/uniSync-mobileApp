@@ -12,6 +12,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
+import { Ionicons } from "@expo/vector-icons";
 
 const CATEGORY_STYLE = {
   GENERAL: { bg: "#f1f5f9", text: "#475569" },
@@ -26,64 +27,76 @@ const ROLE_STYLE = {
   student: { bg: "#dcfce7", text: "#166534", label: "Student" },
 };
 
-function StatCard({ icon, count, label, color }) {
+function StatCard({ iconName, count, label, color }) {
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: "#fff",
-        borderRadius: 14,
-        padding: 14,
+        borderRadius: 16,
+        padding: 16,
         alignItems: "center",
-        borderWidth: 0.5,
-        borderColor: "#e2e8f0",
+        shadowColor: color,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+        borderWidth: 1,
+        borderColor: "#f1f5f9",
       }}
     >
-      <Text style={{ fontSize: 24 }}>{icon}</Text>
-      <Text style={{ fontSize: 22, fontWeight: "700", color: color, marginTop: 4 }}>
+      <View style={{ backgroundColor: color + "15", padding: 10, borderRadius: 12, marginBottom: 8 }}>
+        <Ionicons name={iconName} size={24} color={color} />
+      </View>
+      <Text style={{ fontSize: 24, fontWeight: "800", color: "#0f172a" }}>
         {count}
       </Text>
-      <Text style={{ fontSize: 11, color: "#94a3b8", textAlign: "center", marginTop: 2 }}>
+      <Text style={{ fontSize: 12, fontWeight: "600", color: "#64748b", textAlign: "center", marginTop: 4 }}>
         {label}
       </Text>
     </View>
   );
 }
 
-function QuickAction({ icon, label, subtitle, onPress, accent }) {
+function QuickAction({ iconName, label, subtitle, onPress, accent }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.75}
+      activeOpacity={0.7}
       style={{
         backgroundColor: "#fff",
-        borderRadius: 14,
+        borderRadius: 16,
         padding: 16,
         marginBottom: 12,
         flexDirection: "row",
         alignItems: "center",
-        borderWidth: 0.5,
-        borderColor: "#e2e8f0",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 8,
+        elevation: 2,
+        borderWidth: 1,
+        borderColor: "#f8fafc",
       }}
     >
       <View
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 12,
-          backgroundColor: accent + "1a",
+          width: 48,
+          height: 48,
+          borderRadius: 14,
+          backgroundColor: accent + "15",
           alignItems: "center",
           justifyContent: "center",
-          marginRight: 14,
+          marginRight: 16,
         }}
       >
-        <Text style={{ fontSize: 22 }}>{icon}</Text>
+        <Ionicons name={iconName} size={24} color={accent} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 15, fontWeight: "600", color: "#0f172a" }}>{label}</Text>
-        <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{subtitle}</Text>
+        <Text style={{ fontSize: 16, fontWeight: "700", color: "#0f172a", marginBottom: 4 }}>{label}</Text>
+        <Text style={{ fontSize: 13, color: "#64748b" }}>{subtitle}</Text>
       </View>
-      <Text style={{ fontSize: 18, color: "#cbd5e1" }}>›</Text>
+      <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
     </TouchableOpacity>
   );
 }
@@ -95,52 +108,56 @@ function RecentAnnouncementCard({ item, onPress }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.75}
+      activeOpacity={0.7}
       style={{
         backgroundColor: "#fff",
-        borderRadius: 14,
-        padding: 14,
-        marginBottom: 10,
-        borderWidth: 0.5,
-        borderColor: item.isPinned ? "#bae6fd" : "#e2e8f0",
-        borderLeftWidth: item.isPinned ? 3 : 0.5,
-        borderLeftColor: item.isPinned ? "#0ea5e9" : "#e2e8f0",
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 8,
+        elevation: 2,
+        borderLeftWidth: 4,
+        borderLeftColor: item.isPinned ? "#0ea5e9" : "transparent",
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
         <View
           style={{
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            backgroundColor: "#e0f2fe",
+            width: 32,
+            height: 32,
+            borderRadius: 16,
+            backgroundColor: "#f1f5f9",
             alignItems: "center",
             justifyContent: "center",
-            marginRight: 8,
+            marginRight: 10,
           }}
         >
-          <Text style={{ fontSize: 11, fontWeight: "600", color: "#0284c7" }}>{initials}</Text>
+          <Text style={{ fontSize: 12, fontWeight: "600", color: "#475569" }}>{initials}</Text>
         </View>
-        <Text style={{ fontSize: 12, color: "#64748b", flex: 1 }}>
+        <Text style={{ fontSize: 13, fontWeight: "500", color: "#64748b", flex: 1 }}>
           {item.postedBy?.firstName} {item.postedBy?.lastName}
         </Text>
+        {item.isPinned && <Ionicons name="pin" size={14} color="#0ea5e9" style={{ marginRight: 6 }} />}
         <View
           style={{
             backgroundColor: cat.bg,
             borderRadius: 6,
-            paddingHorizontal: 7,
-            paddingVertical: 2,
+            paddingHorizontal: 8,
+            paddingVertical: 3,
           }}
         >
-          <Text style={{ fontSize: 10, fontWeight: "600", color: cat.text }}>
+          <Text style={{ fontSize: 10, fontWeight: "700", color: cat.text }}>
             {item.category}
           </Text>
         </View>
       </View>
-      <Text style={{ fontSize: 14, fontWeight: "600", color: "#0f172a" }} numberOfLines={1}>
+      <Text style={{ fontSize: 15, fontWeight: "700", color: "#0f172a", marginBottom: 6 }} numberOfLines={1}>
         {item.title}
       </Text>
-      <Text style={{ fontSize: 12, color: "#64748b", marginTop: 3 }} numberOfLines={2}>
+      <Text style={{ fontSize: 13, color: "#64748b", lineHeight: 20 }} numberOfLines={2}>
         {item.body}
       </Text>
     </TouchableOpacity>
@@ -235,9 +252,17 @@ export default function HomeScreen({ navigation }) {
         <View
           style={{
             backgroundColor: "#0ea5e9",
-            paddingTop: 56,
-            paddingBottom: 28,
-            paddingHorizontal: 20,
+            paddingTop: 60,
+            paddingBottom: 32,
+            paddingHorizontal: 24,
+            borderBottomLeftRadius: 28,
+            borderBottomRightRadius: 28,
+            shadowColor: "#0ea5e9",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 12,
+            elevation: 8,
+            marginBottom: 8,
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -303,43 +328,43 @@ export default function HomeScreen({ navigation }) {
           <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>
             Overview
           </Text>
-          <View style={{ flexDirection: "row", gap: 10, marginBottom: 24 }}>
-            <StatCard icon="📢" count={stats.announcements} label="Announcements" color="#0ea5e9" />
-            <StatCard icon="📚" count={stats.resources}     label="Resources"     color="#7c3aed" />
-            <StatCard icon="🔍" count={stats.lostFound}     label="Lost & Found"  color="#ea580c" />
+          <View style={{ flexDirection: "row", gap: 12, marginBottom: 28 }}>
+            <StatCard iconName="megaphone" count={stats.announcements} label="Announcement" color="#0ea5e9" />
+            <StatCard iconName="book" count={stats.resources}     label="Resources"     color="#8b5cf6" />
+            <StatCard iconName="search" count={stats.lostFound}     label="Lost & Found"  color="#f97316" />
           </View>
 
           {/* ── Quick Actions ── */}
-          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
             Quick Access
           </Text>
 
           <QuickAction
-            icon="📢"
+            iconName="megaphone"
             label="Announcements"
             subtitle="Campus news and updates"
             accent="#0ea5e9"
             onPress={() => navigation.navigate("Announcements")}
           />
           <QuickAction
-            icon="📚"
+            iconName="book"
             label="Resources"
             subtitle="Lecture notes, past papers & more"
-            accent="#7c3aed"
+            accent="#8b5cf6"
             onPress={() => navigation.navigate("Resources")}
           />
           <QuickAction
-            icon="🔍"
+            iconName="search"
             label="Lost & Found"
             subtitle="Report or find lost items on campus"
-            accent="#ea580c"
+            accent="#f97316"
             onPress={() => navigation.navigate("LostFound")}
           />
           <QuickAction
-            icon="👤"
+            iconName="person"
             label="My Profile"
             subtitle="View and edit your profile"
-            accent="#0ea5e9"
+            accent="#10b981"
             onPress={() => navigation.navigate("Profile")}
           />
 
