@@ -1,9 +1,14 @@
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
+import { getStorageItem, setStorageItem, deleteStorageItem } from "../utils/storage";
+
+import { Platform } from "react-native";
 
 // Change this to your computer's local IP when testing on a phone
-// Keep localhost for emulator
-const BASE_URL = "http://192.168.8.214:5000/api";
+const LOCAL_IP = "192.168.8.214";
+const BASE_URL = Platform.OS === "web" 
+  ? "http://localhost:5000/api" 
+  : `http://${LOCAL_IP}:5000/api`;
+
 const api = axios.create({
     baseURL: BASE_URL,
     timeout: 10000,
@@ -11,7 +16,7 @@ const api = axios.create({
 
 // Attach token to every request automatically
 api.interceptors.request.use(async (config) => {
-    const token = await SecureStore.getItemAsync("accessToken");
+    const token = await getStorageItem("accessToken");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,17 +31,17 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !original._retry) {
             original._retry = true;
             try {
-                const refreshToken = await SecureStore.getItemAsync("refreshToken");
+                const refreshToken = await getStorageItem("refreshToken");
                 const res = await axios.post(`${BASE_URL}/auth/refresh`, {
                     refreshToken,
                 });
                 const newToken = res.data.accessToken;
-                await SecureStore.setItemAsync("accessToken", newToken);
+                await setStorageItem("accessToken", newToken);
                 original.headers.Authorization = `Bearer ${newToken}`;
                 return api(original);
             } catch {
-                await SecureStore.deleteItemAsync("accessToken");
-                await SecureStore.deleteItemAsync("refreshToken");
+                await deleteStorageItem("accessToken");
+                await deleteStorageItem("refreshToken");
             }
         }
         return Promise.reject(error);

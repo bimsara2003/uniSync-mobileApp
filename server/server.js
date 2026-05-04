@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const { connectDB } = require("./config/database");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoute");
@@ -14,10 +15,17 @@ const {
 const resourceRoutes = require("./routes/resourceRoute");
 const announcementRoutes = require("./routes/announcementRoute");
 const lostFoundRoutes = require("./routes/lostFoundRoute");
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const path = require("path");
 const app = express();
+
+app.use(cors({
+  origin: "*", // Allows all origins
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  credentials: true
+}));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
