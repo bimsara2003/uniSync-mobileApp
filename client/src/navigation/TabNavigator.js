@@ -25,6 +25,12 @@ import CreateLostFoundScreen    from "../screens/lostfound/CreateLostFoundScreen
 // Profile
 import ProfileScreen from "../screens/profile/ProfileScreen";
 
+// Events
+import EventsScreen       from "../screens/events/EventsScreen";
+import EventDetailScreen  from "../screens/events/EventDetailScreen";
+import CreateEventScreen  from "../screens/events/CreateEventScreen";
+import EditEventScreen    from "../screens/events/EditEventScreen";
+
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +82,18 @@ function ProfileStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileMain" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// ─── Events Stack ────────────────────────────────────────
+function EventsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="EventsList"    component={EventsScreen} />
+      <Stack.Screen name="EventDetail"   component={EventDetailScreen} />
+      <Stack.Screen name="CreateEvent"   component={CreateEventScreen} />
+      <Stack.Screen name="EditEvent"     component={EditEventScreen} />
     </Stack.Navigator>
   );
 }
@@ -136,6 +154,15 @@ export default function TabNavigator() {
           ),
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 20, color }}>🔍</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Events"
+        component={EventsStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>🎉</Text>
           ),
         }}
       />
