@@ -257,6 +257,28 @@ export default function ResourcesScreen({ navigation }) {
           />
         )}
       />
+
+      {/* Floating Action Button for Create Resource */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("CreateResource")}
+        style={{
+          position: "absolute",
+          bottom: 24,
+          right: 24,
+          backgroundColor: "#0ea5e9",
+          width: 56,
+          height: 56,
+          borderRadius: 28,
+          alignItems: "center",
+          justifyContent: "center",
+          shadowColor: "#0ea5e9",
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 5,
+        }}
+      >
+        <Text style={{ fontSize: 28, color: "#fff", lineHeight: 32 }}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
