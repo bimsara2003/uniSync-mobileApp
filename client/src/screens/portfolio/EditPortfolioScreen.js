@@ -14,6 +14,9 @@ export default function EditPortfolioScreen({ route, navigation }) {
   const [linkedIn, setLinkedIn]   = useState(portfolio?.linkedIn ?? "");
   const [gitHub, setGitHub]       = useState(portfolio?.gitHub ?? "");
   const [website, setWebsite]     = useState(portfolio?.website ?? "");
+  const [email, setEmail]         = useState(portfolio?.email ?? "");
+  const [phone, setPhone]         = useState(portfolio?.phone ?? "");
+  const [location, setLocation]   = useState(portfolio?.location ?? "");
   const [isPublic, setIsPublic]   = useState(portfolio?.isPublic ?? true);
   const [saving, setSaving]       = useState(false);
 
@@ -27,10 +30,27 @@ export default function EditPortfolioScreen({ route, navigation }) {
         linkedIn: linkedIn.trim(),
         gitHub: gitHub.trim(),
         website: website.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        location: location.trim(),
         isPublic,
       };
+
+      // Validation
+      if (payload.phone && !/^\d{10}$/.test(payload.phone)) {
+        Alert.alert("Validation Error", "Phone number must be exactly 10 digits.");
+        setSaving(false);
+        return;
+      }
+
+      if (payload.email && !payload.email.toLowerCase().endsWith("@gmail.com")) {
+        Alert.alert("Validation Error", "Email must end with @gmail.com");
+        setSaving(false);
+        return;
+      }
+
       await portfolioAPI.updateMyPortfolio(payload);
-      Alert.alert("Saved!", "Portfolio profile updated.", [
+      Alert.alert("Success!", "Profile edit successfully", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
@@ -97,6 +117,32 @@ export default function EditPortfolioScreen({ route, navigation }) {
             value={website} onChangeText={setWebsite}
             placeholder="https://..."
             style={inputStyle} autoCapitalize="none"
+          />
+        </Field>
+
+        <Field label="Email (must be @gmail.com)">
+          <TextInput
+            value={email} onChangeText={setEmail}
+            placeholder="example@gmail.com"
+            style={inputStyle} autoCapitalize="none"
+            keyboardType="email-address"
+          />
+        </Field>
+
+        <Field label="Phone Number (10 digits)">
+          <TextInput
+            value={phone} onChangeText={setPhone}
+            placeholder="0712345678"
+            style={inputStyle} keyboardType="numeric"
+            maxLength={10}
+          />
+        </Field>
+
+        <Field label="Location">
+          <TextInput
+            value={location} onChangeText={setLocation}
+            placeholder="e.g. Colombo, Sri Lanka"
+            style={inputStyle}
           />
         </Field>
 
