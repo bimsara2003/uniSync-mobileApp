@@ -14,6 +14,13 @@ const TYPE_COLORS = {
   EXTRACURRICULAR:{ bg: "#fff1f2", text: "#e11d48" },
 };
 
+const formatDate = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  return `${months[d.getMonth()]} ${d.getFullYear()}`;
+};
+
 const ITEM_TYPES = ["ALL", "PROJECT", "ACHIEVEMENT", "CERTIFICATION", "EXPERIENCE", "EXTRACURRICULAR"];
 
 export default function ViewUserPortfolioScreen({ route, navigation }) {
@@ -99,6 +106,30 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
             </Text>
           ) : null}
 
+          {/* Contact & Location */}
+          {(portfolio?.email || portfolio?.phone || portfolio?.location) && (
+            <View style={{ marginTop: 12, width: "100%", gap: 6 }}>
+              {portfolio.email ? (
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  <Text style={{ fontSize: 12 }}>📧</Text>
+                  <Text style={{ fontSize: 12, color: "#64748b" }}>{portfolio.email}</Text>
+                </View>
+              ) : null}
+              {portfolio.phone ? (
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  <Text style={{ fontSize: 12 }}>📞</Text>
+                  <Text style={{ fontSize: 12, color: "#64748b" }}>{portfolio.phone}</Text>
+                </View>
+              ) : null}
+              {portfolio.location ? (
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  <Text style={{ fontSize: 12 }}>📍</Text>
+                  <Text style={{ fontSize: 12, color: "#64748b" }}>{portfolio.location}</Text>
+                </View>
+              ) : null}
+            </View>
+          )}
+
           {/* Skills */}
           {portfolio?.skills?.length > 0 && (
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 12, justifyContent: "center" }}>
@@ -121,6 +152,39 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
             </View>
           )}
         </View>
+
+        {/* ── Experience & Journey ── */}
+        {items.filter(i => i.type === "EXPERIENCE").length > 0 && (
+          <View style={{ paddingHorizontal: 20, paddingTop: 10, marginBottom: 20 }}>
+            <Text style={{ fontSize: 18, fontWeight: "800", color: "#0f172a", marginBottom: 20 }}>Experience & Journey</Text>
+            <View style={{ borderLeftWidth: 2, borderLeftColor: "#e2e8f0", marginLeft: 10, paddingLeft: 24 }}>
+              {items
+                .filter(i => i.type === "EXPERIENCE")
+                .sort((a, b) => new Date(b.startDate || 0) - new Date(a.startDate || 0))
+                .map((item) => (
+                  <View key={item._id} style={{ marginBottom: 24, position: "relative" }}>
+                    {/* Timeline Dot */}
+                    <View style={{
+                      position: "absolute", left: -33, top: 4,
+                      width: 16, height: 16, borderRadius: 8,
+                      backgroundColor: "#10b981", borderWidth: 3, borderColor: "#fff",
+                    }} />
+                    
+                    <Text style={{ fontSize: 11, fontWeight: "700", color: "#10b981", marginBottom: 4 }}>
+                      {item.startDate ? formatDate(item.startDate) : ""} — {item.isOngoing ? "PRESENT" : (item.endDate ? formatDate(item.endDate) : "")}
+                    </Text>
+                    <Text style={{ fontSize: 16, fontWeight: "700", color: "#0f172a" }}>{item.title}</Text>
+                    {item.organization ? (
+                      <Text style={{ fontSize: 13, color: "#64748b", marginTop: 2 }}>{item.organization}</Text>
+                    ) : null}
+                    {item.description ? (
+                      <Text style={{ fontSize: 13, color: "#475569", marginTop: 8, lineHeight: 18 }}>{item.description}</Text>
+                    ) : null}
+                  </View>
+                ))}
+            </View>
+          </View>
+        )}
 
         {/* Items */}
         <View style={{ paddingHorizontal: 20 }}>

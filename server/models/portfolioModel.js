@@ -37,6 +37,22 @@ const portfolioSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    email: {
+      type: String,
+      trim: true,
+      unique: true,
+      default: "",
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    location: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     isPublic: {
       type: Boolean,
       default: true,
