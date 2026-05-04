@@ -157,28 +157,52 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
               {portfolio.headline}
             </Text>
           ) : null}
-          {portfolio?.bio ? (
+        </View>
+
+        {/* Bio */}
+        {portfolio?.bio ? (
+          <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
             <Text
               style={{
                 fontSize: 13,
-                color: "#94a3b8",
-                marginTop: 8,
-                textAlign: "center",
+                fontWeight: "700",
+                color: "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              ABOUT ME
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#1e293b",
+                lineHeight: 20,
               }}
             >
               {portfolio.bio}
             </Text>
-          ) : null}
+          </View>
+        ) : null}
 
-          {/* Skills */}
-          {portfolio?.skills?.length > 0 && (
+        {/* Skills */}
+        {portfolio?.skills?.length > 0 && (
+          <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "700",
+                color: "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              SKILLS
+            </Text>
             <View
               style={{
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 6,
-                marginTop: 12,
-                justifyContent: "center",
+                justifyContent: "flex-start",
               }}
             >
               {portfolio.skills.map((s, i) => (
@@ -203,43 +227,44 @@ export default function ViewUserPortfolioScreen({ route, navigation }) {
                 </View>
               ))}
             </View>
-          )}
+          </View>
+        )}
 
-          {/* Links */}
-          {(portfolio?.linkedIn || portfolio?.gitHub || portfolio?.website) && (
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 8,
-                marginTop: 12,
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {portfolio.linkedIn && (
-                <LinkBadge
-                  label="LinkedIn"
-                  icon="💼"
-                  url={portfolio.linkedIn}
-                />
-              )}
-              {portfolio.gitHub && (
-                <LinkBadge
-                  label="GitHub"
-                  icon="🐙"
-                  url={portfolio.gitHub}
-                />
-              )}
-              {portfolio.website && (
-                <LinkBadge
-                  label="Website"
-                  icon="🌐"
-                  url={portfolio.website}
-                />
-              )}
-            </View>
-          )}
-        </View>
+        {/* Links */}
+        {(portfolio?.linkedIn || portfolio?.gitHub || portfolio?.website) && (
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingTop: 12,
+              flexDirection: "row",
+              gap: 8,
+              flexWrap: "wrap",
+              justifyContent: "flex-start",
+            }}
+          >
+            {portfolio.linkedIn && (
+              <LinkBadge
+                label="LinkedIn"
+                icon="💼"
+                url={portfolio.linkedIn}
+              />
+            )}
+            {portfolio.gitHub && (
+              <LinkBadge
+                label="GitHub"
+                icon="🐙"
+                url={portfolio.gitHub}
+              />
+            )}
+            {portfolio.website && (
+              <LinkBadge
+                label="Website"
+                icon="🌐"
+                url={portfolio.website}
+              />
+            )}
+          </View>
+        )}
 
         {/* Items */}
         <View style={{ paddingHorizontal: 20 }}>

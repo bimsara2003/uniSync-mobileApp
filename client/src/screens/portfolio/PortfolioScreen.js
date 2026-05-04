@@ -182,6 +182,31 @@ export default function PortfolioScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
+        {/* ── Bio ── */}
+        {portfolio?.bio ? (
+          <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "700",
+                color: "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              ABOUT ME
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#1e293b",
+                lineHeight: 20,
+              }}
+            >
+              {portfolio.bio}
+            </Text>
+          </View>
+        ) : null}
+
         {/* ── Skills ── */}
         {portfolio?.skills?.length > 0 && (
           <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
