@@ -1,8 +1,9 @@
 import { useState } from "react";
 import {
   View, Text, TextInput, ScrollView, TouchableOpacity,
-  Switch, ActivityIndicator, Alert, SafeAreaView,
+  Switch, ActivityIndicator, Alert, SafeAreaView, Platform, Image,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { portfolioAPI } from "../../api/portfolio";
 
 const TYPES = ["PROJECT", "ACHIEVEMENT", "CERTIFICATION", "EXPERIENCE", "EXTRACURRICULAR"];
@@ -19,28 +20,73 @@ export default function CreatePortfolioItemScreen({ navigation }) {
   const [githubLink, setGithubLink]   = useState("");
   const [liveLink, setLiveLink]       = useState("");
   const [loading, setLoading]         = useState(false);
+  const [errors, setErrors]           = useState({});
+  const [image, setImage]             = useState(null);
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.7,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   const handleCreate = async () => {
-    if (!title.trim()) { Alert.alert("Validation", "Title is required."); return; }
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = "Title is required";
+    if (!description.trim()) newErrors.description = "Description is required";
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      Alert.alert("Validation", "Please check the highlighted fields.");
+      return;
+    }
+
+    setErrors({});
     setLoading(true);
     try {
-      const payload = {
-        type,
-        title: title.trim(),
-        description: description.trim(),
-        organization: organization.trim(),
-        startDate: startDate || undefined,
-        endDate: isOngoing ? undefined : (endDate || undefined),
-        isOngoing,
-        tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
-        githubLink: githubLink.trim(),
-        liveLink: liveLink.trim(),
-      };
-      await portfolioAPI.createItem(payload);
-      Alert.alert("Added!", "Portfolio item added.", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+      const formData = new FormData();
+      formData.append("type", type);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("organization", organization.trim());
+      if (startDate) formData.append("startDate", startDate);
+      if (!isOngoing && endDate) formData.append("endDate", endDate);
+      formData.append("isOngoing", String(isOngoing));
+      
+      const tagsArray = tags.split(",").map((t) => t.trim()).filter(Boolean);
+      formData.append("tags", JSON.stringify(tagsArray));
+      
+      formData.append("githubLink", githubLink.trim());
+      formData.append("liveLink", liveLink.trim());
+
+      if (image) {
+        if (Platform.OS === "web") {
+          const response = await fetch(image.uri);
+          const blob = await response.blob();
+          formData.append("image", blob, "item.jpg");
+        } else {
+          formData.append("image", {
+            uri: image.uri,
+            name: "item.jpg",
+            type: "image/jpeg",
+          });
+        }
+      }
+
+      await portfolioAPI.createItem(formData);
+      const successMsg = "✅ Item added successfully!";
+      if (Platform.OS === "web") {
+        window.alert(successMsg);
+        navigation.goBack();
+      } else {
+        Alert.alert("Success", successMsg, [
+          { text: "OK", onPress: () => navigation.goBack() },
+        ]);
+      }
     } catch (e) {
       Alert.alert("Error", e.response?.data?.message || "Could not create item.");
     } finally {
@@ -81,21 +127,55 @@ export default function CreatePortfolioItemScreen({ navigation }) {
           </ScrollView>
         </Field>
 
-        <Field label="Title *">
-          <TextInput value={title} onChangeText={setTitle} placeholder="e.g. UniSync Mobile App" style={inputStyle} />
+        <Field label="Title *" error={errors.title}>
+          <TextInput 
+            value={title} onChangeText={setTitle} 
+            placeholder="e.g. UniSync Mobile App" 
+            style={[inputStyle, errors.title && { borderColor: "#ef4444", borderWidth: 1.5 }]} 
+          />
+        </Field>
+
+        {/* Image Upload */}
+        <Field label="Item Image">
+          <TouchableOpacity 
+            onPress={pickImage}
+            style={{
+              backgroundColor: "#fff", height: 150, borderRadius: 12,
+              borderWidth: 1, borderColor: "#e2e8f0", borderStyle: "dashed",
+              justifyContent: "center", alignItems: "center", overflow: "hidden"
+            }}
+          >
+            {image ? (
+              <Image source={{ uri: image.uri }} style={{ width: "100%", height: "100%" }} />
+            ) : (
+              <View style={{ alignItems: "center" }}>
+                <Text style={{ fontSize: 24, marginBottom: 4 }}>🖼️</Text>
+                <Text style={{ fontSize: 12, color: "#64748b" }}>Tap to upload an image</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          {image && (
+            <TouchableOpacity onPress={() => setImage(null)} style={{ marginTop: 8 }}>
+              <Text style={{ fontSize: 12, color: "#ef4444", textAlign: "right" }}>Remove Image</Text>
+            </TouchableOpacity>
+          )}
         </Field>
 
         <Field label="Organization / Institution">
           <TextInput value={organization} onChangeText={setOrganization} placeholder="e.g. University of Kelaniya" style={inputStyle} />
         </Field>
 
-        <Field label="Description">
+        <Field label="Description *" error={errors.description}>
           <TextInput
             value={description} onChangeText={setDescription}
             placeholder="Describe this achievement or project..."
             multiline numberOfLines={4}
-            style={[inputStyle, { height: 90, textAlignVertical: "top" }]}
+            maxLength={2000}
+            style={[inputStyle, { height: 120, textAlignVertical: "top" }, errors.description && { borderColor: "#ef4444", borderWidth: 1.5 }]}
           />
+          <Text style={{ fontSize: 11, color: "#94a3b8", textAlign: "right", marginTop: 4 }}>
+            {description.length} / 2000 characters
+          </Text>
         </Field>
 
         <Field label="Start Date (YYYY-MM-DD)">
@@ -150,11 +230,14 @@ export default function CreatePortfolioItemScreen({ navigation }) {
   );
 }
 
-function Field({ label, children }) {
+function Field({ label, children, error }) {
   return (
     <View style={{ marginBottom: 16 }}>
       <Text style={{ fontSize: 13, fontWeight: "600", color: "#374151", marginBottom: 6 }}>{label}</Text>
       {children}
+      {error ? (
+        <Text style={{ fontSize: 11, color: "#ef4444", marginTop: 4, fontWeight: "500" }}>{error}</Text>
+      ) : null}
     </View>
   );
 }

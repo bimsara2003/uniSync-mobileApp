@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity, Image,
-  ActivityIndicator, Alert, SafeAreaView,
+  ActivityIndicator, Alert, SafeAreaView, Platform,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
@@ -12,6 +12,13 @@ const TYPE_COLORS = {
   CERTIFICATION:  { bg: "#f0fdf4", text: "#16a34a" },
   EXPERIENCE:     { bg: "#fdf4ff", text: "#9333ea" },
   EXTRACURRICULAR:{ bg: "#fff1f2", text: "#e11d48" },
+};
+
+// Helper to get full image URL
+const getFullImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `http://localhost:5000${path.startsWith("/") ? "" : "/"}${path}`;
 };
 
 export default function PortfolioItemDetailScreen({ route, navigation }) {
@@ -26,21 +33,25 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
       .finally(() => setLoading(false));
   }, [itemId]));
 
+  const deleteAction = async () => {
+    try {
+      await portfolioAPI.deleteItem(itemId);
+      navigation.goBack();
+    } catch {
+      Alert.alert("Error", "Could not delete item.");
+    }
+  };
+
   const handleDelete = () => {
-    Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete", style: "destructive",
-        onPress: async () => {
-          try {
-            await portfolioAPI.deleteItem(itemId);
-            navigation.goBack();
-          } catch {
-            Alert.alert("Error", "Could not delete item.");
-          }
-        },
-      },
-    ]);
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm("Are you sure you want to delete this item?");
+      if (confirmed) deleteAction();
+    } else {
+      Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: deleteAction },
+      ]);
+    }
   };
 
   if (loading) {
@@ -82,7 +93,7 @@ export default function PortfolioItemDetailScreen({ route, navigation }) {
         {/* Image */}
         {item.imageUrl && (
           <Image
-            source={{ uri: item.imageUrl }}
+            source={{ uri: getFullImageUrl(item.imageUrl) }}
             style={{ width: "100%", height: 200, borderRadius: 14, marginBottom: 16 }}
             resizeMode="cover"
           />

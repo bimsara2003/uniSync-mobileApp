@@ -251,7 +251,7 @@ export default function PortfolioScreen({ navigation }) {
               >
                 <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
                   {item.imageUrl ? (
-                    <Image source={{ uri: item.imageUrl }} style={{ width: 52, height: 52, borderRadius: 8 }} />
+                    <Image source={{ uri: getFullImageUrl(item.imageUrl) }} style={{ width: 52, height: 52, borderRadius: 8 }} />
                   ) : (
                     <View style={{
                       width: 52, height: 52, borderRadius: 8, backgroundColor: "#f1f5f9",

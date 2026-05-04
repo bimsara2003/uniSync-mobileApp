@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
+import { getStorageItem, setStorageItem, deleteStorageItem } from "../utils/storage";
 import { authAPI } from "../api/auth";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -12,14 +12,14 @@ export const AuthProvider = ({ children }) => {
     // Restore session on app start
     const bootstrap = async () => {
       try {
-        const token = await SecureStore.getItemAsync("accessToken");
+        const token = await getStorageItem("accessToken");
         if (token) {
           const { data } = await authAPI.getProfile();
           setUser(data);
         }
       } catch {
-        await SecureStore.deleteItemAsync("accessToken");
-        await SecureStore.deleteItemAsync("refreshToken");
+        await deleteStorageItem("accessToken");
+        await deleteStorageItem("refreshToken");
       } finally {
         setLoading(false);
       }
@@ -29,8 +29,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const { data } = await authAPI.login({ email, password });
-    await SecureStore.setItemAsync("accessToken", data.accessToken);
-    await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+    await setStorageItem("accessToken", data.accessToken);
+    await setStorageItem("refreshToken", data.refreshToken);
     setUser(data);
   };
 
@@ -41,16 +41,16 @@ export const AuthProvider = ({ children }) => {
       email,
       password,
     });
-    await SecureStore.setItemAsync("accessToken", data.accessToken);
-    await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+    await setStorageItem("accessToken", data.accessToken);
+    await setStorageItem("refreshToken", data.refreshToken);
     setUser(data);
   };
 
   const logout = async () => {
-    const refreshToken = await SecureStore.getItemAsync("refreshToken");
+    const refreshToken = await getStorageItem("refreshToken");
     await authAPI.logout(refreshToken).catch(() => {});
-    await SecureStore.deleteItemAsync("accessToken");
-    await SecureStore.deleteItemAsync("refreshToken");
+    await deleteStorageItem("accessToken");
+    await deleteStorageItem("refreshToken");
     setUser(null);
   };
 
