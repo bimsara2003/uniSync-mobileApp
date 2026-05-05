@@ -213,15 +213,51 @@ export default function ResourcesScreen({ route, navigation }) {
           borderBottomColor: "#e2e8f0",
         }}
       >
-        {module && (
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ marginBottom: 10 }}
+        {faculty && department && module && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+              flexWrap: "wrap",
+            }}
           >
-            <Text style={{ fontSize: 14, color: "#3b82f6", fontWeight: "600" }}>
-              ← Back to Modules
+            <TouchableOpacity
+              onPress={() => navigation.navigate("FacultiesList")}
+            >
+              <Text style={{ fontSize: 13, color: "#0f172a" }}>
+                {faculty.name}
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={{ fontSize: 13, color: "#0f172a", marginHorizontal: 6 }}
+            >
+              ›
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("DepartmentsList", { faculty })
+              }
+            >
+              <Text style={{ fontSize: 13, color: "#0f172a" }}>
+                {department.name}
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={{ fontSize: 13, color: "#0f172a", marginHorizontal: 6 }}
+            >
+              ›
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ModulesList", { faculty, department })
+              }
+            >
+              <Text style={{ fontSize: 13, color: "#0f172a" }}>
+                {module.name}
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
         <View
           style={{
