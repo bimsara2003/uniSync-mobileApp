@@ -14,25 +14,33 @@ const getPresignedImageUrl = async (url) => {
   }
 };
 
-const withPresignedPortfolioUrls = async (doc) => {
-  if (!doc) return null;
-  const p = doc.toObject ? doc.toObject() : { ...doc };
-  if (p.user && p.user.profilePictureUrl) {
-    p.user.profilePictureUrl = await getPresignedImageUrl(
-      p.user.profilePictureUrl,
+const withPresignedPortfolioUrls = async (data) => {
+  if (!data) return null;
+  const p = data.portfolio
+    ? data.portfolio.toObject
+      ? data.portfolio.toObject()
+      : { ...data.portfolio }
+    : { ...data };
+
+  if (p.userId && p.userId.profilePictureUrl) {
+    p.userId.profilePictureUrl = await getPresignedImageUrl(
+      p.userId.profilePictureUrl,
     );
   }
-  if (p.items && p.items.length) {
-    p.items = await Promise.all(
-      p.items.map(async (item) => {
-        if (item.imageUrl) {
-          item.imageUrl = await getPresignedImageUrl(item.imageUrl);
+
+  let items = data.items || [];
+  if (items.length) {
+    items = await Promise.all(
+      items.map(async (item) => {
+        const itemObj = item.toObject ? item.toObject() : { ...item };
+        if (itemObj.imageUrl) {
+          itemObj.imageUrl = await getPresignedImageUrl(itemObj.imageUrl);
         }
-        return item;
+        return itemObj;
       }),
     );
   }
-  return p;
+  return { portfolio: p, items };
 };
 
 // Multer middleware for portfolio item image uploads (5 MB)
@@ -67,7 +75,8 @@ const getMyPortfolio = async (req, res) => {
       isVisible: true,
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({ portfolio, items });
+    const result = await withPresignedPortfolioUrls({ portfolio, items });
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -94,7 +103,8 @@ const getPortfolioByUserId = async (req, res) => {
       isVisible: true,
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({ portfolio, items });
+    const result = await withPresignedPortfolioUrls({ portfolio, items });
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -194,7 +204,13 @@ const createPortfolioItem = async (req, res) => {
       itemData.s3Key = req.file.key;
     }
 
-    const item = await PortfolioItem.create(itemData);
+    let item = await PortfolioItem.create(itemData);
+
+    // Get presigned URL for the res
+    if (item.imageUrl) {
+      item = item.toObject();
+      item.imageUrl = await getPresignedImageUrl(item.imageUrl);
+    }
 
     res.status(201).json({ message: "Portfolio item added", item });
   } catch (error) {
@@ -215,7 +231,17 @@ const getMyPortfolioItems = async (req, res) => {
     const filter = { portfolioId: portfolio._id };
     if (req.query.type) filter.type = req.query.type;
 
-    const items = await PortfolioItem.find(filter).sort({ createdAt: -1 });
+    let items = await PortfolioItem.find(filter).sort({ createdAt: -1 });
+
+    items = await Promise.all(
+      items.map(async (item) => {
+        const itemObj = item.toObject();
+        if (itemObj.imageUrl) {
+          itemObj.imageUrl = await getPresignedImageUrl(itemObj.imageUrl);
+        }
+        return itemObj;
+      }),
+    );
 
     res.status(200).json(items);
   } catch (error) {
@@ -243,7 +269,12 @@ const getPortfolioItemById = async (req, res) => {
       }
     }
 
-    res.status(200).json(item);
+    let itemObj = item.toObject();
+    if (itemObj.imageUrl) {
+      itemObj.imageUrl = await getPresignedImageUrl(itemObj.imageUrl);
+    }
+
+    res.status(200).json(itemObj);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -305,7 +336,12 @@ const updatePortfolioItem = async (req, res) => {
 
     await item.save();
 
-    res.status(200).json({ message: "Portfolio item updated", item });
+    let itemObj = item.toObject();
+    if (itemObj.imageUrl) {
+      itemObj.imageUrl = await getPresignedImageUrl(itemObj.imageUrl);
+    }
+
+    res.status(200).json({ message: "Portfolio item updated", item: itemObj });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
