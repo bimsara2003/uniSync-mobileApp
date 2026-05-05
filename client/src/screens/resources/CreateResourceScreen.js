@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { resourcesAPI } from "../../api/resources";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
 const CATEGORIES = [
   "LECTURE_NOTE",
@@ -49,10 +49,17 @@ export default function CreateResourceScreen({ navigation }) {
 
   // Load faculties on mount
   useEffect(() => {
+    console.log("Fetching faculties...");
     resourcesAPI
       .getFaculties()
-      .then(({ data }) => setFaculties(data))
-      .catch(() => Alert.alert("Error", "Could not load faculties."))
+      .then(({ data }) => {
+        console.log("Faculties received:", data);
+        setFaculties(data);
+      })
+      .catch((err) => {
+        console.error("Faculty fetch error:", err);
+        Alert.alert("Error", "Could not load faculties.");
+      })
       .finally(() => setLoading(false));
   }, []);
 

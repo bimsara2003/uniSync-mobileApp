@@ -1,8 +1,39 @@
 const Portfolio = require("../../models/portfolioModel");
 const PortfolioItem = require("../../models/portfolioItemModel");
 const User = require("../../models/userModel");
-const { createS3Uploader } = require("../../utils/s3Upload");
+const { createS3Uploader, getPresignedUrl } = require("../../utils/s3Upload");
 const { deleteFromS3 } = require("../../utils/s3Delete");
+
+const getPresignedImageUrl = async (url) => {
+  if (!url) return url;
+  try {
+    const key = new URL(url).pathname.slice(1);
+    return await getPresignedUrl(key, 3600);
+  } catch (e) {
+    return url;
+  }
+};
+
+const withPresignedPortfolioUrls = async (doc) => {
+  if (!doc) return null;
+  const p = doc.toObject ? doc.toObject() : { ...doc };
+  if (p.user && p.user.profilePictureUrl) {
+    p.user.profilePictureUrl = await getPresignedImageUrl(
+      p.user.profilePictureUrl,
+    );
+  }
+  if (p.items && p.items.length) {
+    p.items = await Promise.all(
+      p.items.map(async (item) => {
+        if (item.imageUrl) {
+          item.imageUrl = await getPresignedImageUrl(item.imageUrl);
+        }
+        return item;
+      }),
+    );
+  }
+  return p;
+};
 
 // Multer middleware for portfolio item image uploads (5 MB)
 const uploadPortfolioImage = createS3Uploader({
@@ -20,14 +51,14 @@ const getMyPortfolio = async (req, res) => {
   try {
     let portfolio = await Portfolio.findOne({ userId: req.user._id }).populate(
       "userId",
-      "firstName lastName profilePictureUrl"
+      "firstName lastName profilePictureUrl",
     );
 
     if (!portfolio) {
       portfolio = await Portfolio.create({ userId: req.user._id });
       portfolio = await Portfolio.findById(portfolio._id).populate(
         "userId",
-        "firstName lastName profilePictureUrl"
+        "firstName lastName profilePictureUrl",
       );
     }
 
@@ -100,7 +131,7 @@ const updateMyPortfolio = async (req, res) => {
       if (req.user.profilePictureS3Key) {
         await deleteFromS3(req.user.profilePictureS3Key);
       }
-      
+
       // Update user document
       const user = await User.findById(req.user._id);
       user.profilePictureUrl = req.file.location;

@@ -1,5 +1,16 @@
 const User = require("../../models/userModel");
 const { deleteFromS3 } = require("../../utils/s3Delete");
+const { getPresignedUrl } = require("../../utils/s3Upload");
+
+const getPresignedProfileUrl = async (url) => {
+  if (!url) return url;
+  try {
+    const key = new URL(url).pathname.slice(1);
+    return await getPresignedUrl(key, 3600);
+  } catch (e) {
+    return url;
+  }
+};
 
 exports.getUserProfile = async (req, res) => {
   try {
@@ -10,7 +21,7 @@ exports.getUserProfile = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        profilePictureUrl: user.profilePictureUrl,
+        profilePictureUrl: await getPresignedProfileUrl(user.profilePictureUrl),
         role: user.role,
       });
     } else {
@@ -38,7 +49,9 @@ exports.updateUserProfile = async (req, res) => {
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
       email: updatedUser.email,
-      profilePictureUrl: updatedUser.profilePictureUrl,
+      profilePictureUrl: await getPresignedProfileUrl(
+        updatedUser.profilePictureUrl,
+      ),
       role: updatedUser.role,
     });
   } catch (error) {
@@ -71,7 +84,7 @@ exports.uploadProfilePhoto = async (req, res) => {
     await user.save();
     res.json({
       message: "Profile photo uploaded successfully",
-      profilePictureUrl: user.profilePictureUrl,
+      profilePictureUrl: await getPresignedProfileUrl(user.profilePictureUrl),
     });
   } catch (error) {
     console.error("Error uploading profile photo:", error);

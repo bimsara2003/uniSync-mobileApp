@@ -12,8 +12,10 @@ const withPresignedUrls = async (ann) => {
     obj.attachments = await Promise.all(
       obj.attachments.map(async (att) => ({
         ...att,
-        fileUrl: att.s3Key ? await getPresignedUrl(att.s3Key, 3600) : att.fileUrl,
-      }))
+        fileUrl: att.s3Key
+          ? await getPresignedUrl(att.s3Key, 3600)
+          : att.fileUrl,
+      })),
     );
   }
   return obj;
@@ -22,8 +24,16 @@ const withPresignedUrls = async (ann) => {
 // ── CREATE ────────────────────────────────────────────────
 exports.createAnnouncement = async (req, res) => {
   try {
-    const { title, body, category, isPinned, eventDate, eventVenue,
-            targetFaculty, targetDepartment } = req.body;
+    const {
+      title,
+      body,
+      category,
+      isPinned,
+      eventDate,
+      eventVenue,
+      targetFaculty,
+      targetDepartment,
+    } = req.body;
 
     // Cover image — uploaded by multer-s3 into req.files.coverImage
     let coverImageUrl = null;
@@ -69,14 +79,14 @@ exports.getAnnouncements = async (req, res) => {
   try {
     const filter = { isActive: true };
     if (req.query.category) filter.category = req.query.category;
-    if (req.query.faculty)  filter.targetFaculty = req.query.faculty;
+    if (req.query.faculty) filter.targetFaculty = req.query.faculty;
     if (req.query.pinned === "true") filter.isPinned = true;
 
     const announcements = await Announcement.find(filter)
       .populate("postedBy", "firstName lastName role")
       .populate("targetFaculty", "name")
       .populate("targetDepartment", "name")
-      .sort({ isPinned: -1, createdAt: -1 });  // pinned first
+      .sort({ isPinned: -1, createdAt: -1 }); // pinned first
 
     const result = await Promise.all(announcements.map(withPresignedUrls));
     res.status(200).json(result);
@@ -107,19 +117,30 @@ exports.getAnnouncementById = async (req, res) => {
 exports.updateAnnouncement = async (req, res) => {
   try {
     const ann = await Announcement.findById(req.params.id);
-    if (!ann) return res.status(404).json({ message: "Announcement not found" });
+    if (!ann)
+      return res.status(404).json({ message: "Announcement not found" });
 
-    const { title, body, category, isPinned, eventDate, eventVenue,
-            targetFaculty, targetDepartment } = req.body;
+    const {
+      title,
+      body,
+      category,
+      isPinned,
+      eventDate,
+      eventVenue,
+      targetFaculty,
+      targetDepartment,
+    } = req.body;
 
     if (title) ann.title = title;
-    if (body)  ann.body  = body;
+    if (body) ann.body = body;
     if (category) ann.category = category;
-    if (isPinned !== undefined) ann.isPinned = isPinned === "true" || isPinned === true;
+    if (isPinned !== undefined)
+      ann.isPinned = isPinned === "true" || isPinned === true;
     if (eventDate !== undefined) ann.eventDate = eventDate || null;
     if (eventVenue !== undefined) ann.eventVenue = eventVenue || null;
     if (targetFaculty !== undefined) ann.targetFaculty = targetFaculty || null;
-    if (targetDepartment !== undefined) ann.targetDepartment = targetDepartment || null;
+    if (targetDepartment !== undefined)
+      ann.targetDepartment = targetDepartment || null;
 
     // Replace cover image if a new one is uploaded
     if (req.files?.coverImage?.[0]) {
@@ -153,7 +174,8 @@ exports.updateAnnouncement = async (req, res) => {
 exports.deleteAttachment = async (req, res) => {
   try {
     const ann = await Announcement.findById(req.params.id);
-    if (!ann) return res.status(404).json({ message: "Announcement not found" });
+    if (!ann)
+      return res.status(404).json({ message: "Announcement not found" });
 
     const { attachmentId } = req.params;
     const att = ann.attachments.id(attachmentId);
@@ -173,10 +195,12 @@ exports.deleteAttachment = async (req, res) => {
 exports.deleteAnnouncement = async (req, res) => {
   try {
     const ann = await Announcement.findById(req.params.id);
-    if (!ann) return res.status(404).json({ message: "Announcement not found" });
+    if (!ann)
+      return res.status(404).json({ message: "Announcement not found" });
 
     // Delete cover + all attachments from S3
-    if (ann.coverImageKey) await deleteFromS3(ann.coverImageKey).catch(() => {});
+    if (ann.coverImageKey)
+      await deleteFromS3(ann.coverImageKey).catch(() => {});
     for (const att of ann.attachments) {
       await deleteFromS3(att.s3Key).catch(() => {});
     }
@@ -192,11 +216,17 @@ exports.deleteAnnouncement = async (req, res) => {
 exports.togglePin = async (req, res) => {
   try {
     const ann = await Announcement.findById(req.params.id);
-    if (!ann) return res.status(404).json({ message: "Announcement not found" });
+    if (!ann)
+      return res.status(404).json({ message: "Announcement not found" });
 
     ann.isPinned = !ann.isPinned;
     await ann.save();
-    res.status(200).json({ message: `Announcement ${ann.isPinned ? "pinned" : "unpinned"}`, isPinned: ann.isPinned });
+    res
+      .status(200)
+      .json({
+        message: `Announcement ${ann.isPinned ? "pinned" : "unpinned"}`,
+        isPinned: ann.isPinned,
+      });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

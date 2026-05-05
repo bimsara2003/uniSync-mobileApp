@@ -26,7 +26,7 @@ export const resourcesAPI = {
   getPendingResources: () => api.get("/resources/pending"),
   approveResource: (id) => api.put(`/resources/${id}/approve`),
   rejectResource: (id, rejectionReason) =>
-    api.put(`/resources/${id}/reject`, { rejectionReason }),
+    api.put(`/resources/${id}/reject`, { reason: rejectionReason }),
 
   // Bookmarks
   getBookmarks: () => api.get("/resources/bookmarks"),
