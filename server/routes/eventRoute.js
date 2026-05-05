@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { getPresignedUrl } = require("../utils/s3Upload");
 const {
   createEvent,
   getAllEvents,
@@ -46,9 +47,17 @@ router.post(
       event.bannerImageUrl = req.file.location;
       await event.save();
 
+      let presignedUrl = event.bannerImageUrl;
+      try {
+        const key = new URL(event.bannerImageUrl).pathname.slice(1);
+        presignedUrl = await getPresignedUrl(key, 3600);
+      } catch (e) {
+        console.error("Error generating presigned URL:", e);
+      }
+
       res.status(200).json({
         message: "Banner uploaded successfully",
-        bannerImageUrl: event.bannerImageUrl,
+        bannerImageUrl: presignedUrl,
       });
     } catch (error) {
       console.error("Error uploading banner:", error);
