@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -30,6 +31,7 @@ export default function ProfileScreen() {
   const [changingPw, setChangingPw] = useState(false);
 
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [imageTimestamp, setImageTimestamp] = useState(Date.now());
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -99,14 +101,29 @@ export default function ProfileScreen() {
     try {
       const asset = result.assets[0];
       const formData = new FormData();
-      formData.append("photo", {
-        uri: asset.uri,
-        name: "profile.jpg",
-        type: "image/jpeg",
-      });
+      
+      const fileName = asset.fileName || asset.uri.split("/").pop() || "profile.jpg";
+      const mimeType = asset.mimeType || "image/jpeg";
+      
+      if (Platform.OS === "web") {
+        // React Native Web: fetch the blob and append it
+        const res = await fetch(asset.uri);
+        const blob = await res.blob();
+        formData.append("photo", blob, fileName);
+      } else {
+        // Mobile: Expo's { uri, name, type } format
+        formData.append("photo", {
+          uri: asset.uri,
+          name: fileName,
+          type: mimeType,
+        });
+      }
+      
       await authAPI.uploadProfilePhoto(formData);
       await refreshUser();
+      setImageTimestamp(Date.now());
     } catch (err) {
+      console.log("Upload Error: ", err.response?.data || err.message);
       Alert.alert("Error", "Could not upload photo");
     } finally {
       setUploadingPhoto(false);
@@ -123,6 +140,7 @@ export default function ProfileScreen() {
           try {
             await authAPI.deleteProfilePhoto();
             await refreshUser();
+            setImageTimestamp(Date.now());
           } catch {
             Alert.alert("Error", "Could not remove photo");
           }
@@ -195,6 +213,7 @@ export default function ProfileScreen() {
             >
               {user?.profilePictureUrl ? (
                 <Image
+                  key={imageTimestamp}
                   source={{ uri: user.profilePictureUrl }}
                   style={{
                     width: 96,

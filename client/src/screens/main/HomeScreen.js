@@ -286,9 +286,9 @@ export default function HomeScreen({ navigation }) {
                 borderColor: "#93c5fd",
               }}
             >
-              {user?.profilePhotoUrl ? (
+              {user?.profilePictureUrl ? (
                 <Image
-                  source={{ uri: user.profilePhotoUrl }}
+                  source={{ uri: user.profilePictureUrl }}
                   style={{ width: 50, height: 50, borderRadius: 25 }}
                 />
               ) : (

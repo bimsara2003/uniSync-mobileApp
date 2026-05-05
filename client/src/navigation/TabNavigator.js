@@ -166,6 +166,7 @@ function AdminStack() {
   );
 }
 
+import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // ─── Tab Navigator ───────────────────────────────────────
@@ -218,9 +219,23 @@ export default function TabNavigator() {
         name="Profile"
         component={ProfileStack}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person" size={24} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) => {
+            if (user?.profilePictureUrl) {
+              return (
+                <Image 
+                  source={{ uri: user.profilePictureUrl }} 
+                  style={{ 
+                    width: 26, 
+                    height: 26, 
+                    borderRadius: 13, 
+                    borderWidth: focused ? 2 : 0,
+                    borderColor: '#ffffff',
+                  }} 
+                />
+              );
+            }
+            return <Ionicons name="person" size={24} color={color} />;
+          },
           tabBarItemStyle: { flex: 0, width: 58 },
         }}
       />
