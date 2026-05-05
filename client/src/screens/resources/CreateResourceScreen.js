@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { resourcesAPI } from "../../api/resources";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  actions,
+  RichEditor,
+  RichToolbar,
+} from "react-native-pell-rich-editor";
 
 const CATEGORIES = [
   "LECTURE_NOTE",
@@ -46,6 +53,8 @@ export default function CreateResourceScreen({ navigation }) {
   const [file, setFile] = useState(null); // { uri, name, mimeType, size }
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  const richText = useRef(); // Rich Text Editor Ref
 
   // Load faculties on mount
   useEffect(() => {
@@ -189,14 +198,47 @@ export default function CreateResourceScreen({ navigation }) {
         </Field>
 
         <Field label="Description">
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Brief description of the resource..."
-            multiline
-            numberOfLines={3}
-            style={[inputStyle, { height: 80, textAlignVertical: "top" }]}
-          />
+          <View
+            style={{
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: "#cbd5e1",
+              overflow: "hidden",
+              backgroundColor: "#fff",
+            }}
+          >
+            <RichToolbar
+              editor={richText}
+              actions={[
+                actions.setBold,
+                actions.setItalic,
+                actions.setUnderline,
+                actions.insertBulletsList,
+                actions.insertOrderedList,
+                actions.alignLeft,
+                actions.alignCenter,
+                actions.alignRight,
+              ]}
+              iconTint="#64748b"
+              selectedIconTint="#1a3c6e"
+              style={{
+                backgroundColor: "#f8fafc",
+                borderBottomWidth: 0.5,
+                borderColor: "#cbd5e1",
+              }}
+            />
+            <RichEditor
+              ref={richText}
+              initialContentHTML={description}
+              onChange={(text) => setDescription(text)}
+              placeholder="Brief description with formatting..."
+              initialHeight={200}
+              editorStyle={{
+                backgroundColor: "#fff",
+                color: "#334155",
+              }}
+            />
+          </View>
         </Field>
 
         <Field label="Category *">
