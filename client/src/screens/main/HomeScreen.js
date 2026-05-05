@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
-  Image,
   StatusBar,
+  Dimensions,
 } from "react-native";
+import { Image } from "expo-image";
 import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
@@ -357,8 +358,9 @@ export default function HomeScreen({ navigation }) {
             >
               {user?.profilePictureUrl ? (
                 <Image
-                  source={{ uri: user.profilePictureUrl }}
+                  source={user.profilePictureUrl}
                   style={{ width: 50, height: 50, borderRadius: 25 }}
+                  cachePolicy="memory-disk"
                 />
               ) : (
                 <Text
@@ -404,40 +406,140 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </View>
 
-        <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
-          {/* ── Stats Row ── */}
-          <Text
+        {/* ── Banner Slider ── */}
+        <View style={{ marginBottom: 16 }}>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={Dimensions.get("window").width}
+            decelerationRate="fast"
+          >
+            {/* Slide 1 */}
+            <View
+              style={{
+                width: Dimensions.get("window").width,
+                paddingHorizontal: 16,
+              }}
+            >
+              <View
+                style={{
+                  height: 160,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  backgroundColor: "#fff",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                  elevation: 4,
+                }}
+              >
+                <Image
+                  source={require("../../../assets/updated.png")}
+                  style={{ width: "100%", height: "100%" }}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+              </View>
+            </View>
+
+            {/* Slide 2 */}
+            <View
+              style={{
+                width: Dimensions.get("window").width,
+                paddingHorizontal: 16,
+              }}
+            >
+              <View
+                style={{
+                  height: 160,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  backgroundColor: "#fff",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                  elevation: 4,
+                }}
+              >
+                <Image
+                  source={require("../../../assets/resource.png")}
+                  style={{ width: "100%", height: "100%" }}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Simple Pagination Dots Indicator */}
+          <View
             style={{
-              fontSize: 13,
-              fontWeight: "600",
-              color: "#64748b",
-              marginBottom: 10,
-              textTransform: "uppercase",
-              letterSpacing: 0.5,
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 10,
+              gap: 6,
             }}
           >
-            Overview
-          </Text>
-          <View style={{ flexDirection: "row", gap: 12, marginBottom: 28 }}>
-            <StatCard
-              iconName="megaphone"
-              count={stats.announcements}
-              label="Announcement"
-              color="#1a3c6e"
+            <View
+              style={{
+                width: 18,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: "#1a3c6e",
+              }}
             />
-            <StatCard
-              iconName="book"
-              count={stats.resources}
-              label="Resources"
-              color="#8b5cf6"
-            />
-            <StatCard
-              iconName="search"
-              count={stats.lostFound}
-              label="Lost & Found"
-              color="#f97316"
+            <View
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: "#cbd5e1",
+              }}
             />
           </View>
+        </View>
+
+        <View style={{ paddingHorizontal: 16, paddingTop: 6 }}>
+          {/* ── Stats Row ── */}
+          {currentRole !== "student" && (
+            <>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "600",
+                  color: "#64748b",
+                  marginBottom: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                Overview
+              </Text>
+              <View style={{ flexDirection: "row", gap: 12, marginBottom: 28 }}>
+                <StatCard
+                  iconName="megaphone"
+                  count={stats.announcements}
+                  label="Announcement"
+                  color="#1a3c6e"
+                />
+                <StatCard
+                  iconName="book"
+                  count={stats.resources}
+                  label="Resources"
+                  color="#8b5cf6"
+                />
+                <StatCard
+                  iconName="search"
+                  count={stats.lostFound}
+                  label="Lost & Found"
+                  color="#f97316"
+                />
+              </View>
+            </>
+          )}
 
           {/* ── Quick Actions ── */}
           <Text

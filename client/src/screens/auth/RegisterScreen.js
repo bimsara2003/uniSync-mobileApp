@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   ScrollView,
+  Image,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 
@@ -63,6 +64,11 @@ export default function RegisterScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.card}>
+          <Image
+            source={require("../../../assets/icon.png")}
+            style={styles.headerImage}
+            resizeMode="contain"
+          />
           <Text style={styles.logo}>UniSync</Text>
           <Text style={styles.tagline}>Create your account</Text>
 
@@ -141,6 +147,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 4,
+  },
+  headerImage: {
+    width: 200,
+    height: 150,
+    alignSelf: "center",
+    marginBottom: 16,
   },
   logo: {
     fontSize: 32,
