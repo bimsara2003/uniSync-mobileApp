@@ -13,6 +13,9 @@ import CreateAnnouncementScreen from "../screens/announcements/CreateAnnouncemen
 import EditAnnouncementScreen from "../screens/announcements/EditAnnouncementScreen";
 
 // Resources
+import FacultiesScreen from "../screens/resources/FacultiesScreen";
+import DepartmentsScreen from "../screens/resources/DepartmentsScreen";
+import ModulesScreen from "../screens/resources/ModulesScreen";
 import ResourcesScreen from "../screens/resources/ResourcesScreen";
 import ResourceDetailScreen from "../screens/resources/ResourceDetailScreen";
 import PendingResourcesScreen from "../screens/resources/PendingResourcesScreen";
@@ -84,6 +87,9 @@ function AnnouncementsStack() {
 function ResourcesStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FacultiesList" component={FacultiesScreen} />
+      <Stack.Screen name="DepartmentsList" component={DepartmentsScreen} />
+      <Stack.Screen name="ModulesList" component={ModulesScreen} />
       <Stack.Screen name="ResourcesList" component={ResourcesScreen} />
       <Stack.Screen name="ResourceDetail" component={ResourceDetailScreen} />
       <Stack.Screen

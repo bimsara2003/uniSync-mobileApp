@@ -92,7 +92,8 @@ function ResourceCard({ item, onPress, onBookmark, userId }) {
   );
 }
 
-export default function ResourcesScreen({ navigation }) {
+export default function ResourcesScreen({ route, navigation }) {
+  const { faculty, department, module } = route.params || {};
   const { user, isStaffOrAdmin } = useAuth();
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,6 +110,9 @@ export default function ResourcesScreen({ navigation }) {
       } else {
         const filters = {};
         if (activeCategory !== "ALL") filters.category = activeCategory;
+        if (module) filters.module = module._id;
+        else if (department) filters.department = department._id;
+        else if (faculty) filters.faculty = faculty._id;
         res = await resourcesAPI.getResources(filters);
       }
       setResources(res.data);
@@ -155,9 +159,14 @@ export default function ResourcesScreen({ navigation }) {
         backgroundColor: "#fff", paddingTop: 56, paddingHorizontal: 20,
         paddingBottom: 12, borderBottomWidth: 0.5, borderBottomColor: "#e2e8f0",
       }}>
+        {module && (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
+            <Text style={{ fontSize: 14, color: "#3b82f6", fontWeight: "600" }}>← Back to Modules</Text>
+          </TouchableOpacity>
+        )}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <Text style={{ fontSize: 22, fontWeight: "700", color: "#0f172a" }}>
-            Resources
+            {module ? `${module.code} Resources` : "Resources"}
           </Text>
           <View style={{ flexDirection: "row", gap: 8 }}>
             <TouchableOpacity
