@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { resourcesAPI } from "../../api/resources";
 import { useAuth } from "../../context/AuthContext";
@@ -24,12 +25,12 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_ICON = {
-  LECTURE_NOTE: "📄",
-  PAST_PAPER: "📝",
-  PROJECT: "💻",
-  TEMPLATE: "📋",
-  SUMMARY: "📑",
-  OTHER: "📁",
+  LECTURE_NOTE: "document-text-outline",
+  PAST_PAPER: "newspaper-outline",
+  PROJECT: "code-slash-outline",
+  TEMPLATE: "clipboard-outline",
+  SUMMARY: "reader-outline",
+  OTHER: "folder-outline",
 };
 
 const STATUS_STYLE = {
@@ -58,9 +59,13 @@ function ResourceCard({ item, onPress, onBookmark, userId }) {
       <View
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}
       >
-        <Text style={{ fontSize: 24, marginRight: 12 }}>
-          {CATEGORY_ICON[item.category] || "📁"}
-        </Text>
+        <View style={{ marginRight: 12 }}>
+          <Ionicons
+            name={CATEGORY_ICON[item.category] || "folder-outline"}
+            size={24}
+            color="#1a3c6e"
+          />
+        </View>
         <View style={{ flex: 1 }}>
           <Text
             style={{ fontSize: 15, fontWeight: "600", color: "#0f172a" }}
@@ -73,7 +78,11 @@ function ResourceCard({ item, onPress, onBookmark, userId }) {
           </Text>
         </View>
         <TouchableOpacity onPress={() => onBookmark(item._id)}>
-          <Text style={{ fontSize: 20 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
+          <Ionicons
+            name={isBookmarked ? "bookmark" : "bookmark-outline"}
+            size={20}
+            color={isBookmarked ? "#3b82f6" : "#94a3b8"}
+          />
         </TouchableOpacity>
       </View>
 
@@ -124,8 +133,9 @@ function ResourceCard({ item, onPress, onBookmark, userId }) {
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Ionicons name="download-outline" size={14} color="#94a3b8" />
           <Text style={{ fontSize: 11, color: "#94a3b8" }}>
-            ⬇ {item.downloadCount || 0}
+            {item.downloadCount || 0}
           </Text>
         </View>
       </View>
@@ -229,11 +239,12 @@ export default function ResourcesScreen({ route, navigation }) {
                 {faculty.name}
               </Text>
             </TouchableOpacity>
-            <Text
-              style={{ fontSize: 13, color: "#0f172a", marginHorizontal: 6 }}
-            >
-              ›
-            </Text>
+            <Ionicons
+              name="chevron-forward"
+              size={13}
+              color="#0f172a"
+              style={{ marginHorizontal: 6 }}
+            />
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("DepartmentsList", { faculty })
@@ -243,11 +254,12 @@ export default function ResourcesScreen({ route, navigation }) {
                 {department.name}
               </Text>
             </TouchableOpacity>
-            <Text
-              style={{ fontSize: 13, color: "#0f172a", marginHorizontal: 6 }}
-            >
-              ›
-            </Text>
+            <Ionicons
+              name="chevron-forward"
+              size={13}
+              color="#0f172a"
+              style={{ marginHorizontal: 6 }}
+            />
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("ModulesList", { faculty, department })
@@ -282,6 +294,12 @@ export default function ResourcesScreen({ route, navigation }) {
                 borderColor: showBookmarks ? "#1a3c6e" : "#e2e8f0",
               }}
             >
+              <Ionicons
+                name={showBookmarks ? "bookmark" : "bookmark-outline"}
+                size={14}
+                color={showBookmarks ? "#fff" : "#64748b"}
+                style={{ marginRight: 4 }}
+              />
               <Text
                 style={{
                   fontSize: 13,
@@ -289,7 +307,7 @@ export default function ResourcesScreen({ route, navigation }) {
                   color: showBookmarks ? "#fff" : "#64748b",
                 }}
               >
-                🔖 Saved
+                Saved
               </Text>
             </TouchableOpacity>
             {isStaffOrAdmin && (
@@ -312,21 +330,30 @@ export default function ResourcesScreen({ route, navigation }) {
           </View>
         </View>
 
-        {/* Search */}
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Search resources..."
+        <View
           style={{
+            flexDirection: "row",
+            alignItems: "center",
             backgroundColor: "#f1f5f9",
             borderRadius: 10,
             paddingHorizontal: 14,
-            paddingVertical: 10,
-            fontSize: 14,
-            color: "#0f172a",
             marginBottom: 12,
           }}
-        />
+        >
+          <Ionicons name="search-outline" size={20} color="#94a3b8" />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search resources..."
+            style={{
+              flex: 1,
+              paddingVertical: 10,
+              paddingLeft: 8,
+              fontSize: 14,
+              color: "#0f172a",
+            }}
+          />
+        </View>
 
         {/* Category pills */}
         {!showBookmarks && (
@@ -379,7 +406,12 @@ export default function ResourcesScreen({ route, navigation }) {
         }
         ListEmptyComponent={
           <View style={{ alignItems: "center", marginTop: 60 }}>
-            <Text style={{ fontSize: 40, marginBottom: 12 }}>📂</Text>
+            <Ionicons
+              name="folder-open-outline"
+              size={48}
+              color="#cbd5e1"
+              style={{ marginBottom: 12 }}
+            />
             <Text style={{ color: "#94a3b8", fontSize: 14 }}>
               {showBookmarks ? "No saved resources" : "No resources found"}
             </Text>
@@ -416,7 +448,7 @@ export default function ResourcesScreen({ route, navigation }) {
           elevation: 5,
         }}
       >
-        <Text style={{ fontSize: 28, color: "#fff", lineHeight: 32 }}>+</Text>
+        <Ionicons name="add" size={32} color="#fff" />
       </TouchableOpacity>
     </View>
   );

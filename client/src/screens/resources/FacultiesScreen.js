@@ -10,6 +10,7 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { hierarchyAPI } from "../../api/hierarchy";
 
 export default function FacultiesScreen({ navigation }) {
@@ -67,30 +68,47 @@ export default function FacultiesScreen({ navigation }) {
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "#0f172a" }}>
             Faculty
           </Text>
-          <Text style={{ fontSize: 16, color: "#0f172a", marginHorizontal: 8 }}>
-            ›
-          </Text>
+          <Ionicons
+            name="chevron-forward"
+            size={16}
+            color="#0f172a"
+            style={{ marginHorizontal: 8 }}
+          />
           <Text style={{ fontSize: 16, color: "#0f172a" }}>Department</Text>
-          <Text style={{ fontSize: 16, color: "#0f172a", marginHorizontal: 8 }}>
-            ›
-          </Text>
+          <Ionicons
+            name="chevron-forward"
+            size={16}
+            color="#0f172a"
+            style={{ marginHorizontal: 8 }}
+          />
           <Text style={{ fontSize: 16, color: "#0f172a" }}>Module</Text>
         </View>
 
-        <TextInput
-          placeholder="🔍 Search faculties..."
-          value={search}
-          onChangeText={setSearch}
+        <View
           style={{
+            flexDirection: "row",
+            alignItems: "center",
             backgroundColor: "#f1f5f9",
             borderRadius: 10,
-            padding: 12,
             borderWidth: 1,
             borderColor: "#e2e8f0",
+            paddingHorizontal: 12,
             marginBottom: 20,
-            fontSize: 16,
           }}
-        />
+        >
+          <Ionicons name="search-outline" size={20} color="#94a3b8" />
+          <TextInput
+            placeholder="Search faculties..."
+            value={search}
+            onChangeText={setSearch}
+            style={{
+              flex: 1,
+              paddingVertical: 12,
+              paddingLeft: 8,
+              fontSize: 16,
+            }}
+          />
+        </View>
 
         <Text
           style={{
@@ -153,7 +171,7 @@ export default function FacultiesScreen({ navigation }) {
                   {item.description || "Select to view departments"}
                 </Text>
               </View>
-              <Text style={{ color: "#94a3b8", fontSize: 24 }}>›</Text>
+              <Ionicons name="chevron-forward" size={24} color="#94a3b8" />
             </TouchableOpacity>
           )}
         />

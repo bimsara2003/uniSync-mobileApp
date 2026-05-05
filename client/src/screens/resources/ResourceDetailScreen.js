@@ -353,7 +353,7 @@ export default function ResourceDetailScreen({ route, navigation }) {
               <ActivityIndicator color="#fff" />
             ) : (
               <>
-                <Text style={{ fontSize: 16 }}>⬇️</Text>
+                <Ionicons name="download-outline" size={20} color="#fff" />
                 <Text
                   style={{ color: "#fff", fontWeight: "600", fontSize: 15 }}
                 >
@@ -378,7 +378,11 @@ export default function ResourceDetailScreen({ route, navigation }) {
               gap: 8,
             }}
           >
-            <Text style={{ fontSize: 16 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
+            <Ionicons
+              name={isBookmarked ? "bookmark" : "bookmark-outline"}
+              size={20}
+              color={isBookmarked ? "#3b82f6" : "#475569"}
+            />
             <Text
               style={{
                 color: isBookmarked ? "#122a4f" : "#475569",

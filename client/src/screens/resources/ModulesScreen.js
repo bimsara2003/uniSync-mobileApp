@@ -10,6 +10,7 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { hierarchyAPI } from "../../api/hierarchy";
 
 export default function ModulesScreen({ route, navigation }) {
@@ -84,9 +85,12 @@ export default function ModulesScreen({ route, navigation }) {
               {faculty.name}
             </Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 14, color: "#0f172a", marginHorizontal: 6 }}>
-            ›
-          </Text>
+          <Ionicons
+            name="chevron-forward"
+            size={14}
+            color="#0f172a"
+            style={{ marginHorizontal: 6 }}
+          />
           <TouchableOpacity
             onPress={() => navigation.navigate("DepartmentsList", { faculty })}
           >
@@ -94,28 +98,42 @@ export default function ModulesScreen({ route, navigation }) {
               {department.name}
             </Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 14, color: "#0f172a", marginHorizontal: 6 }}>
-            ›
-          </Text>
+          <Ionicons
+            name="chevron-forward"
+            size={14}
+            color="#0f172a"
+            style={{ marginHorizontal: 6 }}
+          />
           <Text style={{ fontSize: 14, fontWeight: "bold", color: "#0f172a" }}>
             Module
           </Text>
         </View>
 
-        <TextInput
-          placeholder="🔍 Search modules by name or code..."
-          value={search}
-          onChangeText={setSearch}
+        <View
           style={{
+            flexDirection: "row",
+            alignItems: "center",
             backgroundColor: "#f1f5f9",
             borderRadius: 10,
-            padding: 12,
             borderWidth: 1,
             borderColor: "#e2e8f0",
+            paddingHorizontal: 12,
             marginBottom: 20,
-            fontSize: 16,
           }}
-        />
+        >
+          <Ionicons name="search-outline" size={20} color="#94a3b8" />
+          <TextInput
+            placeholder="Search modules by name or code..."
+            value={search}
+            onChangeText={setSearch}
+            style={{
+              flex: 1,
+              paddingVertical: 12,
+              paddingLeft: 8,
+              fontSize: 16,
+            }}
+          />
+        </View>
 
         <Text
           style={{
@@ -197,7 +215,7 @@ export default function ModulesScreen({ route, navigation }) {
                   Year {item.yearOfStudy} · Semester {item.semester}
                 </Text>
               </View>
-              <Text style={{ color: "#94a3b8", fontSize: 24 }}>›</Text>
+              <Ionicons name="chevron-forward" size={24} color="#94a3b8" />
             </TouchableOpacity>
           )}
         />

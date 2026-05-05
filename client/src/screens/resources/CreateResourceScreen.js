@@ -390,7 +390,12 @@ export default function CreateResourceScreen({ navigation }) {
           >
             {file ? (
               <>
-                <Text style={{ fontSize: 24, marginBottom: 4 }}>📎</Text>
+                <Ionicons
+                  name="document-attach-outline"
+                  size={32}
+                  color="#1a3c6e"
+                  style={{ marginBottom: 4 }}
+                />
                 <Text
                   style={{ fontSize: 13, fontWeight: "600", color: "#1a3c6e" }}
                   numberOfLines={1}
@@ -403,7 +408,12 @@ export default function CreateResourceScreen({ navigation }) {
               </>
             ) : (
               <>
-                <Text style={{ fontSize: 28, marginBottom: 6 }}>📁</Text>
+                <Ionicons
+                  name="folder-open-outline"
+                  size={32}
+                  color="#cbd5e1"
+                  style={{ marginBottom: 6 }}
+                />
                 <Text style={{ color: "#94a3b8", fontSize: 13 }}>
                   Tap to attach a file
                 </Text>
