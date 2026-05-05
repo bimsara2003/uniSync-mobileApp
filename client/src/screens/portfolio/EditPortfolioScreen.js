@@ -13,14 +13,46 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+
+const inputStyle = {
+  backgroundColor: "#fff",
+  borderRadius: 10,
+  borderWidth: 0.5,
+  borderColor: "#e2e8f0",
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+  fontSize: 14,
+  color: "#0f172a",
+};
+
+const predefinedSkills = [
+  { name: "React Native", icon: "react" },
+  { name: "Node.js", icon: "nodejs" },
+  { name: "MongoDB", icon: "leaf" },
+  { name: "Express", icon: "server-network" },
+  { name: "Python", icon: "language-python" },
+  { name: "Java", icon: "language-java" },
+  { name: "C++", icon: "language-cpp" },
+  { name: "C#", icon: "language-csharp" },
+  { name: "JavaScript", icon: "language-javascript" },
+  { name: "TypeScript", icon: "language-typescript" },
+  { name: "HTML", icon: "language-html5" },
+  { name: "CSS", icon: "language-css3" },
+  { name: "SQL", icon: "database" },
+  { name: "Git", icon: "git" },
+  { name: "Docker", icon: "docker" },
+  { name: "AWS", icon: "aws" },
+  { name: "Firebase", icon: "firebase" },
+];
 
 export default function EditPortfolioScreen({ route, navigation }) {
   const { portfolio } = route.params;
 
   const [headline, setHeadline] = useState(portfolio?.headline ?? "");
   const [bio, setBio] = useState(portfolio?.bio ?? "");
-  const [skills, setSkills] = useState((portfolio?.skills ?? []).join(", "));
+  const [skills, setSkills] = useState(portfolio?.skills ?? []);
+  const [customSkill, setCustomSkill] = useState("");
   const [linkedIn, setLinkedIn] = useState(portfolio?.linkedIn ?? "");
   const [gitHub, setGitHub] = useState(portfolio?.gitHub ?? "");
   const [website, setWebsite] = useState(portfolio?.website ?? "");
@@ -28,9 +60,25 @@ export default function EditPortfolioScreen({ route, navigation }) {
   const [image, setImage] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  const toggleSkill = (skill) => {
+    if (skills.includes(skill)) {
+      setSkills(skills.filter((s) => s !== skill));
+    } else {
+      setSkills([...skills, skill]);
+    }
+  };
+
+  const addCustomSkill = () => {
+    const trimmed = customSkill.trim();
+    if (trimmed && !skills.includes(trimmed)) {
+      setSkills([...skills, trimmed]);
+      setCustomSkill("");
+    }
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
@@ -47,7 +95,7 @@ export default function EditPortfolioScreen({ route, navigation }) {
       const formData = new FormData();
       formData.append("headline", headline.trim());
       formData.append("bio", bio.trim());
-      formData.append("skills", JSON.stringify(skills.split(",").map(s => s.trim()).filter(Boolean)));
+      formData.append("skills", JSON.stringify(skills));
       formData.append("linkedIn", linkedIn.trim());
       formData.append("gitHub", gitHub.trim());
       formData.append("website", website.trim());
@@ -167,13 +215,107 @@ export default function EditPortfolioScreen({ route, navigation }) {
           />
         </Field>
 
-        <Field label="Skills (comma-separated)">
-          <TextInput
-            value={skills}
-            onChangeText={setSkills}
-            placeholder="e.g. React Native, Node.js, MongoDB"
-            style={inputStyle}
-          />
+        <Field label="Skills">
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            {predefinedSkills.map((skillItem) => {
+              const isSelected = skills.includes(skillItem.name);
+              return (
+                <TouchableOpacity
+                  key={skillItem.name}
+                  onPress={() => toggleSkill(skillItem.name)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 20,
+                    backgroundColor: isSelected ? "#1a3c6e" : "#e2e8f0",
+                    borderWidth: 1,
+                    borderColor: isSelected ? "#1a3c6e" : "#cbd5e1",
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={skillItem.icon}
+                    size={16}
+                    color={isSelected ? "#fff" : "#475569"}
+                    style={{ marginRight: 6 }}
+                  />
+                  <Text
+                    style={{
+                      color: isSelected ? "#fff" : "#475569",
+                      fontSize: 13,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {skillItem.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+            {skills
+              .filter((s) => !predefinedSkills.some((ps) => ps.name === s))
+              .map((skill) => (
+                <TouchableOpacity
+                  key={skill}
+                  onPress={() => toggleSkill(skill)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 20,
+                    backgroundColor: "#1a3c6e",
+                    borderWidth: 1,
+                    borderColor: "#1a3c6e",
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="code-tags"
+                    size={16}
+                    color="#fff"
+                    style={{ marginRight: 6 }}
+                  />
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 13,
+                      fontWeight: "500",
+                      marginRight: 4,
+                    }}
+                  >
+                    {skill}
+                  </Text>
+                  <Ionicons name="close" size={14} color="#fff" />
+                </TouchableOpacity>
+              ))}
+          </View>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <TextInput
+              value={customSkill}
+              onChangeText={setCustomSkill}
+              placeholder="Add other skill..."
+              style={[inputStyle, { flex: 1 }]}
+              onSubmitEditing={addCustomSkill}
+            />
+            <TouchableOpacity
+              onPress={addCustomSkill}
+              style={{
+                backgroundColor: "#0ea5e9",
+                justifyContent: "center",
+                paddingHorizontal: 16,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
+            </TouchableOpacity>
+          </View>
         </Field>
 
         <Field label="LinkedIn URL">
@@ -270,14 +412,3 @@ function Field({ label, children }) {
     </View>
   );
 }
-
-const inputStyle = {
-  backgroundColor: "#fff",
-  borderWidth: 0.5,
-  borderColor: "#e2e8f0",
-  borderRadius: 10,
-  paddingHorizontal: 14,
-  paddingVertical: 10,
-  fontSize: 14,
-  color: "#0f172a",
-};

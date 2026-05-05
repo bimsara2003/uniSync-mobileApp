@@ -15,6 +15,27 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { portfolioAPI } from "../../api/portfolio";
 import { useAuth } from "../../context/AuthContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+const predefinedSkills = [
+  { name: "React Native", icon: "react" },
+  { name: "Node.js", icon: "nodejs" },
+  { name: "MongoDB", icon: "leaf" },
+  { name: "Express", icon: "server-network" },
+  { name: "Python", icon: "language-python" },
+  { name: "Java", icon: "language-java" },
+  { name: "C++", icon: "language-cpp" },
+  { name: "C#", icon: "language-csharp" },
+  { name: "JavaScript", icon: "language-javascript" },
+  { name: "TypeScript", icon: "language-typescript" },
+  { name: "HTML", icon: "language-html5" },
+  { name: "CSS", icon: "language-css3" },
+  { name: "SQL", icon: "database" },
+  { name: "Git", icon: "git" },
+  { name: "Docker", icon: "docker" },
+  { name: "AWS", icon: "aws" },
+  { name: "Firebase", icon: "firebase" },
+];
 
 const ITEM_TYPES = [
   "ALL",
@@ -221,27 +242,38 @@ export default function PortfolioScreen({ navigation }) {
               SKILLS
             </Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
-              {portfolio.skills.map((s, i) => (
-                <View
-                  key={i}
-                  style={{
-                    backgroundColor: "#dbeafe",
-                    paddingHorizontal: 10,
-                    paddingVertical: 4,
-                    borderRadius: 12,
-                  }}
-                >
-                  <Text
+              {portfolio.skills.map((s, i) => {
+                const foundSkill = predefinedSkills.find((ps) => ps.name === s);
+                return (
+                  <View
+                    key={i}
                     style={{
-                      fontSize: 12,
-                      color: "#0c1d36",
-                      fontWeight: "500",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: "#dbeafe",
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      borderRadius: 12,
                     }}
                   >
-                    {s}
-                  </Text>
-                </View>
-              ))}
+                    <MaterialCommunityIcons
+                      name={foundSkill ? foundSkill.icon : "code-tags"}
+                      size={14}
+                      color="#0ea5e9"
+                      style={{ marginRight: 4 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#0c1d36",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {s}
+                    </Text>
+                  </View>
+                );
+              })}
             </View>
           </View>
         )}
@@ -258,25 +290,13 @@ export default function PortfolioScreen({ navigation }) {
             }}
           >
             {portfolio.linkedIn && (
-              <LinkBadge
-                label="LinkedIn"
-                icon="💼"
-                url={portfolio.linkedIn}
-              />
+              <LinkBadge label="LinkedIn" icon="💼" url={portfolio.linkedIn} />
             )}
             {portfolio.gitHub && (
-              <LinkBadge
-                label="GitHub"
-                icon="🐙"
-                url={portfolio.gitHub}
-              />
+              <LinkBadge label="GitHub" icon="🐙" url={portfolio.gitHub} />
             )}
             {portfolio.website && (
-              <LinkBadge
-                label="Website"
-                icon="🌐"
-                url={portfolio.website}
-              />
+              <LinkBadge label="Website" icon="🌐" url={portfolio.website} />
             )}
           </View>
         )}
