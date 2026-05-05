@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Image,
   Platform,
+  Modal,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
 
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [imageTimestamp, setImageTimestamp] = useState(Date.now());
+  const [isPhotoModalVisible, setIsPhotoModalVisible] = useState(false);
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -101,10 +103,11 @@ export default function ProfileScreen() {
     try {
       const asset = result.assets[0];
       const formData = new FormData();
-      
-      const fileName = asset.fileName || asset.uri.split("/").pop() || "profile.jpg";
+
+      const fileName =
+        asset.fileName || asset.uri.split("/").pop() || "profile.jpg";
       const mimeType = asset.mimeType || "image/jpeg";
-      
+
       if (Platform.OS === "web") {
         // React Native Web: fetch the blob and append it
         const res = await fetch(asset.uri);
@@ -118,7 +121,7 @@ export default function ProfileScreen() {
           type: mimeType,
         });
       }
-      
+
       await authAPI.uploadProfilePhoto(formData);
       await refreshUser();
       setImageTimestamp(Date.now());
@@ -193,7 +196,13 @@ export default function ProfileScreen() {
         <View style={{ alignItems: "center", marginBottom: 24 }}>
           <View style={{ position: "relative" }}>
             <TouchableOpacity
-              onPress={handlePickPhoto}
+              onPress={() => {
+                if (user?.profilePictureUrl) {
+                  setIsPhotoModalVisible(true);
+                } else {
+                  handlePickPhoto();
+                }
+              }}
               activeOpacity={0.8}
               style={{
                 width: 100,
@@ -606,6 +615,31 @@ export default function ProfileScreen() {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Full Screen Image Modal */}
+      <Modal
+        visible={isPhotoModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsPhotoModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.9)", justifyContent: "center", alignItems: "center" }}>
+          <TouchableOpacity
+            style={{ position: "absolute", top: Platform.OS === 'ios' ? 50 : 30, right: 20, zIndex: 10, padding: 10 }}
+            onPress={() => setIsPhotoModalVisible(false)}
+          >
+            <Ionicons name="close" size={32} color="#fff" />
+          </TouchableOpacity>
+          {user?.profilePictureUrl && (
+            <Image
+              key={imageTimestamp}
+              source={{ uri: user.profilePictureUrl }}
+              style={{ width: "100%", height: "70%" }}
+              resizeMode="contain"
+            />
+          )}
+        </View>
+      </Modal>
     </View>
   );
 }

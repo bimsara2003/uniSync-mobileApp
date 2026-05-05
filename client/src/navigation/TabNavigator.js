@@ -212,7 +212,7 @@ export default function TabNavigator() {
             <Ionicons name="settings" size={24} color={color} />
           ),
           tabBarButton: isAdmin ? undefined : () => null,
-          tabBarItemStyle: { flex: 0, width: 58, marginLeft: 'auto' },
+          tabBarItemStyle: { flex: 0, width: 58, marginLeft: "auto" },
         }}
       />
       <Tab.Screen
@@ -222,15 +222,15 @@ export default function TabNavigator() {
           tabBarIcon: ({ color, focused }) => {
             if (user?.profilePictureUrl) {
               return (
-                <Image 
-                  source={{ uri: user.profilePictureUrl }} 
-                  style={{ 
-                    width: 26, 
-                    height: 26, 
-                    borderRadius: 13, 
+                <Image
+                  source={{ uri: user.profilePictureUrl }}
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: 13,
                     borderWidth: focused ? 2 : 0,
-                    borderColor: '#ffffff',
-                  }} 
+                    borderColor: "#ffffff",
+                  }}
                 />
               );
             }

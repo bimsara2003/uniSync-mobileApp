@@ -16,14 +16,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 const CATEGORY_STYLE = {
   GENERAL: { bg: "#f1f5f9", text: "#475569" },
-  EXAM:    { bg: "#fef3c7", text: "#92400e" },
-  EVENT:   { bg: "#dbeafe", text: "#1a3c6e" },
-  URGENT:  { bg: "#fee2e2", text: "#991b1b" },
+  EXAM: { bg: "#fef3c7", text: "#92400e" },
+  EVENT: { bg: "#dbeafe", text: "#1a3c6e" },
+  URGENT: { bg: "#fee2e2", text: "#991b1b" },
 };
 
 const ROLE_STYLE = {
-  admin:   { bg: "#fee2e2", text: "#991b1b", label: "Admin" },
-  staff:   { bg: "#dbeafe", text: "#1a3c6e", label: "Staff" },
+  admin: { bg: "#fee2e2", text: "#991b1b", label: "Admin" },
+  staff: { bg: "#dbeafe", text: "#1a3c6e", label: "Staff" },
   student: { bg: "#dcfce7", text: "#166534", label: "Student" },
 };
 
@@ -45,13 +45,28 @@ function StatCard({ iconName, count, label, color }) {
         borderColor: "#f1f5f9",
       }}
     >
-      <View style={{ backgroundColor: color + "15", padding: 10, borderRadius: 12, marginBottom: 8 }}>
+      <View
+        style={{
+          backgroundColor: color + "15",
+          padding: 10,
+          borderRadius: 12,
+          marginBottom: 8,
+        }}
+      >
         <Ionicons name={iconName} size={24} color={color} />
       </View>
       <Text style={{ fontSize: 24, fontWeight: "800", color: "#0f172a" }}>
         {count}
       </Text>
-      <Text style={{ fontSize: 12, fontWeight: "600", color: "#64748b", textAlign: "center", marginTop: 4 }}>
+      <Text
+        style={{
+          fontSize: 12,
+          fontWeight: "600",
+          color: "#64748b",
+          textAlign: "center",
+          marginTop: 4,
+        }}
+      >
         {label}
       </Text>
     </View>
@@ -93,7 +108,16 @@ function QuickAction({ iconName, label, subtitle, onPress, accent }) {
         <Ionicons name={iconName} size={24} color={accent} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 16, fontWeight: "700", color: "#0f172a", marginBottom: 4 }}>{label}</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "700",
+            color: "#0f172a",
+            marginBottom: 4,
+          }}
+        >
+          {label}
+        </Text>
         <Text style={{ fontSize: 13, color: "#64748b" }}>{subtitle}</Text>
       </View>
       <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
@@ -123,7 +147,9 @@ function RecentAnnouncementCard({ item, onPress }) {
         borderLeftColor: item.isPinned ? "#1a3c6e" : "transparent",
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}
+      >
         <View
           style={{
             width: 32,
@@ -135,12 +161,23 @@ function RecentAnnouncementCard({ item, onPress }) {
             marginRight: 10,
           }}
         >
-          <Text style={{ fontSize: 12, fontWeight: "600", color: "#475569" }}>{initials}</Text>
+          <Text style={{ fontSize: 12, fontWeight: "600", color: "#475569" }}>
+            {initials}
+          </Text>
         </View>
-        <Text style={{ fontSize: 13, fontWeight: "500", color: "#64748b", flex: 1 }}>
+        <Text
+          style={{ fontSize: 13, fontWeight: "500", color: "#64748b", flex: 1 }}
+        >
           {item.postedBy?.firstName} {item.postedBy?.lastName}
         </Text>
-        {item.isPinned && <Ionicons name="pin" size={14} color="#1a3c6e" style={{ marginRight: 6 }} />}
+        {item.isPinned && (
+          <Ionicons
+            name="pin"
+            size={14}
+            color="#1a3c6e"
+            style={{ marginRight: 6 }}
+          />
+        )}
         <View
           style={{
             backgroundColor: cat.bg,
@@ -154,10 +191,21 @@ function RecentAnnouncementCard({ item, onPress }) {
           </Text>
         </View>
       </View>
-      <Text style={{ fontSize: 15, fontWeight: "700", color: "#0f172a", marginBottom: 6 }} numberOfLines={1}>
+      <Text
+        style={{
+          fontSize: 15,
+          fontWeight: "700",
+          color: "#0f172a",
+          marginBottom: 6,
+        }}
+        numberOfLines={1}
+      >
         {item.title}
       </Text>
-      <Text style={{ fontSize: 13, color: "#64748b", lineHeight: 20 }} numberOfLines={2}>
+      <Text
+        style={{ fontSize: 13, color: "#64748b", lineHeight: 20 }}
+        numberOfLines={2}
+      >
         {item.body}
       </Text>
     </TouchableOpacity>
@@ -168,9 +216,13 @@ export default function HomeScreen({ navigation }) {
   const { user, isStaffOrAdmin } = useAuth();
 
   const [recentAnnouncements, setRecentAnnouncements] = useState([]);
-  const [stats, setStats]                             = useState({ announcements: 0, resources: 0, lostFound: 0 });
-  const [loading, setLoading]                         = useState(true);
-  const [refreshing, setRefreshing]                   = useState(false);
+  const [stats, setStats] = useState({
+    announcements: 0,
+    resources: 0,
+    lostFound: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -182,7 +234,11 @@ export default function HomeScreen({ navigation }) {
 
       if (annRes.status === "fulfilled") {
         const data = annRes.value.data;
-        setRecentAnnouncements(Array.isArray(data) ? data.slice(0, 3) : (data.announcements || data.data || []).slice(0, 3));
+        setRecentAnnouncements(
+          Array.isArray(data)
+            ? data.slice(0, 3)
+            : (data.announcements || data.data || []).slice(0, 3),
+        );
         setStats((prev) => ({
           ...prev,
           announcements: data.total ?? (Array.isArray(data) ? data.length : 0),
@@ -214,7 +270,7 @@ export default function HomeScreen({ navigation }) {
     useCallback(() => {
       setLoading(true);
       fetchData();
-    }, [fetchData])
+    }, [fetchData]),
   );
 
   const onRefresh = () => {
@@ -237,7 +293,14 @@ export default function HomeScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, backgroundColor: "#f0f9ff", justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#f0f9ff",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color="#1a3c6e" />
       </View>
     );
@@ -249,7 +312,13 @@ export default function HomeScreen({ navigation }) {
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 32 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1a3c6e" />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#1a3c6e"
+          />
+        }
         showsVerticalScrollIndicator={false}
       >
         {/* ── Header ── */}
@@ -292,7 +361,9 @@ export default function HomeScreen({ navigation }) {
                   style={{ width: 50, height: 50, borderRadius: 25 }}
                 />
               ) : (
-                <Text style={{ fontSize: 18, fontWeight: "700", color: "#1a3c6e" }}>
+                <Text
+                  style={{ fontSize: 18, fontWeight: "700", color: "#1a3c6e" }}
+                >
                   {initials}
                 </Text>
               )}
@@ -300,8 +371,13 @@ export default function HomeScreen({ navigation }) {
 
             {/* Greeting */}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, color: "#93c5fd" }}>{greeting()},</Text>
-              <Text style={{ fontSize: 18, fontWeight: "700", color: "#fff" }} numberOfLines={1}>
+              <Text style={{ fontSize: 13, color: "#93c5fd" }}>
+                {greeting()},
+              </Text>
+              <Text
+                style={{ fontSize: 18, fontWeight: "700", color: "#fff" }}
+                numberOfLines={1}
+              >
                 {user?.firstName} {user?.lastName}
               </Text>
             </View>
@@ -315,7 +391,9 @@ export default function HomeScreen({ navigation }) {
                 paddingVertical: 4,
               }}
             >
-              <Text style={{ fontSize: 11, fontWeight: "700", color: "#1a3c6e" }}>
+              <Text
+                style={{ fontSize: 11, fontWeight: "700", color: "#1a3c6e" }}
+              >
                 {roleInfo.label}
               </Text>
             </View>
@@ -327,19 +405,51 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
-
           {/* ── Stats Row ── */}
-          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: "600",
+              color: "#64748b",
+              marginBottom: 10,
+              textTransform: "uppercase",
+              letterSpacing: 0.5,
+            }}
+          >
             Overview
           </Text>
           <View style={{ flexDirection: "row", gap: 12, marginBottom: 28 }}>
-            <StatCard iconName="megaphone" count={stats.announcements} label="Announcement" color="#1a3c6e" />
-            <StatCard iconName="book" count={stats.resources}     label="Resources"     color="#8b5cf6" />
-            <StatCard iconName="search" count={stats.lostFound}     label="Lost & Found"  color="#f97316" />
+            <StatCard
+              iconName="megaphone"
+              count={stats.announcements}
+              label="Announcement"
+              color="#1a3c6e"
+            />
+            <StatCard
+              iconName="book"
+              count={stats.resources}
+              label="Resources"
+              color="#8b5cf6"
+            />
+            <StatCard
+              iconName="search"
+              count={stats.lostFound}
+              label="Lost & Found"
+              color="#f97316"
+            />
           </View>
 
           {/* ── Quick Actions ── */}
-          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: "600",
+              color: "#64748b",
+              marginBottom: 12,
+              textTransform: "uppercase",
+              letterSpacing: 0.5,
+            }}
+          >
             Quick Access
           </Text>
 
@@ -384,11 +494,29 @@ export default function HomeScreen({ navigation }) {
                   marginTop: 4,
                 }}
               >
-                <Text style={{ fontSize: 13, fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "600",
+                    color: "#64748b",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
                   Recent Announcements
                 </Text>
-                <TouchableOpacity onPress={() => navigation.navigate("Announcements")}>
-                  <Text style={{ fontSize: 12, color: "#1a3c6e", fontWeight: "600" }}>See all →</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Announcements")}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: "#1a3c6e",
+                      fontWeight: "600",
+                    }}
+                  >
+                    See all →
+                  </Text>
                 </TouchableOpacity>
               </View>
 
