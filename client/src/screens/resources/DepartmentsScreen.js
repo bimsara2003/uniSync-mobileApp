@@ -8,7 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import { hierarchyAPI } from "../../api/hierarchy";
 
@@ -41,25 +41,50 @@ export default function DepartmentsScreen({ route, navigation }) {
   };
 
   const filteredDepartments = departments.filter((d) =>
-    d.name.toLowerCase().includes(search.toLowerCase())
+    d.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       <View style={{ padding: 16 }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 12 }}>
-          <Text style={{ fontSize: 16, color: "#3b82f6", fontWeight: "600" }}>← Back to Faculties</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginBottom: 12 }}
+        >
+          <Text style={{ fontSize: 16, color: "#3b82f6", fontWeight: "600" }}>
+            ← Back to Faculties
+          </Text>
         </TouchableOpacity>
 
-        <Text style={{ fontSize: 24, fontWeight: "bold", color: "#1e3a8a", marginBottom: 16 }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: "#1e3a8a",
+            marginBottom: 16,
+          }}
+        >
           Browse Resources
         </Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 16,
+            flexWrap: "wrap",
+          }}
+        >
           <Text style={{ fontSize: 16, color: "#3b82f6" }}>{faculty.name}</Text>
-          <Text style={{ fontSize: 16, color: "#cbd5e1", marginHorizontal: 8 }}>›</Text>
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#0f172a" }}>Department</Text>
-          <Text style={{ fontSize: 16, color: "#cbd5e1", marginHorizontal: 8 }}>›</Text>
+          <Text style={{ fontSize: 16, color: "#cbd5e1", marginHorizontal: 8 }}>
+            ›
+          </Text>
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#0f172a" }}>
+            Department
+          </Text>
+          <Text style={{ fontSize: 16, color: "#cbd5e1", marginHorizontal: 8 }}>
+            ›
+          </Text>
           <Text style={{ fontSize: 16, color: "#94a3b8" }}>Module</Text>
         </View>
 
@@ -78,7 +103,15 @@ export default function DepartmentsScreen({ route, navigation }) {
           }}
         />
 
-        <Text style={{ fontSize: 12, fontWeight: "bold", color: "#64748b", marginBottom: 12, textTransform: "uppercase" }}>
+        <Text
+          style={{
+            fontSize: 12,
+            fontWeight: "bold",
+            color: "#64748b",
+            marginBottom: 12,
+            textTransform: "uppercase",
+          }}
+        >
           DEPARTMENTS IN {faculty.name.toUpperCase()}
         </Text>
       </View>
@@ -90,15 +123,24 @@ export default function DepartmentsScreen({ route, navigation }) {
           data={filteredDepartments}
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ListEmptyComponent={
-            <Text style={{ textAlign: "center", color: "#64748b", marginTop: 20 }}>
+            <Text
+              style={{ textAlign: "center", color: "#64748b", marginTop: 20 }}
+            >
               No departments found.
             </Text>
           }
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("ModulesList", { faculty, department: item })}
+              onPress={() =>
+                navigation.navigate("ModulesList", {
+                  faculty,
+                  department: item,
+                })
+              }
               style={{
                 backgroundColor: "#fff",
                 borderRadius: 12,
@@ -111,7 +153,14 @@ export default function DepartmentsScreen({ route, navigation }) {
               }}
             >
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 18, fontWeight: "600", color: "#0f172a", marginBottom: 4 }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "600",
+                    color: "#0f172a",
+                    marginBottom: 4,
+                  }}
+                >
                   {item.name}
                 </Text>
                 <Text style={{ fontSize: 14, color: "#64748b" }}>
