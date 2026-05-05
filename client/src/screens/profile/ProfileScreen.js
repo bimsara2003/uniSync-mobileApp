@@ -4,6 +4,7 @@ import {
   Alert, ActivityIndicator, Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { authAPI } from "../../api/auth";
 
@@ -155,42 +156,96 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {/* Avatar */}
         <View style={{ alignItems: "center", marginBottom: 24 }}>
-          <TouchableOpacity onPress={handlePickPhoto} activeOpacity={0.7}>
-            {user?.profilePictureUrl ? (
-              <Image
-                source={{ uri: user.profilePictureUrl }}
-                style={{
-                  width: 90, height: 90, borderRadius: 45,
-                  backgroundColor: "#f1f5f9",
-                }}
-              />
-            ) : (
-              <View style={{
-                width: 90, height: 90, borderRadius: 45,
-                backgroundColor: "#dbeafe", alignItems: "center", justifyContent: "center",
-              }}>
-                <Text style={{ fontSize: 30, fontWeight: "700", color: "#122a4f" }}>
-                  {initials}
-                </Text>
-              </View>
-            )}
-            {uploadingPhoto && (
-              <View style={{
-                position: "absolute", width: 90, height: 90, borderRadius: 45,
-                backgroundColor: "rgba(0,0,0,0.35)", alignItems: "center", justifyContent: "center",
-              }}>
-                <ActivityIndicator color="#fff" />
-              </View>
-            )}
-          </TouchableOpacity>
-          <Text style={{ fontSize: 11, color: "#94a3b8", marginTop: 6 }}>
-            Tap to change photo
-          </Text>
-          {user?.profilePictureUrl && (
-            <TouchableOpacity onPress={handleDeletePhoto}>
-              <Text style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>Remove photo</Text>
+          <View style={{ position: 'relative' }}>
+            <TouchableOpacity 
+              onPress={handlePickPhoto} 
+              activeOpacity={0.8}
+              style={{
+                width: 100, height: 100, borderRadius: 50,
+                backgroundColor: "#fff",
+                elevation: 4,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 2,
+                borderColor: "#fff"
+              }}
+            >
+              {user?.profilePictureUrl ? (
+                <Image
+                  source={{ uri: user.profilePictureUrl }}
+                  style={{
+                    width: 96, height: 96, borderRadius: 48,
+                    backgroundColor: "#f1f5f9",
+                  }}
+                />
+              ) : (
+                <View style={{
+                  width: 96, height: 96, borderRadius: 48,
+                  backgroundColor: "#dbeafe", alignItems: "center", justifyContent: "center",
+                }}>
+                  <Text style={{ fontSize: 32, fontWeight: "700", color: "#122a4f" }}>
+                    {initials}
+                  </Text>
+                </View>
+              )}
+              {uploadingPhoto && (
+                <View style={{
+                  position: "absolute", width: 96, height: 96, borderRadius: 48,
+                  backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center",
+                }}>
+                  <ActivityIndicator color="#fff" size="large" />
+                </View>
+              )}
             </TouchableOpacity>
-          )}
+            
+            <TouchableOpacity
+              onPress={handlePickPhoto}
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                backgroundColor: '#1a3c6e',
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: 2,
+                borderColor: '#fff',
+                elevation: 5,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 3,
+              }}
+            >
+              <Ionicons name="camera" size={16} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, gap: 16 }}>
+            {user?.profilePictureUrl && (
+              <TouchableOpacity 
+                onPress={handleDeletePhoto}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: "#fee2e2",
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 20,
+                  gap: 4
+                }}
+              >
+                <Ionicons name="trash-outline" size={14} color="#ef4444" />
+                <Text style={{ fontSize: 13, color: "#ef4444", fontWeight: "500" }}>Remove</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {/* Role badge */}
