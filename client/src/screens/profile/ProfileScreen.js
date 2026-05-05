@@ -623,9 +623,22 @@ export default function ProfileScreen() {
         animationType="fade"
         onRequestClose={() => setIsPhotoModalVisible(false)}
       >
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.9)", justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.9)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <TouchableOpacity
-            style={{ position: "absolute", top: Platform.OS === 'ios' ? 50 : 30, right: 20, zIndex: 10, padding: 10 }}
+            style={{
+              position: "absolute",
+              top: Platform.OS === "ios" ? 50 : 30,
+              right: 20,
+              zIndex: 10,
+              padding: 10,
+            }}
             onPress={() => setIsPhotoModalVisible(false)}
           >
             <Ionicons name="close" size={32} color="#fff" />
