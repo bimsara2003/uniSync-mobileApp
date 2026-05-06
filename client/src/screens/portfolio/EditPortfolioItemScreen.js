@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { portfolioAPI } from "../../api/portfolio";
 import { Ionicons } from '@expo/vector-icons';
+import DatePickerModal from "../../components/DatePickerModal";
 
 const TYPES = [
   "PROJECT",
@@ -42,6 +43,8 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
   const [isVisible, setIsVisible] = useState(true);
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
   const [image, setImage] = useState(null);
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -249,15 +252,27 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
           />
         </Field>
 
-        <Field label="Start Date (YYYY-MM-DD)">
-          <TextInput
-            value={startDate}
-            onChangeText={setStartDate}
-            placeholder="2025-09-01"
-            style={inputStyle}
-          />
+        <Field label="Start Date">
+          <TouchableOpacity
+            onPress={() => setShowStartPicker(true)}
+            style={[inputStyle, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}
+          >
+            <Text style={{ color: startDate ? "#0f172a" : "#94a3b8", fontSize: 14 }}>
+              {startDate || "Select Start Date"}
+            </Text>
+            <Ionicons name="calendar-outline" size={18} color="#1a3c6e" />
+          </TouchableOpacity>
         </Field>
 
+        <DatePickerModal
+          visible={showStartPicker}
+          onClose={() => setShowStartPicker(false)}
+          value={startDate}
+          onSelect={setStartDate}
+          title="Select Start Date"
+        />
+
+        {/* Ongoing toggle */}
         <View
           style={{
             flexDirection: "row",
@@ -282,15 +297,26 @@ export default function EditPortfolioItemScreen({ route, navigation }) {
         </View>
 
         {!isOngoing && (
-          <Field label="End Date (YYYY-MM-DD)">
-            <TextInput
-              value={endDate}
-              onChangeText={setEndDate}
-              placeholder="2026-05-01"
-              style={inputStyle}
-            />
+          <Field label="End Date">
+            <TouchableOpacity
+              onPress={() => setShowEndPicker(true)}
+              style={[inputStyle, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}
+            >
+              <Text style={{ color: endDate ? "#0f172a" : "#94a3b8", fontSize: 14 }}>
+                {endDate || "Select End Date"}
+              </Text>
+              <Ionicons name="calendar-outline" size={18} color="#1a3c6e" />
+            </TouchableOpacity>
           </Field>
         )}
+
+        <DatePickerModal
+          visible={showEndPicker}
+          onClose={() => setShowEndPicker(false)}
+          value={endDate}
+          onSelect={setEndDate}
+          title="Select End Date"
+        />
 
         <Field label="Tags (comma-separated)">
           <TextInput
